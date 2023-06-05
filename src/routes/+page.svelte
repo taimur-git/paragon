@@ -1,35 +1,15 @@
-<script>
+<script lang='ts'>
+	
 	import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
 	import welcome_fallback from '$lib/images/svelte-welcome.png';
-	import { PrismaClient } from '@prisma/client';
+	
 	import Header from './Header.svelte';
-	const prisma = new PrismaClient();
-
-	async function main() {
-/*
-	// ... you will write your Prisma Client queries here
-		const user = await prisma.user.create({
-			data: {
-				name: 'Alice',
-				email: 'alice@prisma.io',
-			},
-		})
-			console.log(user)
-			*/
-		
-	}
-	main()
-		.then(async () => {
-			await prisma.$disconnect()
-		})
-		.catch(async (e) => {
-			console.error(e)
-			await prisma.$disconnect()
-			process.exit(1)
-		})
-
+	
+	
 </script>
+
+
 
 <svelte:head>
 	<title>Home</title>
@@ -38,7 +18,6 @@
 
 <section>
 
-<!--<h1>{user}</h1>
 	<h1>
 		<span class="welcome">
 			<picture>
@@ -55,7 +34,7 @@
 	</h2>
 
 	<Counter />
--->
+
 </section>
 
 <style>
@@ -67,7 +46,7 @@
 		align-items: center;
 		flex: 0.6;
 	}
-/*
+
 	h1 {
 		width: 100%;
 	}
@@ -87,5 +66,5 @@
 		top: 0;
 		display: block;
 	}
-	*/
+	
 </style>
