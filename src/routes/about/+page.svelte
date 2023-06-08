@@ -1,4 +1,4 @@
-<script>
+<script lang>
 	/*
 	import Counter from './Counter.svelte';
 	import welcome from '$lib/images/svelte-welcome.webp';
@@ -6,11 +6,17 @@
 	
 	import Header from './Header.svelte';
 	*/
+	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
+//import type { TableSource } from '@skeletonlabs/skeleton';
 /** @type {import('./$types').PageData} */
 export let data;
 
 	$: ({ users } = data)
 	
+
+	let valueSingle = 'users';
+	
+
 </script>
 
 
@@ -26,40 +32,26 @@ export let data;
 	<button type='submit'>Create User</button>
 </form>
 
-{#each users as user}
-<p>
+
+<!--p>
 	{user.name} | {user.email}
 </p>
 <form action="?/deleteUser&id={user.id}" method="POST">
 	<button type="submit">Delete user</button>
-</form>
-{/each}
+</form-->
 
 
-<!--
-<section>
+<ListBox>
+	{#each users as user}
+	<ListBoxItem bind:group={valueSingle} name="medium" value="{user.id}">
+		{user.name} | {user.email}
+		<form action="?/deleteUser&id={user.id}" method="POST">
+			<button type="submit">Delete user</button>
+		</form>
+	</ListBoxItem>
+	{/each}
+</ListBox>
 
-
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
-
-</section>
-
--->
 
 <style>
 

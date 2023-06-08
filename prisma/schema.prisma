@@ -30,3 +30,17 @@ model Post {
   authorId  Int
 
 }
+
+model Batch {
+  id        Int     @id @default(autoincrement())
+  //teacher   User    @relation(fields: [teacherId], references: [id])
+  teacherId Int
+  //students  User[]  //@relation(fields: []),
+}
+
+model Appointment {
+  id    Int @id @default(autoincrement())
+  teacherId Int
+  studentId Int
+  date DateTime
+}

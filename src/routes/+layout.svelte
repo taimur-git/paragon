@@ -1,5 +1,7 @@
-<script>
-	import Header from './Header.svelte';
+<script lang='ts'>	
+	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
+	import '@skeletonlabs/skeleton/styles/skeleton.css';
+	import Header from '../components/Header.svelte';
 	import './styles.css';
 </script>
 
