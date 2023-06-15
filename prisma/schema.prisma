@@ -38,7 +38,7 @@ model Ad{
   rate Int
   description String?
   //location Location?
-  ratings Rating[]
+  //ratings Rating[]
 }
 
 model Rating{
@@ -80,4 +80,10 @@ model Location{
   latitude Int 
   radius Int
   @@unique(fields:[longitude,latitude],name:"location_id")
+}
+model Chat{
+  id Int @id
+  senderId Int
+  recieverId Int
+
 }
