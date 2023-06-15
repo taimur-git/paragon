@@ -14,9 +14,39 @@ model User {
 
   id    Int     @id @default(autoincrement())
   email String  @unique
-  name  String?
+  name  String
+  phone String? @unique
+//  credentials Credential[]
   posts Post[]
+  ads Ad[]
 
+}
+
+model Credential{
+  id Int @id @default(autoincrement())
+  claim String
+  proof String? //url to the pdf/jpeg upload
+  verified Boolean @default(false)
+}
+
+model Ad{
+  id Int @id @default(autoincrement())
+  userid Int 
+  user User @relation(fields: [userid], references: [id])
+  //subject String[]
+  level String 
+  rate Int
+  description String?
+  //location Location?
+  ratings Rating[]
+}
+
+model Rating{
+  ad_id Int
+  reviewer_id Int
+  stars Int //0-5
+  review String
+  @@unique(fields:[ad_id,reviewer_id],name:"rating_id")
 }
 
 
@@ -43,4 +73,11 @@ model Appointment {
   teacherId Int
   studentId Int
   date DateTime
+}
+
+model Location{
+  longitude Int
+  latitude Int 
+  radius Int
+  @@unique(fields:[longitude,latitude],name:"location_id")
 }
