@@ -1,4 +1,5 @@
 <script lang='ts'>
+	import Chatbox from '../components/Chatbox.svelte';
 	import Counter from '../components/Counter.svelte';
 </script>
 
@@ -11,9 +12,19 @@
 
 <section>
 	<h2>
+		Chat box
+	</h2>
+
+	<Chatbox />
+	
+</section>
+
+<section>
+	<h2>
 		try editing <strong>src/routes/+page.svelte</strong>
 	</h2>
 	<Counter />
+	
 </section>
 
 <style>
