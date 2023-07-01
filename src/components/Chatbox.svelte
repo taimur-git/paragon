@@ -2,6 +2,7 @@
 	import Talk from 'talkjs';
 	import { onMount } from 'svelte';
 
+    // @ts-ignore
     let chatboxEl;
 	onMount(async () => {
 		await Talk.ready;
@@ -27,14 +28,14 @@
 			role: 'default'
 		});
 
-		// const thirdUser = new Talk.User({
-		// 	id: '3',
-		// 	name: 'Anas Ishfaque',
-		// 	email: 'anas@example.com',
-		// 	photoUrl: 'anas.jpeg',
-		// 	welcomeMessage: 'Hi!',
-		// 	role: 'default'
-		// });
+		const thirdUser = new Talk.User({
+			id: '3',
+			name: 'Anas Ishfaque',
+			email: 'anas@example.com',
+			photoUrl: 'anas.jpeg',
+			welcomeMessage: 'Hi!',
+			role: 'default'
+		});
 		const session = new Talk.Session({
 			appId: 'tcaoDSc4',
 			me: currentUser
@@ -49,7 +50,8 @@
 		// After creating the conversation
 		const chatbox = session.createChatbox();
 		chatbox.select(conversation);
-		chatbox.mount(this.chatboxEl);
+		// @ts-ignore
+		chatbox.mount(chatboxEl);
 		
 		
 	});
@@ -62,14 +64,15 @@
 </div>
 
     
-<!-- <style>
+<style>
 .container {
     display: grid;
 
     padding: 2em;
     gap: 1em;
 
-    height: 100%;
+    height: 500px;
+	width: 700px;
     box-sizing: border-box;
 }
-</style> -->
+</style>
