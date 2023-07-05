@@ -1,23 +1,31 @@
-<script lang='ts'>	
+<script lang="ts">
+	import '../app.postcss';
 	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	import Header from '../components/Header.svelte';
 	import './styles.css';
+	import '../app.postcss';
+	import { AppShell } from '@skeletonlabs/skeleton';
 </script>
 
 <div class="app">
-	<Header />
+	<AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
+		<Header />
+		<main>
+			<slot />
+		</main>
 
-	<main>
-		<slot />
-	</main>
+		<footer>
+			<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+		</footer>
+	</AppShell>
+	
 
-	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-	</footer>
+	
 </div>
 
 <style>
+	/*
 	.app {
 		display: flex;
 		flex-direction: column;
@@ -52,4 +60,5 @@
 			padding: 12px 0;
 		}
 	}
+	*/
 </style>
