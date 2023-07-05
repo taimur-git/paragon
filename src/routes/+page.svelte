@@ -1,5 +1,4 @@
 <script lang='ts'>
-	import Chatbox from '../components/Chatbox.svelte';
 	import Counter from '../components/Counter.svelte';
 </script>
 
@@ -9,15 +8,6 @@
 	<title>Home</title>
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
-
-<section>
-	<h2>
-		Chat box
-	</h2>
-
-	<Chatbox />
-	
-</section>
 
 <section>
 	<h2>
