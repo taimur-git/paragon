@@ -13,19 +13,19 @@
 <div class="m-card">
 	<h2>
 		<slot name="header">
-			Unknown header
+			Unknown item
 		</slot>
 	</h2>
 
 	<div class="studentLable">
 		<slot name="studentLable">
-			Unknown footer
+			Unknown item
 		</slot>
 	</div>
 
 	<div class="rate">
 		<slot name="rate">
-			Unknown footer
+			Unknown item
 		</slot>
 	</div>
 	<div class="post">
