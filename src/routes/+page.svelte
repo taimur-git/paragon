@@ -48,8 +48,8 @@
 	<Counter />
 				
 	<Card>
-		<div slot="header">
-			<InputChip
+		<div slot="header" class="header">
+			Course: <InputChip
 				bind:input={inputChip}
 				bind:value={inputChipList}
 				name="chips"
@@ -95,10 +95,16 @@
 		align-items: center;
 		flex: 0.6;
 	}
+	.header {
+		margin-bottom: 10px;
+	}
 	input[name="studentlabel"],
 	input[name="rate"] {
 		width: 98%;
 		margin-bottom: 10px;
+		background-color: #DBDEE9;
+		border-radius: 5px;
+		border: 1px solid #8693BA;
 	}
 	button[name="publish"]{
 		margin-left: 42%;
@@ -106,6 +112,7 @@
 		border-radius: 5px;
 		padding-left: 4px;
 		padding-right: 4px;
+		background-color: #DCE1EE;
 	}
 
 </style>
