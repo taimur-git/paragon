@@ -3,6 +3,7 @@
 	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
 	import '@skeletonlabs/skeleton/styles/skeleton.css';
 	import Header from '../components/Header.svelte';
+	//import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import './styles.css';
 	import '../app.postcss';
 	import { AppShell } from '@skeletonlabs/skeleton';
