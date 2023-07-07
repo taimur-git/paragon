@@ -5,21 +5,28 @@
 	import Header from '../components/Header.svelte';
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import './styles.css';
+	import '../app.postcss';
+	import { AppShell } from '@skeletonlabs/skeleton';
 </script>
 
 <div class="app">
-	<Header />
+	<AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
+		<Header />
+		<main>
+			<slot />
+		</main>
 
-	<main>
-		<slot />
-	</main>
+		<footer>
+			<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
+		</footer>
+	</AppShell>
+	
 
-	<footer>
-		<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-	</footer>
+	
 </div>
 
 <style>
+	/*
 	.app {
 		display: flex;
 		flex-direction: column;
@@ -54,4 +61,5 @@
 			padding: 12px 0;
 		}
 	}
+	*/
 </style>

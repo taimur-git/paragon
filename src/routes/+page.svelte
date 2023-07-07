@@ -42,9 +42,9 @@
 </svelte:head>
 
 <section>
-	<h2>
+	<!--h2>
 		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
+	</h2-->
 	<Counter />
 				
 	<Card>
