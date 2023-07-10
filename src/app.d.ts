@@ -19,7 +19,7 @@ declare global {
 		type Auth = import('$lib/server/lucia').Auth
 		type UserAttributes = {
 			username: string
-			name: string
+			//name: string
 			
 		}
 	}

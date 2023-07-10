@@ -1,5 +1,5 @@
 
-import { handleHooks } from "@lucia-auth/sveltekit";
+//import { handleHooks } from "@lucia-auth/sveltekit";
 import { auth } from "$lib/server/lucia";
 import type { Handle } from "@sveltejs/kit";
 

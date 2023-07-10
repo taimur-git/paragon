@@ -1,4 +1,9 @@
-<form>
+<script lang="ts">
+	import { enhance } from "$app/forms";
+</script>
+
+
+<form  method='POST' use:enhance>
     <hgroup>
         <h1>Register</h1>
         <h3>To post ads, you need an account.</h3>
@@ -13,10 +18,11 @@
     <label for="password">Password</label>
     <input type="password" id="password" name="password" placeholder="Password" required>
 
-    <label for="password">Confirm Password</label>
-    <input type="password" id="password" name="password" placeholder="Password" required>
+    <!--label for="password">Confirm Password</label>
+    <input type="password" id="password" name="password" placeholder="Password" required-->
 
-    <button type="submit">Register</button>
+    <!--button type="submit">Register</button-->
+    <input type="submit" value="Signup" />
 </form>
 <p>Already have an account? <a href="/login">Login</a></p>
 

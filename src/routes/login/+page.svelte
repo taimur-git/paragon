@@ -1,4 +1,10 @@
-<form method="POST">
+<script>
+
+	import { enhance } from "$app/forms";
+
+</script>
+
+<form method="POST" use:enhance>
     <hgroup>
         <h1>Login</h1>
         <h3>Enter your credentials to login.</h3>
