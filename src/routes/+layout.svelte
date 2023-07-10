@@ -1,15 +1,16 @@
-<script lang='ts'>	
-	import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
-	import '@skeletonlabs/skeleton/styles/skeleton.css';
-	import Header from '../components/Header.svelte';
-	import './styles.css';
+<script lang="ts">	
+	import "../app.postcss";
+    import '@skeletonlabs/skeleton/themes/theme-skeleton.css';
+    import '@skeletonlabs/skeleton/styles/skeleton.css';
+    import Header from '../components/Header.svelte';
+    import './styles.css';
 </script>
 
 <div class="app">
-	<Header />
+	<Header></Header>
 
 	<main>
-		<slot />
+		<slot></slot>
 	</main>
 
 	<footer>
