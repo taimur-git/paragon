@@ -20,7 +20,3 @@ export const auth = lucia({
 })
 
 export type Auth = typeof auth
-
-
-//  Type 'PrismaClient<PrismaClientOptions, never, RejectOnNotFound | RejectPerOperation | undefined>'
-// is missing the following properties from type '{ authUser: { findUnique: (options: { where: Partial<Readonly<{ id: string; } & Required<UserAttributes>>>; include?: any; }) => Promise<any>; } & { ...; }; authSession: { ...; } & { ...; }; authKey: { ...; } & { ...; }; }': authUser, authSession, authKeyts(2345)

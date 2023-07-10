@@ -8,13 +8,15 @@
 	import './styles.css';
 	import '../app.postcss';
 	import { AppShell } from '@skeletonlabs/skeleton';
-	import Landing from '../components/Landing.svelte';
+	import Landing from '../components/NavBar.svelte';
+	import type { PageData } from './$types'
+	export let data: PageData;
 </script>
 
 <div class="app">
 	<!--AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
 		<Header /-->
-		<Landing />
+		<Landing {data}/>
 		<main>
 			<slot />
 		</main>

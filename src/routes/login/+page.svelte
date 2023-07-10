@@ -1,22 +1,31 @@
 <script>
 
 	import { enhance } from "$app/forms";
+	import Card from "../../components/Card.svelte";
 
 </script>
-
-<form method="POST" use:enhance>
+<div class="flex justify-center">
+    <div class="w-full sm:w-3/5 md:w-1/3 ">
+              <form method="POST" use:enhance>
     <hgroup>
-        <h1>Login</h1>
-        <h3>Enter your credentials to login.</h3>
+        <h1 class="text-2xl font-bold mb-2.5">Login</h1>
+        <h1 class="text-lg font-normal mb-4">Enter your credentials to login.</h1>
     </hgroup>
     <label for="username">Username</label>
     <input type="text" id="username" name="username" placeholder="Username" required>
     <label for="password">Password</label>
     <input type="password" id="password" name="password" placeholder="Password" required>
-    <!--button type="submit">Login</button-->
-    <input type="submit" value="Continue" />
+    <button type="submit" class="brutal-link">Login</button>
 </form>
 <p>Don't have an account? <a href="/register">Register</a></p>
+
+    </div>
+  </div>
+  
+
+    
+    
+
 <style>
     form {
         display: flex;
@@ -35,18 +44,6 @@
         width: 100%;
     }
 
-    h1 {
-        font-size: 2.5rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-    }
-
-    h3 {
-        font-size: 1.5rem;
-        font-weight: 400;
-        margin-bottom: 1rem;
-    }
-
     label {
         font-size: 1.5rem;
         font-weight: 400;
@@ -57,34 +54,9 @@
         width: 100%;
         height: 3rem;
         border: 1px solid #ccc;
-        border-radius: 0.5rem;
         padding: 0.5rem;
         font-size: 1.5rem;
         font-weight: 400;
         margin-bottom: 1rem;
-    }
-
-    button {
-        width: 100%;
-        height: 3rem;
-        border: none;
-        border-radius: 0.5rem;
-        background-color: #000;
-        color: #fff;
-        font-size: 1.5rem;
-        font-weight: 400;
-        margin-bottom: 1rem;
-    }
-
-    p {
-        font-size: 1.5rem;
-        font-weight: 400;
-        margin-bottom: 1rem;
-    }
-
-    a {
-        color: #000;
-        font-size: 1.5rem;
-        font-weight: 400;
     }
 </style>

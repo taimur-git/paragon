@@ -1,40 +1,9 @@
 <script lang='ts'>
-	import Counter from '../components/Counter.svelte';
-	import Card from '../components/Card.svelte';
-	import { Autocomplete, InputChip } from '@skeletonlabs/skeleton';
-	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
-	
-	let inputChip = '';
-	let inputChipList: string[] = [];
-	let showOptions = false; // Flag to control options visibility
 
-	const flavorOptions: AutocompleteOption[] = [
-		{ label: 'Bangla', value: 'Bangla', keywords: 'subject, basic' },
-		{ label: 'English', value: 'English', keywords: 'subject, basic' },
-		{ label: 'Math', value: 'Math', keywords: 'subject, basic' },
-		{ label: 'HigherMath', value: 'HigherMath', keywords: 'subject, basic' },
-		{ label: 'Guitar', value: 'Guitar', keywords: 'music, song' },
-		{ label: 'Keyboard', value: 'Keyboard', keywords: 'music, song' }
-	];
-				
-	let studentlabel = '';
-	let rate = '';
+	import teacher from '$lib/images/teacher.svg';
+	//import PostAd from '../components/PostAd.svelte';
 
-	function onInputChipSelect(event: any): void {
-		// console.log('onInputChipSelect', event.detail);
-		if (inputChipList.includes(event.detail.value) === false) {
-			inputChipList = [...inputChipList, event.detail.value];
-			inputChip = '';
-		}
-	}
-
-	function toggleOptions(): void {
-		showOptions = true;
-	}
-
-	function chooseOtherOptions(): void {
-		showOptions = false;
-	}</script>
+</script>
 
 <svelte:head>
 	<title>Home</title>
@@ -42,44 +11,14 @@
 </svelte:head>
 
 <section>
-				
-	<Card>
-		<div slot="header" class="header">
-			Course: <InputChip
-				bind:input={inputChip}
-				bind:value={inputChipList}
-				name="chips"
-				placeholder="Enter courses..."
-				on:focus={toggleOptions}
-				
-			/>
 
-			{#if showOptions }
-				<div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1">
-					<Autocomplete
-						bind:input={inputChip}
-						options={flavorOptions}
-						denylist={inputChipList}
-						on:selection={onInputChipSelect}
+	
+    <img src={teacher} alt="Teacher" class="mx-auto w-1/4 my-8" />
 
-					/>
-				</div>
-			{/if}
-		</div>
-		
-		<div slot="studentLable">
-			Student Label: <input bind:value={studentlabel} name="studentlabel" on:focus={chooseOtherOptions} >
-		</div>
+	<h1>A site where students find teachers, and teachers find students.</h1>
 
-		<div slot="rate">
-			Rate: <input bind:value={rate} name="rate" on:focus={chooseOtherOptions}>
-		</div>
-
-		<div slot="post">
-			<button name="publish">Post</button>
-		</div>
-		
-	</Card>
+	<!--PostAd /-->	
+	
 </section>
 
 <style>
@@ -91,25 +30,7 @@
 		align-items: center;
 		flex: 0.6;
 	}
-	.header {
-		margin-bottom: 10px;
-	}
-	input[name="studentlabel"],
-	input[name="rate"] {
-		width: 98%;
-		margin-bottom: 10px;
-		background-color: #DBDEE9;
-		border-radius: 5px;
-		border: 1px solid #8693BA;
-	}
-	button[name="publish"]{
-		margin-left: 42%;
-		border: 2px solid black;
-		border-radius: 5px;
-		padding-left: 4px;
-		padding-right: 4px;
-		background-color: #DCE1EE;
-	}
+
 
 </style>
 		
