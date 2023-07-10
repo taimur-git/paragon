@@ -20,8 +20,16 @@
 			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
 				<a href="/about">About</a>
 			</li>
+<<<<<<< HEAD
 			<li aria-current={$page.url.pathname === '/chat' ? 'page' : undefined}>
 				<a href="/chat">Chat</a>
+=======
+			<li aria-current={$page.url.pathname === '/register' ? 'page' : undefined}>
+				<a href="/register">Register</a>
+			</li>
+			<li aria-current={$page.url.pathname === '/login' ? 'page' : undefined}>
+				<a href="/login">Login</a>
+>>>>>>> Asif
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">

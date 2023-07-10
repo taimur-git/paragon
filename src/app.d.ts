@@ -20,6 +20,7 @@ declare global {
 		type UserAttributes = {
 			username: string
 			name: string
+			email: string
 			
 		}
 	}

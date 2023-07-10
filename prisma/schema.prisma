@@ -30,7 +30,6 @@ model AuthUser {
     email   String  @unique
     phone String? @unique
     image String?
-    
     articles Article[]
     auth_session  AuthSession[]
     auth_key      AuthKey[]
