@@ -20,6 +20,8 @@ export const actions: Actions = {
         const form = await request.formData();
         const username = form.get('username');
         const password = form.get('password');
+        const email = form.get('email');
+        const name = username; //change this to get name later?
         if(typeof username !== 'string' || typeof password !== 'string'){
             return fail(400, {message: 'Invalid request'});
         }
@@ -31,7 +33,9 @@ export const actions: Actions = {
                     password
                 },
                 attributes: {
-                    username
+                    username,
+                    email,
+                    name,
                 }
             });
             const session = await auth.createSession(user.userId);
