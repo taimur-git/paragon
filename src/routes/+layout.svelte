@@ -12,8 +12,8 @@
 </script>
 
 <div class="app">
-	<AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
-		<!--Header /-->
+	<!--AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
+		<Header /-->
 		<Landing />
 		<main>
 			<slot />
@@ -22,7 +22,9 @@
 		<footer>
 			
 		</footer>
-	</AppShell>
+	<!--
+		/AppShell>
+	-->
 	
 
 	
