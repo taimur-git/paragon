@@ -91,12 +91,20 @@ model Ad{
   id Int @id @default(autoincrement())
   userid Int 
   user User @relation(fields: [userid], references: [id])
-  //subject String[]
+  subjects AdSubject[]
   level String 
   rate Int
   description String?
   //location Location?
   //ratings Rating[]
+}
+
+model AdSubject {
+  id        Int    @id @default(autoincrement())
+  adId      Int
+  subject   String
+
+  ad        Ad     @relation(fields: [adId], references: [id])
 }
 
 model Rating{
