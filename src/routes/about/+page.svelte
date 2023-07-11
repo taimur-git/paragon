@@ -1,4 +1,6 @@
 <script >
+// @ts-nocheck
+
 	import { ListBox, ListBoxItem } from '@skeletonlabs/skeleton';
 	//import type { PageData } from './$types';
 	import { enhance } from '$app/forms';
