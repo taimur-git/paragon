@@ -1,8 +1,5 @@
 import { auth } from "$lib/server/lucia";
 import { fail, redirect} from '@sveltejs/kit'
-//import type { PageServerLoad } from "../about/$types";
-//import type { Actions } from "./$types";
-import type { StringLiteralType } from "typescript";
 import type { Actions, PageServerLoad } from "./$types";
 
 
