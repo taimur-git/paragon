@@ -1,41 +1,51 @@
-<script>
+<script lang="ts">
 	import Talk from 'talkjs';
 	import { onMount } from 'svelte';
+	
 
-    // @ts-ignore
+   
+	export let user1: {
+		id: string; 
+		name: string;
+		email: string;
+	};
+	export let user2: {
+		id: string; 
+		name: string;
+		email: string;
+	};
+
+	 // @ts-ignore
     let chatboxEl;
+
+
 	onMount(async () => {
 		await Talk.ready;
 
 		// Create users here
 		// After `await Talk.ready`
-
+		
         const currentUser = new Talk.User({
-			id: '1',
-			name: 'Henry Mill',
-			email: 'henrymill@example.com',
-			photoUrl: 'henry.jpeg',
-			welcomeMessage: 'Hello!',
-			role: 'default'
+			id: user1.id,
+			name: user1.name,
+			email: user1.email
 		});
 
 		const otherUser = new Talk.User({
-			id: '2',
-			name: 'Jessica Wells',
-			email: 'jessicawells@example.com',
-			photoUrl: 'jessica.jpeg',
-			welcomeMessage: 'Hello!',
-			role: 'default'
+			id: user2.id,
+			name: user2.name,
+			email: user2.email
 		});
 
-		const thirdUser = new Talk.User({
-			id: '3',
-			name: 'Anas Ishfaque',
-			email: 'anas@example.com',
-			photoUrl: 'anas.jpeg',
-			welcomeMessage: 'Hi!',
-			role: 'default'
-		});
+		// const thirdUser = new Talk.User({
+		// 	id: '3',
+		// 	name: 'Anas Ishfaque',
+		// 	email: 'anas@example.com',
+		// 	photoUrl: 'anas.jpeg',
+		// 	welcomeMessage: 'Hi!',
+		// 	role: 'default'
+		// });
+		
 		const session = new Talk.Session({
 			appId: 'tcaoDSc4',
 			me: currentUser
@@ -55,7 +65,6 @@
 		
 		
 	});
-
 	
 </script>
 
