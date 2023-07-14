@@ -18,7 +18,7 @@ model AuthUser {
     username      String    @unique
     auth_session  AuthSession[]
     auth_key      AuthKey[]
-
+    user User?
     @@map("auth_user")
 }
 
@@ -34,7 +34,7 @@ model AuthSession {
 }
 
 model AuthKey {
-    id              String  @id @unique
+    id              String  @id @unique 
     hashed_password String?
     user_id         String
     primary_key     Boolean
@@ -47,17 +47,34 @@ model AuthKey {
 
 model User {
 //the ID comes from the auth_user table
-  id    String    @id @unique
-  email String  @unique
-  name  String
-  phone String? @unique
-  image String?
+  id    String    @id @unique(map:"authid")
+  authid String    @unique
+  
+  authUser  AuthUser @relation(fields: [authid], references: [id])
 
+  email String  @unique
+  name  String //full name
+  dateJoined DateTime @default(now())
+
+  dateOfBirth DateTime?
+  gender String? //male, female, other
+  phone String? @unique //phone number, will be used for verification and will stay secret
+  image String? //url to the image
+  major String? //CSE, EEE, etc
+  bio String?
+  institute String? //from BRAC, NSU, IUB, etc
+  levelOfStudy String? //BSc, MSc, PhD, etc
+  extraInfo String? //if they are willing to help through phone, first class free, etc
+
+  location Location? 
+
+  credentials Credential[] 
   //location
 
- // credentials Credential[]
+  
   ads Ad[]
-
+  tuitions Tuition[]
+  ratings Rating[]
 }
 
 
@@ -66,34 +83,141 @@ model Credential{
   claim String
   proof String? //url to the pdf/jpeg upload
   verified Boolean @default(false)
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  @@unique(fields:[claim,userId],name:"credential_id")
+  dateVerified DateTime?
+  dateCreated DateTime @default(now())
+}
+
+model Tuition{
+  id Int @id @default(autoincrement())
+  userid String
+  user User @relation(fields: [userid], references: [id])
+  
+
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime @updatedAt
+  dateDeleted DateTime?
+  
+  
 }
 
 model Ad{
   id Int @id @default(autoincrement())
   userid String
   user User @relation(fields: [userid], references: [id])
-  subjects AdSubject[]
-  level String 
-  rate Int
+
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime @updatedAt
+  dateDeleted DateTime?
+  visible Boolean @default(true)
+
+  background AdBackground[] //bangla medium, english medium, etc
+  subjects AdSubject[] //math, physics, etc
+  classes AdClasses[] //class 1-12, university, etc
+  educationBoard AdBoard[] //cambridge, edexcel, etc
+
+  typeOfTutor String? //online, offline, both
+  expectedSalary Int? //per week or per month or negotiable
+  salaryType String? //per week or per month  or negotiable
   description String?
-  //location Location?
-  //ratings Rating[]
+  
+  ratings Rating[]
 }
 
+model Background{
+  id Int @id @default(autoincrement())
+  name String @unique
+  ads AdBackground[]
+}
+model Subject{
+  id Int @id @default(autoincrement())
+  name String @unique
+  ads AdSubject[]
+}
+
+model Board{
+  id Int @id @default(autoincrement())
+  name String @unique
+  ads AdBoard[]
+}
+model Class{
+  id Int @id @default(autoincrement())
+  name String @unique
+  ads AdClasses[]
+}
+model AdBackground{
+  id        Int @id @default(autoincrement())
+  adId      Int
+  backgroundId Int
+  background Background @relation(fields: [backgroundId], references: [id])
+  ad        Ad @relation(fields: [adId], references: [id])
+}
 model AdSubject {
   id        Int    @id @default(autoincrement())
   adId      Int
-  subject   String
-
+  subjectId Int
+  subject   Subject @relation(fields: [subjectId], references: [id])
+  ad        Ad     @relation(fields: [adId], references: [id])
+}
+model AdClasses {
+  id        Int    @id @default(autoincrement())
+  adId      Int
+  classId   Int
+  class     Class @relation(fields: [classId], references: [id])
+  ad        Ad     @relation(fields: [adId], references: [id])
+}
+model AdBoard {
+  id        Int    @id @default(autoincrement())
+  adId      Int
+  boardId   Int
+  board     Board @relation(fields: [boardId], references: [id])
   ad        Ad     @relation(fields: [adId], references: [id])
 }
 
 model Rating{
   ad_id Int
-  reviewer_id Int
+  reviewer_id String
   stars Int //0-5
   review String
   @@unique(fields:[ad_id,reviewer_id],name:"rating_id")
+  ad Ad @relation(fields: [ad_id], references: [id])
+  reviewer User @relation(fields: [reviewer_id], references: [id])
+}
+
+
+
+model Location{
+  longitude Int
+  latitude Int 
+  radius Int
+  geocodedLocation String
+  @@unique(fields:[longitude,latitude],name:"location_id")
+  user User @relation(fields: [userId], references: [id])
+  userId String @unique
+}
+
+
+
+model Message{
+  id Int @id
+  chatId Int
+  senderId String
+  recieverId String
+  message String
+  date DateTime @default(now())
+  read Boolean @default(false)
+//  sender User @relation(fields: [senderId], references: [id])
+//  reciever User @relation(fields: [recieverId], references: [id])
+}
+
+model Notification{
+  id Int @id
+  userId Int
+  message String
+  date DateTime @default(now())
+  read Boolean @default(false)
 }
 
 model Batch {
@@ -110,16 +234,3 @@ model Appointment {
   date DateTime
 }
 
-model Location{
-  longitude Int
-  latitude Int 
-  radius Int
-  @@unique(fields:[longitude,latitude],name:"location_id")
-}
-
-model Chat{
-  id Int @id
-  senderId Int
-  recieverId Int
-
-}

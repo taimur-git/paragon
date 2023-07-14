@@ -17,9 +17,9 @@ export const actions: Actions = {
         const form = await request.formData();
         const username = form.get('username');
         const password = form.get('password');
-        const email = form.get('email');
+        const email = form.get('email')?.toString();
         //const name = username; //change this to get name later?
-        if(typeof username !== 'string' || typeof password !== 'string'){
+        if(typeof username !== 'string' || typeof password !== 'string' || typeof email !== 'string'){
             return fail(400, {message: 'Invalid request'});
         }
         try{
@@ -39,9 +39,11 @@ export const actions: Actions = {
             try{
                 await prisma.user.create({
                     data: {
+                        authid: user.userId,
                         id: user.userId,
                         name: username,
                         email: email,
+                        
                     }
                     
                 })
