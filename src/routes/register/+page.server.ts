@@ -18,7 +18,7 @@ export const actions: Actions = {
         const username = form.get('username');
         const password = form.get('password');
         const email = form.get('email');
-        const name = username; //change this to get name later?
+        //const name = username; //change this to get name later?
         if(typeof username !== 'string' || typeof password !== 'string'){
             return fail(400, {message: 'Invalid request'});
         }
@@ -30,42 +30,36 @@ export const actions: Actions = {
                     password
                 },
                 attributes: {
-                    username,
-                    email,
-                    name,
+                    username
                 }
             });
             const session = await auth.createSession(user.userId);
 			locals.auth.setSession(session);
+
+            try{
+                await prisma.user.create({
+                    data: {
+                        id: user.userId,
+                        name: username,
+                        email: email,
+                    }
+                    
+                })
+            } catch (err) { 
+                console.error(err)
+                return fail(500, {message: 'Cannot create user'})
+            }
+    
+            return {
+                status: 201
+            }
+
+
         }
         catch (err) {
             console.error(err)
             return fail(400, { message: 'Could not register user' })
         }
         throw redirect(302, '/login')
-
-/*
-        const { name, username, password } = Object.fromEntries(await request.formData()) as Record<
-            string,
-            string
-            >
-        try {
-            await auth.createUser({
-                primaryKey: {
-                    providerId: 'username',
-                    providerUserId: username,
-                    password
-                },
-                attributes: {
-                    name,
-                    username
-                }
-            })
-        }
-        catch (err) {
-            console.error(err)
-            return fail(400, { message: 'Could not register user' })
-        }
-        throw redirect(302, '/login')*/
     }
 }
