@@ -65,7 +65,8 @@ model User {
   //institute String? //from BRAC, NSU, IUB, etc
   levelOfStudy String? //BSc, MSc, PhD, etc
   extraInfo String? //if they are willing to help through phone, first class free, etc
-  institute University? //from BRAC, NSU, IUB, etc
+  institute University? @relation(fields: [instituteId], references: [id])  //from BRAC, NSU, IUB, etc
+  instituteId Int?
 
   location Location? 
 
@@ -103,11 +104,6 @@ model Tuition{
   
   tuitionTags TuitionTag[]
 
-  background TuitionBackground[] //bangla medium, english medium, etc
-  subjects TuitionSubject[] //math, physics, etc
-  classes TuitionClasses[] //class 1-12, university, etc
-  educationBoard TuitionBoard[] //cambridge, edexcel, etc
-
   preferredGender String?
   preferredInstitute String?
   location String?
@@ -124,12 +120,6 @@ model Ad{
   visible Boolean @default(true)
 
   tags AdTag[]
-
-
-  background AdBackground[] //bangla medium, english medium, etc
-  subjects AdSubject[] //math, physics, etc
-  classes AdClasses[] //class 1-12, university, etc
-  educationBoard AdBoard[] //cambridge, edexcel, etc
 
   typeOfTutor String? //online, offline, both
   expectedSalary Int? //per week or per month or negotiable
@@ -149,8 +139,11 @@ model Tag{
 }
 
 model TagType{
-  id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement()) //there's seven so far
   name String @unique //subject, class, board, background, etc
+  description String?
+  adFormString String? //the string to be shown in the form ex. "Select your subjects"
+  tuitionFormString String? //the string to be shown in the form ex. "Select your subjects"
   tags Tag[]
 }
 
@@ -170,31 +163,6 @@ model TuitionTag{
   tuition        Tuition @relation(fields: [tuitionId], references: [id])
 }
 
-model Background{
-  id Int @id @default(autoincrement())
-  name String @unique
-  ads AdBackground[]
-  tuitions TuitionBackground[]
-}
-model Subject{
-  id Int @id @default(autoincrement())
-  name String @unique
-  ads AdSubject[]
-  tuitions TuitionSubject[]
-}
-
-model Board{
-  id Int @id @default(autoincrement())
-  name String @unique
-  ads AdBoard[]
-  tuitions TuitionBoard[]
-}
-model Class{
-  id Int @id @default(autoincrement())
-  name String @unique
-  ads AdClasses[]
-  tuitions TuitionClasses[]
-}
 
 model University{
   id Int @id @default(autoincrement())
@@ -203,86 +171,6 @@ model University{
   //ads AdUniversity[]
   //tuitions TuitionUniversity[]
   users User[]
-}
-
-model Disabilities{
-  id Int @id @default(autoincrement())
-  name String @unique
-  //ads AdDisabilities[]
-  //tuitions TuitionDisabilities[]
-}
-
-model Skill{
-  id Int @id @default(autoincrement())
-  name String @unique
-  //ads AdSkill[]
-  //tuitions TuitionSkill[]
-}
-
-model Language{
-  id Int @id @default(autoincrement())
-  name String @unique
-  //ads AdLanguage[]
-  //tuitions TuitionLanguage[]
-}
-
-model AdBackground{
-  id        Int @id @default(autoincrement())
-  adId      Int
-  backgroundId Int
-  background Background @relation(fields: [backgroundId], references: [id])
-  ad        Ad @relation(fields: [adId], references: [id])
-}
-model AdSubject {
-  id        Int    @id @default(autoincrement())
-  adId      Int
-  subjectId Int
-  subject   Subject @relation(fields: [subjectId], references: [id])
-  ad        Ad     @relation(fields: [adId], references: [id])
-}
-model AdClasses {
-  id        Int    @id @default(autoincrement())
-  adId      Int
-  classId   Int
-  class     Class @relation(fields: [classId], references: [id])
-  ad        Ad     @relation(fields: [adId], references: [id])
-}
-model AdBoard {
-  id        Int    @id @default(autoincrement())
-  adId      Int
-  boardId   Int
-  board     Board @relation(fields: [boardId], references: [id])
-  ad        Ad     @relation(fields: [adId], references: [id])
-}
-
-model TuitionBackground{
-  id        Int @id @default(autoincrement())
-  tuitionId      Int
-  backgroundId Int
-  background Background @relation(fields: [backgroundId], references: [id])
-  tuition        Tuition @relation(fields: [tuitionId], references: [id])
-}
-model TuitionSubject {
-  id        Int    @id @default(autoincrement())
-  tuitionId      Int
-  subjectId Int
-  subject   Subject @relation(fields: [subjectId], references: [id])
-  tuition        Tuition     @relation(fields: [tuitionId], references: [id])
-}
-model TuitionClasses {
-  id        Int    @id @default(autoincrement())
-  tuitionId      Int
-  classId   Int
-  class     Class @relation(fields: [classId], references: [id])
-  tuition        Tuition     @relation(fields: [tuitionId], references: [id])
-}
-
-model TuitionBoard {
-  id        Int    @id @default(autoincrement())
-  tuitionId      Int
-  boardId   Int
-  board     Board @relation(fields: [boardId], references: [id])
-  tuition        Tuition     @relation(fields: [tuitionId], references: [id])
 }
 
 model Rating{
