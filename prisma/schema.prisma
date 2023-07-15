@@ -167,7 +167,7 @@ model TuitionTag{
 model University{
   id Int @id @default(autoincrement())
   name String @unique
-  alias String? @unique
+  alias String? 
   //ads AdUniversity[]
   //tuitions TuitionUniversity[]
   users User[]
