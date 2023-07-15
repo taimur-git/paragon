@@ -62,9 +62,10 @@ model User {
   image String? //url to the image
   major String? //CSE, EEE, etc
   bio String?
-  institute String? //from BRAC, NSU, IUB, etc
+  //institute String? //from BRAC, NSU, IUB, etc
   levelOfStudy String? //BSc, MSc, PhD, etc
   extraInfo String? //if they are willing to help through phone, first class free, etc
+  institute University? //from BRAC, NSU, IUB, etc
 
   location Location? 
 
@@ -100,6 +101,8 @@ model Tuition{
   dateUpdated DateTime @updatedAt
   dateDeleted DateTime?
   
+  tuitionTags TuitionTag[]
+
   background TuitionBackground[] //bangla medium, english medium, etc
   subjects TuitionSubject[] //math, physics, etc
   classes TuitionClasses[] //class 1-12, university, etc
@@ -120,6 +123,9 @@ model Ad{
   dateDeleted DateTime?
   visible Boolean @default(true)
 
+  tags AdTag[]
+
+
   background AdBackground[] //bangla medium, english medium, etc
   subjects AdSubject[] //math, physics, etc
   classes AdClasses[] //class 1-12, university, etc
@@ -131,6 +137,37 @@ model Ad{
   description String?
   
   ratings Rating[]
+}
+
+model Tag{
+  id Int @id @default(autoincrement())
+  name String @unique
+  tagTypeId Int
+  tagType TagType @relation(fields: [tagTypeId], references: [id])
+  ads AdTag[]
+  tuitions TuitionTag[]
+}
+
+model TagType{
+  id Int @id @default(autoincrement())
+  name String @unique //subject, class, board, background, etc
+  tags Tag[]
+}
+
+model AdTag{
+  id        Int @id @default(autoincrement())
+  adId      Int
+  tagId Int
+  tag Tag @relation(fields: [tagId], references: [id])
+  ad        Ad @relation(fields: [adId], references: [id])
+}
+
+model TuitionTag{
+  id        Int @id @default(autoincrement())
+  tuitionId      Int
+  tagId Int
+  tag Tag @relation(fields: [tagId], references: [id])
+  tuition        Tuition @relation(fields: [tuitionId], references: [id])
 }
 
 model Background{
@@ -157,6 +194,36 @@ model Class{
   name String @unique
   ads AdClasses[]
   tuitions TuitionClasses[]
+}
+
+model University{
+  id Int @id @default(autoincrement())
+  name String @unique
+  alias String? @unique
+  //ads AdUniversity[]
+  //tuitions TuitionUniversity[]
+  users User[]
+}
+
+model Disabilities{
+  id Int @id @default(autoincrement())
+  name String @unique
+  //ads AdDisabilities[]
+  //tuitions TuitionDisabilities[]
+}
+
+model Skill{
+  id Int @id @default(autoincrement())
+  name String @unique
+  //ads AdSkill[]
+  //tuitions TuitionSkill[]
+}
+
+model Language{
+  id Int @id @default(autoincrement())
+  name String @unique
+  //ads AdLanguage[]
+  //tuitions TuitionLanguage[]
 }
 
 model AdBackground{
