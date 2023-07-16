@@ -1,3 +1,5 @@
+export { universities, tagTypes }
+
 const universities = [
     { name: "University of Dhaka" ,alias: "DU" },
     { name: "Bangladesh University of Engineering and Technology", alias: "BUET" },
@@ -36,8 +38,8 @@ const tagTypes = [
                 { name: 'Physics' },
                 { name: 'Chemistry' },
                 { name: 'Biology'},
-                { name: 'English' },
-                { name: 'Bangla' },
+                { name: 'English Language' },
+                { name: 'Bangla Language' },
                 { name: 'ICT'},
                 { name: 'Religious Studies' },
                 { name: 'History' },
@@ -51,14 +53,12 @@ const tagTypes = [
                 { name: 'Sociology' },
                 { name: 'Law' },
                 { name: 'Computer Science'},
-                { name: 'Programming' },
-                { name: 'Music' },
-                { name: 'Art'},
                 { name: 'Physical Education' },
                 { name: 'Health and Social Care' },
                 { name: 'Design and Technology'},
                 { name: 'Food and Nutrition' },
                 { name: 'Home Economics' },
+                
             ]
         }
     },
@@ -103,6 +103,7 @@ const tagTypes = [
                 {name: 'English Medium'},
                 {name: 'Bangla Medium'},
                 {name: 'English Version'},
+
             ]
         }
     },
@@ -136,6 +137,7 @@ const tagTypes = [
                 { name: "Cooking" },
                 { name: "Dancing" },
                 { name: "Language" },
+                { name: "Art" },
                // { name: "Other, specify..."}
             ]
         }
@@ -151,6 +153,7 @@ const tagTypes = [
                 { name: "Back End Web Development, PHP, NodeJS" },
                 { name: "Frameworks, React, Agular" },
                 { name: "Competitive Programming, Algorithms" },
+                
             ]
         }
     },

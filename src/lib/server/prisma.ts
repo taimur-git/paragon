@@ -8,57 +8,26 @@ if (process.env.NODE_ENV === 'development'){
 export { prisma }
 
 
-/*
+import { universities, tagTypes } from './seed';
+
+seedData();
+
 async function seedData(){
 
     try{
-
-        
-        const tagTypes = [
-
-            {
-                name: "Skills",
-                description: "Skills like programming, drawing, singing etc.",
-                adFormString: "skills",
-                tags: {
-                    create: [
-                        { name: "Photography" },
-                        { name: "Music" },
-                        { name: "Art" },
-                        { name: "Programming" },
-                        { name: "Cooking" },
-                        { name: "Dancing" },
-                        { name: "Language" },
-                       // { name: "Other, specify..."}
-                    ]
-                }
-            },
-			
-			{
-                name: "Languages",
-                description: "Languages like English, Bangla, French etc.",
-                tags: {
-                    create: [
-                        { name: "English" },
-                        { name: "Bangla" },
-                        { name: "Hindi" },
-                        { name: "Arabic" },
-                        { name: "Spanish" },
-                        { name: "German" },
-                        { name: "French" },
-                        { name: "Chinese" },
-                    ]
-                }
-            },
-
-        ];
-
-
-
+        /*
         for (const tag of tagTypes){
             console.log(`Creating tagType ${tag.name}`);
             await prisma.tagType.create({
                 data: tag
+            })
+        }
+        */
+
+        for (const uni of universities){
+            console.log(`Creating uni ${uni.name}`);
+            await prisma.university.create({
+                data: uni
             })
         }
 
@@ -68,4 +37,3 @@ async function seedData(){
     }
 
 }
-*/

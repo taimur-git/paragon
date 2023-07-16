@@ -43,7 +43,7 @@ export const actions: Actions = {
                         id: user.userId,
                         name: username,
                         email: email,
-                        
+                        username: username,
                     }
                     
                 })
