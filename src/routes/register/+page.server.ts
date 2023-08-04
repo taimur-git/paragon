@@ -1,8 +1,5 @@
 import { auth } from "$lib/server/lucia";
 import { fail, redirect} from '@sveltejs/kit'
-//import type { PageServerLoad } from "../about/$types";
-//import type { Actions } from "./$types";
-import type { StringLiteralType } from "typescript";
 import type { Actions, PageServerLoad } from "./$types";
 
 
@@ -20,9 +17,9 @@ export const actions: Actions = {
         const form = await request.formData();
         const username = form.get('username');
         const password = form.get('password');
-        const email = form.get('email');
-        const name = username; //change this to get name later?
-        if(typeof username !== 'string' || typeof password !== 'string'){
+        const email = form.get('email')?.toString();
+        //const name = username; //change this to get name later?
+        if(typeof username !== 'string' || typeof password !== 'string' || typeof email !== 'string'){
             return fail(400, {message: 'Invalid request'});
         }
         try{
@@ -33,42 +30,38 @@ export const actions: Actions = {
                     password
                 },
                 attributes: {
-                    username,
-                    email,
-                    name,
+                    username
                 }
             });
             const session = await auth.createSession(user.userId);
 			locals.auth.setSession(session);
+
+            try{
+                await prisma.user.create({
+                    data: {
+                        authid: user.userId,
+                        id: user.userId,
+                        name: username,
+                        email: email,
+                        username: username,
+                    }
+                    
+                })
+            } catch (err) { 
+                console.error(err)
+                return fail(500, {message: 'Cannot create user'})
+            }
+    
+            return {
+                status: 201
+            }
+
+
         }
         catch (err) {
             console.error(err)
             return fail(400, { message: 'Could not register user' })
         }
         throw redirect(302, '/login')
-
-/*
-        const { name, username, password } = Object.fromEntries(await request.formData()) as Record<
-            string,
-            string
-            >
-        try {
-            await auth.createUser({
-                primaryKey: {
-                    providerId: 'username',
-                    providerUserId: username,
-                    password
-                },
-                attributes: {
-                    name,
-                    username
-                }
-            })
-        }
-        catch (err) {
-            console.error(err)
-            return fail(400, { message: 'Could not register user' })
-        }
-        throw redirect(302, '/login')*/
     }
 }

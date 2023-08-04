@@ -13,30 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//==========Asif==========//
-model Article {
-    id      Int    @id @default(autoincrement())
-    title   String
-    content String
-    auth_user    AuthUser   @relation(fields: [userId], references: [id])
-    userId  String
-}
-
-
 model AuthUser {
-    id       String    @id @unique
-    name     String
-    username String    @unique
-    email   String  @unique
-    phone String? @unique
-    image String?
-    articles Article[]
+    id            String    @id @unique
+    username      String    @unique
     auth_session  AuthSession[]
     auth_key      AuthKey[]
-
-// //  credentials Credential[]
-//     posts Post[]
-//     ads Ad[]
+    user User?
     @@map("auth_user")
 }
 
@@ -52,71 +34,189 @@ model AuthSession {
 }
 
 model AuthKey {
-    id              String  @id @unique
+    id              String  @id @unique 
     hashed_password String?
     user_id         String
     primary_key     Boolean
     expires         BigInt?
-    auth_user            AuthUser    @relation(references: [id], fields: [user_id], onDelete: Cascade)
+    auth_user       AuthUser    @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
     @@index([user_id])
     @@map("auth_key")
 }
 
-
-//=========Asif========//
-
 model User {
+//the ID comes from the auth_user table
+  id    String    @id @unique(map:"authid")
+  authid String    @unique
+  
+  authUser  AuthUser @relation(fields: [authid], references: [id])
 
-  id    Int     @id @default(autoincrement())
   email String  @unique
-  name  String
-  phone String? @unique
-  image String?
- // credentials Credential[]
-  posts Post[]
+  name  String //full name
+  username String @unique
+  dateJoined DateTime @default(now())
+
+  dateOfBirth DateTime?
+  gender String? //male, female, other
+  phone String? @unique //phone number, will be used for verification and will stay secret
+  image String? //url to the image
+  major String? //CSE, EEE, etc
+  bio String?
+  //institute String? //from BRAC, NSU, IUB, etc
+  levelOfStudy String? //BSc, MSc, PhD, etc
+  extraInfo String? //if they are willing to help through phone, first class free, etc
+  institute University? @relation(fields: [instituteId], references: [id])  //from BRAC, NSU, IUB, etc
+  instituteId Int?
+
+  location Location? @relation(fields: [locationId], references: [id])
+  locationId Int? 
+  //  user User @relation(fields: [userId], references: [id])
+  //userId String @unique
+  credentials Credential[] 
+  //location
+
   ads Ad[]
-
+  tuitions Tuition[]
+  ratings Rating[]
 }
-
 
 model Credential{
   id Int @id @default(autoincrement())
   claim String
   proof String? //url to the pdf/jpeg upload
   verified Boolean @default(false)
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  @@unique(fields:[claim,userId],name:"credential_id")
+  dateVerified DateTime?
+  dateCreated DateTime @default(now())
+  
+}
+
+model Tuition{
+  id Int @id @default(autoincrement())
+  userid String
+  user User @relation(fields: [userid], references: [id])
+  
+
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime @updatedAt
+  dateDeleted DateTime?
+  
+  tuitionTags TuitionTag[]
+
+  preferredGender String?
+  preferredInstitute String?
+  location String?
 }
 
 model Ad{
   id Int @id @default(autoincrement())
-  userid Int 
+  userid String
   user User @relation(fields: [userid], references: [id])
-  //subject String[]
-  level String 
-  rate Int
+
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime @updatedAt
+  dateDeleted DateTime?
+  visible Boolean @default(true)
+
+  tags AdTag[]
+
+  typeOfTutor String? //online, offline, both
+  expectedSalary Int? //per week or per month or negotiable
+  salaryType String? //per week or per month  or negotiable
   description String?
-  //location Location?
-  //ratings Rating[]
+  
+  ratings Rating[]
+}
+
+model Tag{
+  id Int @id @default(autoincrement())
+  name String @unique
+  tagTypeId Int
+  tagType TagType @relation(fields: [tagTypeId], references: [id])
+  ads AdTag[]
+  tuitions TuitionTag[]
+}
+
+model TagType{
+  id Int @id @default(autoincrement()) //there's seven so far
+  name String @unique //subject, class, board, background, etc
+  description String?
+  adFormString String? //the string to be shown in the form ex. "Select your subjects"
+  tuitionFormString String? //the string to be shown in the form ex. "Select your subjects"
+  tags Tag[]
+}
+
+model AdTag{
+  id        Int @id @default(autoincrement())
+  adId      Int
+  tagId Int
+  tag Tag @relation(fields: [tagId], references: [id])
+  ad        Ad @relation(fields: [adId], references: [id])
+}
+
+model TuitionTag{
+  id        Int @id @default(autoincrement())
+  tuitionId      Int
+  tagId Int
+  tag Tag @relation(fields: [tagId], references: [id])
+  tuition        Tuition @relation(fields: [tuitionId], references: [id])
+}
+
+
+model University{
+  id Int @id @default(autoincrement())
+  name String @unique
+  alias String? 
+  //ads AdUniversity[]
+  //tuitions TuitionUniversity[]
+  users User[]
 }
 
 model Rating{
   ad_id Int
-  reviewer_id Int
+  reviewer_id String
   stars Int //0-5
   review String
   @@unique(fields:[ad_id,reviewer_id],name:"rating_id")
+  ad Ad @relation(fields: [ad_id], references: [id])
+  reviewer User @relation(fields: [reviewer_id], references: [id])
 }
 
 
-model Post {
 
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+model Location{
+  id Int @id @default(autoincrement())
+  longitude Float
+  latitude Float
+  radius Int
+  geocodedLocation String
+  //@@unique(fields:[longitude,latitude],name:"location_id")
+  users User[]
+}
 
+
+
+model Message{
+  id Int @id
+  chatId Int
+  senderId String
+  recieverId String
+  message String
+  date DateTime @default(now())
+  read Boolean @default(false)
+//  sender User @relation(fields: [senderId], references: [id])
+//  reciever User @relation(fields: [recieverId], references: [id])
+}
+
+model Notification{
+  id Int @id
+  userId Int
+  message String
+  date DateTime @default(now())
+  read Boolean @default(false)
 }
 
 model Batch {
@@ -133,15 +233,3 @@ model Appointment {
   date DateTime
 }
 
-model Location{
-  longitude Int
-  latitude Int 
-  radius Int
-  @@unique(fields:[longitude,latitude],name:"location_id")
-}
-model Chat{
-  id Int @id
-  senderId Int
-  recieverId Int
-
-}
