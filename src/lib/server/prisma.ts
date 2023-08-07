@@ -6,28 +6,34 @@ if (process.env.NODE_ENV === 'development'){
 }
 
 export { prisma }
-/*
-async function main() {
 
-// ... you will write your Prisma Client queries here
-    const user = await prisma.user.create({
-        data: {
-            name: 'Bob',
-            email: 'bob@prisma.io',
-        },
-    })
-        console.log(user)
+
+import { universities, tagTypes } from './seed';
+
+//seedData();
+
+async function seedData(){
+
+    try{
         
-    
-}
-main()
-    .then(async () => {
-        await prisma.$disconnect()
-    })
-    .catch(async (e) => {
-        console.error(e)
-        await prisma.$disconnect()
-        process.exit(1)
-    })
+        for (const tag of tagTypes){
+            console.log(`Creating tagType ${tag.name}`);
+            await prisma.tagType.create({
+                data: tag
+            })
+        }
+        
 
-    */
+        for (const uni of universities){
+            console.log(`Creating uni ${uni.name}`);
+            await prisma.university.create({
+                data: uni
+            })
+        }
+
+
+    }catch(err){
+        console.error(err)
+    }
+
+}

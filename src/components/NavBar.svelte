@@ -15,12 +15,8 @@
 	<svelte:fragment slot="trail">
         <form method="POST">
             {#if data.user}
-            
-            <a href="/profile">{data.user.username}</a>
-            <!--form use:enhance  method="post">
-                <input type="submit" value="Sign out" />
-            </form-->
-            <button formaction="/logout" type="submit" class="brutal-link">Log Out</button>
+                <a href="/profile">{data.user.username}</a>
+                <button formaction="/logout" type="submit" class="brutal-link">Log Out</button>
             {:else}
                 <a href="/register">Register</a>
                 <a href="/login">Log In</a>

@@ -10,14 +10,16 @@
 		// Create users here
 		// After `await Talk.ready`
 
-        const currentUser = new Talk.User({
+		let user1 = {
 			id: '1',
 			name: 'Henry Mill',
 			email: 'henrymill@example.com',
 			photoUrl: 'henry.jpeg',
 			welcomeMessage: 'Hello!',
 			role: 'default'
-		});
+		}
+
+        const currentUser = new Talk.User(user1);
 
 		const otherUser = new Talk.User({
 			id: '2',
