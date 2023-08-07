@@ -10,19 +10,19 @@ export { prisma }
 
 import { universities, tagTypes } from './seed';
 
-seedData();
+//seedData();
 
 async function seedData(){
 
     try{
-        /*
+        
         for (const tag of tagTypes){
             console.log(`Creating tagType ${tag.name}`);
             await prisma.tagType.create({
                 data: tag
             })
         }
-        */
+        
 
         for (const uni of universities){
             console.log(`Creating uni ${uni.name}`);
