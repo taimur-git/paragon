@@ -56,7 +56,8 @@ model User {
   name  String //full name
   username String @unique
   dateJoined DateTime @default(now())
-
+  online Boolean @default(false)
+  lastLogin DateTime @default(now())
   dateOfBirth DateTime?
   gender String? //male, female, other
   phone String? @unique //phone number, will be used for verification and will stay secret

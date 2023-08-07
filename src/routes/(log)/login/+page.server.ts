@@ -22,6 +22,19 @@ export const actions: Actions = {
 			const key = await auth.useKey("username", username, password);
 			const session = await auth.createSession(key.userId);
 			locals.auth.setSession(session);
+            await prisma.user.update({
+                where: { id: key.userId },
+                data: { 
+                    lastLogin: new Date(),
+                    online: true,
+                 }
+                 
+            })
+            let user = await prisma.user.findUnique({
+                where: { id: key.userId },
+
+            });
+            console.log(user?.name + " logged in at " + user?.lastLogin);
 		} catch {
 			// invalid username/password
             return fail(400, { message: 'Could not login user' });
