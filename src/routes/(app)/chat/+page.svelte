@@ -1,7 +1,7 @@
 <script>
+	import Chatbox from "../../../components/Chatbox.svelte";
 
-	import Chatbox from "../../components/Chatbox.svelte";
-
+    
 </script>
 
 <section class="container">
