@@ -18,7 +18,7 @@
 		
 </div> -->
 
-<!-- <Modal /> -->
+<Modal />
 <AppShell>
 	<svelte:fragment slot="header"><NavBar {data}/></svelte:fragment>
 	<!-- (sidebarLeft) -->
