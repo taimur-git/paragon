@@ -18,8 +18,8 @@
                 <a href="/profile">{data.user.username}</a>
                 <button formaction="/logout" type="submit" class="brutal-link">Log Out</button>
             {:else}
-                <a href="/register">Register</a>
-                <a href="/login">Log In</a>
+                <a href="/register" class="font-medium btn btn-sm variant-filled-secondary">Register</a>
+                <a href="/login" class="font-medium btn btn-sm variant-filled-primary">Log In</a>
             {/if}
         </form>
         
