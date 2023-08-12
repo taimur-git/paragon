@@ -48,6 +48,10 @@
         <svelte:fragment slot="header">(header)</svelte:fragment>
         (content)
       </Step>
+      <Step>
+        <svelte:fragment slot="header">(header)</svelte:fragment>
+        (content)
+      </Step>
       <!-- ... -->
     </Stepper>
   </div>

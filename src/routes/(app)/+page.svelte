@@ -43,10 +43,12 @@
 <main class="min-h-screen flex justify-center items-center gap-8">
 	<section class="px-4 mx-auto flex flex-col justify-center items-center max-w-sm">
 		<h1 class="heroTitle">Find a tutor tailored to your need.</h1>
-		<div class="m-2 border-solid-1 flex">
-			<input class="p-1" type="text" placeholder="search...">
-			<button class="btn btn-sm variant-filled-warning font-semibold">Find</button>
-		</div>
+		
+<div class="input-group input-group-divider grid-cols-[1fr_auto] ">
+	<input type="search" placeholder="Search..." class="p-2"/>
+	<button class="px-1 variant-filled-secondary">Search</button>
+</div>
+		
 	</section>
 	<section class="mx-auto ">
 		<img src={mainImg} class="BubbleImg --stroke" alt="student and teacher">
@@ -61,11 +63,11 @@
 		border-radius: 50%;
 		width: 580px;
 		box-shadow: 
-    0 0 0 2.5px #067434,
-    0 0 0 5px #09AF4E,
-    0 0 0 15px #B1FBD0,
-    0 0 0 20px #D8FDE8,
-    0 0 0 25px #ECFEF3;
+		0 0 0 2.5px #067434,
+		0 0 0 5px #09AF4E,
+		0 0 0 15px #B1FBD0,
+		0 0 0 20px #D8FDE8,
+		0 0 0 25px #ECFEF3;
 	}
 	.heroTitle {
 		font-size: 3.5rem;
