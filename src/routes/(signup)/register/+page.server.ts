@@ -15,6 +15,9 @@ export const load: PageServerLoad = async ({ locals }) => {
 export const actions: Actions = {
     default: async ({ request , locals }) => {
         const form = await request.formData();
+
+        console.log(form);
+
         const username = form.get('username');
         const password = form.get('password');
         const email = form.get('email')?.toString();

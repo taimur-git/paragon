@@ -11,12 +11,38 @@
         { pageTitle: '/browseAds', selected: false },
     ];
 
+    function setAllFalse():void{
+        urls.forEach((url) => {
+                url.selected = false;
+            });
+    }
+
     function selectPage(pageTitle: string):void {
+        setAllFalse();
+        switch(pageTitle){
+            case '/home':
+                urls[0].selected = true;
+                break;
+            case '/myAds':
+                //window.location.href = '/myAds';
+                urls[1].selected = true;
+                break;
+            case '/browseAds':
+                urls[2].selected = true;
+                //window.location.href = '/browseAds';
+                break;
+            default:
+                //window.location.href = '/home';
+                setAllFalse();
+                break;
+        }
+        /*
         if(pageTitle === '/home')
         {
+            
             urls[0].selected = true;
-            urls[1].selected = false;
-            urls[2].selected = false;
+            //urls[1].selected = false;
+            //urls[2].selected = false;
         }
         else if(pageTitle === '/myAds')
         {
@@ -36,6 +62,7 @@
             urls[1].selected = false;
             urls[2].selected = false;
         }
+        */
     }
     
 </script>

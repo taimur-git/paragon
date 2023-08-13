@@ -6,14 +6,37 @@
 	Button,
   } from "carbon-components-svelte";
 
-  import { Stepper, Step } from '@skeletonlabs/skeleton';
+  import { Stepper, Step, RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
   import logoLightMode  from "$lib/images/logo_lightmode.png";
+  let value:number =0 ;
 </script>
 
 
-<!-- <div class="flex justify-center">
-    <div class="w-full sm:w-3/5 md:w-1/3 ">
-        <h1 class="text-2xl font-bold mb-2.5">Register</h1>
+
+<header>
+    <a href="/">
+        <img src={logoLightMode} alt="logo">
+    </a>
+</header>
+<main>
+  <div class="signupSteps">
+    <Stepper>
+      <Step>
+        <svelte:fragment slot="header">Join as a student or a teacher</svelte:fragment>
+        <RadioGroup active="variant-filled-primary" hover="hover:variant-soft-primary">
+          <RadioItem bind:group={value} name="justify" value={0}>Student</RadioItem>
+	<RadioItem bind:group={value} name="justify" value={1}>Teacher</RadioItem>
+        </RadioGroup>
+
+        <!--svelte:fragment slot="navigation">
+		<button class="btn variant-filled-secondary" >Home</button>
+	</svelte:fragment-->
+
+      </Step>
+      <Step>
+        <svelte:fragment slot="header">Basic Information</svelte:fragment>
+        <div class="flex justify-center">
+    <div class="w-full">
         <h1 class="text-lg font-normal mb-4">To post ads, you need an account.</h1>
                 
         <FluidForm method="POST" >
@@ -26,34 +49,24 @@
               labelText="Password"
               placeholder="Enter password..."
             />
-            <Button kind="secondary" type="submit">Register</Button>
+            <!--Button kind="secondary" type="submit">Register</Button-->
         </FluidForm>
-        <p>Already have an account? <a href="/login">Login</a></p>
+        
 
     </div>
-</div> -->
-<header>
-    <a href="/">
-        <img src={logoLightMode} alt="logo">
-    </a>
-</header>
-<main>
-  <div class="signupSteps">
-    <Stepper>
-      <Step>
+</div>
+        
+      </Step>
+      {#if value==1}
+        <Step on:complete={}>
         <svelte:fragment slot="header">(header)</svelte:fragment>
         (content)
       </Step>
-      <Step>
-        <svelte:fragment slot="header">(header)</svelte:fragment>
-        (content)
-      </Step>
-      <Step>
-        <svelte:fragment slot="header">(header)</svelte:fragment>
-        (content)
-      </Step>
+      {/if}
+      
       <!-- ... -->
     </Stepper>
+    <p>Already have an account? <a href="/login">Login</a></p>
   </div>
 </main>
 
