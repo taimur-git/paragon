@@ -39,6 +39,7 @@ export const load: PageServerLoad = async () => {
                 tags: ad.tags.map((tag) => tag.tag.name), 
                 salary: ad.expectedSalary,
                 createdAt: ad.dateCreated.toISOString().split("T")[0],
+                lastLogin: ad.user.lastLogin.toISOString().split("T")[0],
                 tutorType: ad.typeOfTutor,
                 salaryType: ad.salaryType,
                 adDescription: ad.description,
