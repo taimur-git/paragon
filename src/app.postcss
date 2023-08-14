@@ -2,3 +2,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body { @apply h-full overflow-hidden; }
+
+@media (prefers-color-scheme: light) {
+  body {
+    backgroud-color: white;
+  }
+}

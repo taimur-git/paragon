@@ -1,13 +1,12 @@
 
 <script lang="ts">
+	import { AppShell, Modal } from '@skeletonlabs/skeleton';
 	import NavBar from '../../components/NavBar.svelte';
 	import type { PageData } from './$types'
 	export let data: PageData;
 </script>
 
-<div class="app">
-	<!--AppShell slotSidebarLeft="bg-surface-500/5 w-56 p-4">
-		<Header /-->
+<!-- <div class="app">
 		<NavBar {data}/>
 		<main>
 			<slot />
@@ -16,13 +15,21 @@
 		<footer>
 			
 		</footer>
-	<!--
-		/AppShell>
-	-->
-	
+		
+</div> -->
 
-	
-</div>
+<Modal />
+<AppShell>
+	<svelte:fragment slot="header"><NavBar {data}/></svelte:fragment>
+	<!-- (sidebarLeft) -->
+	<!-- (sidebarRight) -->
+	<!-- (pageHeader) -->
+	<!-- Router Slot -->
+	<slot />
+	<!-- ---- / ---- -->
+	<svelte:fragment slot="pageFooter">Page Footer</svelte:fragment>
+	<!-- (footer) -->
+</AppShell>
 
 <style>
 

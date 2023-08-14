@@ -1,13 +1,14 @@
 <script lang='ts'>
 
-	import teacher from '$lib/images/teacher.svg';
-	import { Button, ButtonSet, ImageLoader, InlineLoading, Link } from 'carbon-components-svelte';
+	//import teacher from '$lib/images/teacher.svg';
+	import mainImg from '$lib/images/landingImg.jpg';
+	//import { Button, ButtonSet, ImageLoader, InlineLoading, Link } from 'carbon-components-svelte';
 	//import PostAd from '../components/PostAd.svelte';
 
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>Paragone</title>
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
@@ -39,40 +40,48 @@
 
 <!-- </section> -->
 
-<div class="flex">
-	<div class="w-1/2 h-screen pattern">
-	  <!-- Content for the left div -->
-	  <div class="text-center">
-		<h1 class="text-3xl font-bold mb-4">Find a teacher</h1>
-		<div class="flex items-center">
-		  <input type="text" placeholder="Search for a teacher" class="border p-2 rounded-l-md focus:outline-none">
-		  <button class="bg-blue-500 text-white px-4 rounded-r-md">Search</button>
-		</div>
-		</div>
-	</div>
-	<div class="w-1/2">
-		<img src={teacher} alt="Teacher" class="h-screen object-cover" />
-	  <!--img src="your-image-source.jpg" alt="Your Image" class=""-->
-	</div>
-  </div>
+<main class="min-h-screen flex justify-center items-center gap-8">
+	<section class="px-4 mx-auto flex flex-col justify-center items-center max-w-sm">
+		<h1 class="heroTitle">Find a tutor tailored to your need.</h1>
+		
+<div class="input-group input-group-divider grid-cols-[1fr_auto] ">
+	<input type="search" placeholder="Search..." class="p-2"/>
+	<button class="px-1 variant-filled-secondary">Search</button>
+</div>
+		
+	</section>
+	<section class="mx-auto ">
+		<img src={mainImg} class="BubbleImg --stroke" alt="student and teacher">
+	</section>
+</main>
   
 
 
 <style>
-	.pattern {
-		background: linear-gradient(45deg , #4494f4 10%,transparent 11%, transparent 89% , #4494f4 90%),linear-gradient(135deg , #4494f4 10%,transparent 11%, transparent 89% , #4494f4 90%),radial-gradient(circle, transparent 25%, #94c6ef  26%),linear-gradient(0deg, transparent 44%, #4494f4 45%, #4494f4 55%, transparent 56%), linear-gradient(90deg, transparent 44%, #4494f4 45%, #4494f4 55%, transparent 56%);
-        background-size: 3em 3em;
-        background-color: #94c6ef;
-        opacity: 1
+	
+	.BubbleImg {
+		border-radius: 50%;
+		width: 580px;
+		box-shadow: 
+		0 0 0 2.5px #067434,
+		0 0 0 5px #09AF4E,
+		0 0 0 15px #B1FBD0,
+		0 0 0 20px #D8FDE8,
+		0 0 0 25px #ECFEF3;
 	}
-	section {
+	.heroTitle {
+		font-size: 3.5rem;
+		font-weight: 900;
+		text-align: center;
+		margin-bottom: 1em;
+	}
+	/* section {
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		flex: 0.6;
-	}
-
+	} */
 
 </style>
 		

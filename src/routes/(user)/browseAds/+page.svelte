@@ -1,0 +1,1 @@
+<h1>Browse all Ads</h1>
