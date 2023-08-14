@@ -66,7 +66,7 @@
         <button
           class="filter-button whitespace-nowrap {activeFilterIndex === index ? 'filter-button-active' : ''}"
           on:click={() => handleFilter(tag.name, index)}
-          class:hidden="{!showAllFilters && index > 22}"
+          class:hidden="{!showAllFilters && index > 26}"
         >
           {tag.name}
         </button>
