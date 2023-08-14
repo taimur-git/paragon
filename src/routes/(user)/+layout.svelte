@@ -11,12 +11,35 @@
         { pageTitle: '/browseAds', selected: false },
     ];
 
+    function setAllFalse():void{
+        urls.forEach((url) => {
+                url.selected = false;
+            });
+    }
+
     function selectPage(pageTitle: string):void {
+        setAllFalse();
+        switch(pageTitle){
+            case '/home':
+                urls[0].selected = true;
+                break;
+            case '/myAds':
+                urls[1].selected = true;
+                break;
+            case '/browseAds':
+                urls[2].selected = true;
+                break;
+            default:
+                setAllFalse();
+                break;
+        }
+        /*
         if(pageTitle === '/home')
         {
+            
             urls[0].selected = true;
-            urls[1].selected = false;
-            urls[2].selected = false;
+            //urls[1].selected = false;
+            //urls[2].selected = false;
         }
         else if(pageTitle === '/myAds')
         {
@@ -36,6 +59,7 @@
             urls[1].selected = false;
             urls[2].selected = false;
         }
+        */
     }
     
 </script>
@@ -52,17 +76,17 @@
         
         <AppRailAnchor href="/home" title="Account" selected={urls[0].selected} on:click={()=>selectPage(urls[0].pageTitle)}>
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
-            <span>Anchor</span>
+            <span>Home</span>
         </AppRailAnchor>
 
         <AppRailAnchor href="/myAds" title="Account" selected={urls[1].selected} on:click={()=>selectPage(urls[1].pageTitle)}>
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
-            <span>Anchor</span>
+            <span>My Ads</span>
         </AppRailAnchor>
 
-        <AppRailAnchor href="/browseAds" title="Account" selected={urls[2].selected} on:click={()=>selectPage(urls[2].pageTitle)}>
+        <AppRailAnchor href="/mySchedule" title="Account" selected={urls[2].selected} on:click={()=>selectPage(urls[2].pageTitle)}>
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
-            <span>Anchor</span>
+            <span>My Schedule</span>
         </AppRailAnchor>
         
         
