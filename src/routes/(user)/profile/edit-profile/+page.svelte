@@ -15,6 +15,15 @@
 <div class="edit-container">
 	<h1>Edit Profile</h1>
 	<form on:submit={updateProfile}>
+
+		<div class="profile-info">
+			<img src={data.user?.image} alt="Profile Photo" class="profile-photo" />
+			<h1>{data.user?.username}</h1>
+		  </div>
+
+		<label for="photo">Change Photo:</label>
+		<input type="file" id="photo" bind:value={editedData.photo} />
+
 		<label for="name">Name:</label>
 		<input type="text" id="name" bind:value={editedData.name} />
 
@@ -29,6 +38,8 @@
 
 		<!-- <label for="uni">University:</label>
 		<input type="uni" id="uni" bind:value={editedData.uni} /> -->
+
+		
 
 		<button type="submit">Save Changes</button>
 		
@@ -124,6 +135,21 @@ body {
 .edit-container button[type="button"]:hover {
   background: linear-gradient(to bottom right, #51a5ff, #2075d4);
 }
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .profile-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
 
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {
