@@ -101,7 +101,7 @@
         
         <!-- --- -->
         <svelte:fragment slot="trail">
-            <AppRailAnchor href="/" target="_blank" title="Account">(icon)</AppRailAnchor>
+            <AppRailAnchor href="/profile" title="Account">(account)</AppRailAnchor>
         </svelte:fragment>
     </AppRail>
 
