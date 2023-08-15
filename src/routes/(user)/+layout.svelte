@@ -9,6 +9,7 @@
         { pageTitle: '/home', selected: true },
         { pageTitle: '/myAds', selected: false },
         { pageTitle: '/browseAds', selected: false },
+        { pageTitle: '/postAd', selected: false }
     ];
 
     function setAllFalse():void{
@@ -28,6 +29,9 @@
                 break;
             case '/browseAds':
                 urls[2].selected = true;
+                break;
+            case '/postAd':
+                urls[3].selected = true;
                 break;
             default:
                 setAllFalse();
@@ -82,6 +86,11 @@
         <AppRailAnchor href="/myAds" title="Account" selected={urls[1].selected} on:click={()=>selectPage(urls[1].pageTitle)}>
             <svelte:fragment slot="lead">(icon)</svelte:fragment>
             <span>My Ads</span>
+        </AppRailAnchor>
+
+        <AppRailAnchor href="/postAd" title="Account" selected={urls[3].selected} on:click={()=>selectPage(urls[3].pageTitle)}>
+            <svelte:fragment slot="lead">(icon)</svelte:fragment>
+            <span>Post Ad</span>
         </AppRailAnchor>
 
         <AppRailAnchor href="/mySchedule" title="Account" selected={urls[2].selected} on:click={()=>selectPage(urls[2].pageTitle)}>
