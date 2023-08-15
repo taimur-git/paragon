@@ -83,7 +83,7 @@
 // 	}
 // };
 
-//-0----------------------------------------------------------------------------//
+//-----------------------------------------------------------------------------//
 
 
 import { auth } from "$lib/server/lucia";
@@ -97,11 +97,9 @@ export const actions: Actions = {
     const email = form.get("email");
     const bio = form.get("bio");
     const phone = form.get("phone");
-    // Add other fields here
-    // ...
+    const profilePhotoFile = form.get("photo");
 
-    // Rest of the logic to validate and update the profile
-    if (typeof name !== 'string' || typeof email !== 'string' || typeof bio !== 'string' || typeof phone !== 'string') {
+    if (typeof name !== "string" || typeof email !== "string" || typeof bio !== "string" || typeof phone !== "string") {
       return fail(400, { message: "Invalid Inputs" });
     }
 
@@ -110,7 +108,7 @@ export const actions: Actions = {
     const id = authUser.user.userId;
 
     try {
-      const updatedUser = await prisma.user.update({
+      let updatedUser = await prisma.user.update({
         where: {
           id: id,
         },
@@ -118,21 +116,38 @@ export const actions: Actions = {
           name: name,
           email: email,
           bio: bio,
-          phone: phone,
-          // Add other fields here
-          // ...
+          phone: phone
         },
         include: {
           location: true,
           institute: true,
           credentials: true,
-          ads: true,
+          ads: true
         },
       });
+
+      if (profilePhotoFile) {
+        const formData = new FormData();
+        formData.append("profilePhoto", profilePhotoFile);
+
+        const response = await fetch("/uploadProfilePhoto", {
+          method: "POST",
+          body: formData,
+        });
+
+        const responseData = await response.json();
+
+        // Assuming responseData contains the updated user's photo URL
+        updatedUser = {
+          ...updatedUser,
+          image: responseData.photoUrl,
+        };
+      }
+
       return {
         body: {
-          message: 'Profile Updated Successfully',
-          user: updatedUser
+          message: "Profile Updated Successfully",
+          user: updatedUser,
         },
       };
     } catch (e) {
