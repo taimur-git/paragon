@@ -12,7 +12,6 @@
 	import { page } from "$app/stores";
 	import type { document } from "postcss";
   
-  let signupState:boolean = true;
   let value:number =0 ;
   let basicInfo = {
     username: '',
@@ -45,14 +44,6 @@
   function takeToLandingPg() {
     goto('/');
   }
-
-  $: {
-    if (basicInfo.username !== '' && basicInfo.email !== '' && basicInfo.password !== '') {
-      signupState = false;
-    } else {
-      signupState = true;
-    }
-  }
 </script>
 
 
@@ -75,7 +66,7 @@
         </div>
       </Step>
 
-      <Step locked={signupState}>
+      <Step>
         <svelte:fragment slot="header">Basic Information</svelte:fragment>
         <div class="flex justify-center">
           <div class="w-full">

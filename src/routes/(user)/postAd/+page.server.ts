@@ -59,7 +59,6 @@ export const actions: Actions = {
             : [];
         const typeOfTutor = (form.get("teachingType"));
         const description = form.get("description");
-        const session = await locals.auth.validate();
         const userid = form.get("userid");
 
         const ad = {
