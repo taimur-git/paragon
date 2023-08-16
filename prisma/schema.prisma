@@ -62,6 +62,7 @@ model User {
   gender String? //male, female, other
   phone String? @unique //phone number, will be used for verification and will stay secret
   image String? //url to the image
+  imageBlob Bytes? //the image itself
   major String? //CSE, EEE, etc
   bio String?
   //institute String? //from BRAC, NSU, IUB, etc
@@ -151,19 +152,23 @@ model TagType{
 }
 
 model AdTag{
-  id        Int @id @default(autoincrement())
+  //id        Int @id @default(autoincrement())
   adId      Int
   tagId Int
   tag Tag @relation(fields: [tagId], references: [id])
   ad        Ad @relation(fields: [adId], references: [id])
+
+  @@id([adId , tagId])
 }
 
 model TuitionTag{
-  id        Int @id @default(autoincrement())
+  //id        Int @id @default(autoincrement())
   tuitionId      Int
   tagId Int
   tag Tag @relation(fields: [tagId], references: [id])
   tuition        Tuition @relation(fields: [tuitionId], references: [id])
+
+  @@id([tuitionId , tagId])
 }
 
 

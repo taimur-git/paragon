@@ -1,1 +1,1 @@
-<h1>Browse all Ads</h1>
+<h1>Schedule</h1>
