@@ -40,7 +40,7 @@
 
 <!-- </section> -->
 
-<main class="min-h-screen flex justify-center items-center gap-8">
+<div class="mt-20 flex justify-center items-center gap-8">
 	<section class="px-4 mx-auto flex flex-col justify-center items-center max-w-sm">
 		<h1 class="heroTitle">Find a tutor tailored to your need.</h1>
 		
@@ -53,7 +53,7 @@
 	<section class="mx-auto ">
 		<img src={mainImg} class="BubbleImg --stroke" alt="student and teacher">
 	</section>
-</main>
+</div>
   
 
 

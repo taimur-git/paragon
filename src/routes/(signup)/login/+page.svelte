@@ -37,9 +37,7 @@
         background-color: #fff;
         box-shadow: 0 0 0.5rem rgba(0,0,0,0.1);
     }
-    .form input{
-        margin-bottom: 1rem;
-    }
+    
     .form button{
         margin-top: 1rem;
     }

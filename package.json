@@ -40,8 +40,12 @@
 	"type": "module",
 	"dependencies": {
 		"@floating-ui/dom": "^1.4.3",
+		"@fullcalendar/core": "^6.1.8",
+		"@fullcalendar/daygrid": "^6.1.8",
+		"@fullcalendar/timegrid": "^6.1.8",
 		"@lucia-auth/adapter-prisma": "^2.0.0",
 		"@prisma/client": "^4.15.0",
+		"fullcalendar": "^6.1.8",
 		"lucia-auth": "^1.8.0",
 		"lucia-sveltekit": "^0.14.3",
 		"svelte-tags-input": "^5.0.0",
