@@ -4,11 +4,10 @@
 	import AdModal from '../../../components/AdModal.svelte';
 
 	export let data: PageData;
-	//$: ({ auth_user } = data)
 	let institutes = data.institute;
 
 	async function updateName(e: any) {
-		//idk how to do this.
+
 		let name = e.target.value;
 		let res = await fetch(`?/updateName&name=${name}`);
 		let data = await res.json();
@@ -16,18 +15,18 @@
 	}
 </script>
 
+<body>   
 <div class="profile-container">
 	<div class="profile-section">
 		<h1 class="text-4xl font-bold text-center text-primary-500">
 			@{data.user?.username}'s Page
 		</h1>
-		<div class="profile-avatar-container"> <!-- New container div -->
+		<div class="profile-avatar-container">
 			<Avatar src="invalid-image.jpg" initials="AB" class="profile-avatar" />
 		</div>
 	</div>
 
 	<div class="profile-section-detail">
-		<!-- Profile details -->
 		<p class="profile-detail mail">
 			<span class="detail-label">Email:</span>
 			{data.user?.email}
@@ -61,88 +60,98 @@
 	</div>
 </div>
 
+</body>
+
+
+
+
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+ * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 
-.profile-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
 }
-
-/* Profile section */
-.profile-section {
-  flex: 0 0 calc(50% - 1rem); /* Medium-sized box */
-  padding: 2rem;
-  background: linear-gradient(to bottom right, #9C27B0, #673AB7); /* Purple gradient */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  border-radius: 8px;
-  margin-right: 1rem;
-}
-
-.profile-avatar-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.profile-section-detail {
-  flex: 0 0 calc(50% - 1rem); /* Medium-sized box */
-  padding: 2rem;
-  background: linear-gradient(to bottom right, #9575CD, #673AB7); /* Purple gradient */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-}
-
-/* Profile details */
-.profile-detail {
-  margin: 0.5rem 0;
-  padding: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.9);
-  border-radius: 4px;
-}
-
-.detail-label {
-  font-weight: bold;
-  color: #666666;
-}
-
-/* Edit button */
-.edit-button {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-.edit-button button {
-  padding: 0.5rem 1rem;
-  background-color: #3490dc;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.edit-button button:hover {
-  background-color: #2779bd;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .profile-container {
-    flex-direction: column;
-  }
-  
-  .profile-section, .profile-section-detail {
-    flex: 1; /* Take up full width on smaller screens */
-    margin: 1rem;
-  }
-}
+/* make a good loking profile with purple gradient */
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #d0b7ff, #eee0ff);
+    }
+    /* header styling */
+    .profile-container {
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: linear-gradient(to bottom right, #af67e5, #7b3fe5);
+        border-radius: 1rem;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    .profile-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .profile-section h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: #fff;
+    }
+    .profile-avatar-container {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 1rem;
+    }
+    .profile-avatar {
+        width: 100%;
+        height: 100%;
+    }
+    .profile-section-detail {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .profile-detail {
+        font-size: 1.1rem;
+        color: #fff;
+        margin-bottom: 0.5rem;
+    }
+    .profile-detail span {
+        font-weight: bold;
+    }
+    .edit-button {
+        margin-top: 1rem;
+    }
+    .edit-button button {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        background-color: #fff;
+        color: #7b3fe5;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    .edit-button button:hover {
+        background-color: #7b3fe5;
+        color: #fff;
+    }
+    .edit-button button:focus {
+        outline: none;
+    }
+    .edit-button button:active {
+        transform: scale(0.98);
+    }
+    @media screen and (max-width: 768px) {
+        .profile-container {
+            padding: 1.5rem;
+        }
+        .profile-section h1 {
+            font-size: 2rem;
+        }
+    }
 </style>
