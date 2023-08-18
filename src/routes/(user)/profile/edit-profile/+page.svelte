@@ -7,10 +7,46 @@
 	  email: data.user?.email || '',
 	  bio: data.user?.bio || '',
 	  phone: data.user?.phone || '',
-	  uni: data.user?.uni || '',
-	
+    photo: data.user?.image || '',
 	};
-  </script>
+  async function updateProfile(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('name', editedData.name);
+    formData.append('email', editedData.email);
+    formData.append('bio', editedData.bio);
+    formData.append('phone', editedData.phone);
+    formData.append('photo', editedData.photo); // Append the selected photo file
+
+    try {
+      const response = await fetch('/uploadProfilePhoto', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        // Update the user's profile with the new photo URL
+        const updateResponse = await fetch('/updateProfile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            photo: responseData.url,
+          }),
+        });
+        // ... update the UI or do further processing ...
+        return true;
+        } 
+        else throw Error("Couldn't upload image");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+</script>
 
 <div class="edit-container">
 	<h1>Edit Profile</h1>
@@ -35,15 +71,12 @@
 
 		<label for="phone">Phone Number:</label>
 		<input type="tel" id="phone" bind:value={editedData.phone} />
-
-		<!-- <label for="uni">University:</label>
-		<input type="uni" id="uni" bind:value={editedData.uni} /> -->
-
 		
 
-		<button type="submit">Save Changes</button>
+		<button type="submit" class="action-button">Save Changes</button>
 		
-		<button type="button" on:click={() => (window.location.href = '/profile')}>Cancel</button>
+		<button type="button" class="action-button" on:click={() => (window.location.href = '/profile')}>Cancel</button>
+
 	</form>
 </div>
 
@@ -54,10 +87,6 @@
   box-sizing: border-box;
 }
 
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f8f8;
-}
 
 .edit-container {
   max-width: 600px;
@@ -150,8 +179,13 @@ body {
     object-fit: cover;
   }
 
+  .action-button{
+    width: 100%;
+  }
 
-/* Responsive adjustments */
+
+
+
 @media screen and (max-width: 768px) {
   .edit-container {
     padding: 1.5rem;

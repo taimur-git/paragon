@@ -92,12 +92,17 @@ import { redirect, fail } from "@sveltejs/kit";
 
 export const actions: Actions = {
   default: async ({ request, locals }) => {
+    if (request.method !== "POST") {
+      return fail(405, { message: "Method Not Allowed" });
+    }
+
     const form = await request.formData();
     const name = form.get("name");
     const email = form.get("email");
     const bio = form.get("bio");
     const phone = form.get("phone");
     const profilePhotoFile = form.get("photo");
+    const userid = form.get("userid");
 
     if (typeof name !== "string" || typeof email !== "string" || typeof bio !== "string" || typeof phone !== "string") {
       return fail(400, { message: "Invalid Inputs" });
@@ -108,7 +113,8 @@ export const actions: Actions = {
     const id = authUser.user.userId;
 
     try {
-      let updatedUser = await prisma.user.update({
+      // Update user data
+      const updatedUser = await prisma.user.update({
         where: {
           id: id,
         },
@@ -116,20 +122,22 @@ export const actions: Actions = {
           name: name,
           email: email,
           bio: bio,
-          phone: phone
+          phone: phone,
         },
         include: {
           location: true,
           institute: true,
           credentials: true,
-          ads: true
+          ads: true,
         },
       });
 
+      // Handle profile photo upload if provided
       if (profilePhotoFile) {
         const formData = new FormData();
         formData.append("profilePhoto", profilePhotoFile);
 
+        // Change this URL to your actual file upload endpoint
         const response = await fetch("/uploadProfilePhoto", {
           method: "POST",
           body: formData,
@@ -138,10 +146,7 @@ export const actions: Actions = {
         const responseData = await response.json();
 
         // Assuming responseData contains the updated user's photo URL
-        updatedUser = {
-          ...updatedUser,
-          image: responseData.photoUrl,
-        };
+        updatedUser.image = responseData.photoUrl;
       }
 
       return {
@@ -178,4 +183,5 @@ export const load: PageServerLoad = async ({ locals }) => {
     user,
   };
 };
+
 
