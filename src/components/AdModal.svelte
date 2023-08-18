@@ -1,8 +1,9 @@
-<script>
-    import { goto } from '$app/navigation';
+<script lang="ts">
     let targetPage = '/';
     let shown = false;
     export let ad; 
+    export let currentPage; // Add this prop to determine the current page
+
 
     export function show(adData) {
         ad = adData;
@@ -16,10 +17,13 @@
     
       shown = false;
     }
+
   </script>
-  
-{#if shown}
+
+{#if currentPage == "home" && shown}
+<!-- {#if shown} -->
   <div class="modal-wrapper" on:click={() => hide()} on:keydown={(e) => { if (e.keyCode === 27) hide(); }}>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="modal rounded-md" on:click={(e) => { e.stopPropagation(); }}>       
       <div class="modal-content">
 
@@ -44,6 +48,46 @@
         <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
         <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => changePage(ad.adId)}>Confirm</button>
       </div>
+    </div>
+  </div>
+{/if}
+
+{#if currentPage == "myAds" && shown}
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+<div class="modal-wrapper" on:click={() => hide()} on:keydown={(e) => { if (e.keyCode === 27) hide(); }}>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div class="modal rounded-md" on:click={(e) => { e.stopPropagation(); }}>       
+      <div class="modal-content">
+
+        <div class="user-image">
+          <img src={ad.userImage} alt="User" class="user-image" />
+        </div>
+
+        <div class="user-info">
+            <h3>AD Details</h3>
+            <p class="user-name">{ad.user}</p>
+            <p>Rate: {ad.salary}</p>
+            <p>Salary Type: {ad.salaryType}</p>
+            <p>Course: {ad.tags.join(', ')}</p>
+            <p>Upload: {ad.createdAt}</p>
+            <p>Tuition System: {ad.tutorType ? ad.tutorType : ''}</p>
+            <p>Institution: {ad.instituteName ? ad.instituteName: ' '}</p>
+        </div>
+      </div>
+      <p>Last Login: {ad.lastLogin}</p>
+      <p>Description: {ad.adDescription ? ad.adDescription : ''}</p>
+      <!-- <div class="button-container">
+        <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
+        <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => changePage(ad.adId)}>Confirm</button>
+      </div> -->
+<!-- 
+      <table>
+        <tr>
+          <td>Student</td>
+          <td>Name</td>
+          <td>Course</td>
+        </tr>
+      </table> -->
     </div>
   </div>
 {/if}

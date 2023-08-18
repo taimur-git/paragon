@@ -92,8 +92,10 @@
               Rate: {ad.salary}
             </div>
   
-            <div slot="post">
-              <button on:click={() => modal.show(ad)} class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md w-full see-button">See...</button>
+            <div slot="buttons">
+              <button on:click={() => modal.show(ad)} class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md w-full see-button">
+                See...
+              </button>
             </div>
           </Card>
         </article>
@@ -102,7 +104,7 @@
   </div>
 </div>
 
-<AdModal bind:this={modal}>
+<AdModal bind:this={modal} currentPage={"home"}>
 <button on:click={() => modal.hide()}>Close</button>
 </AdModal>
 <style>
