@@ -1,25 +1,84 @@
-<script>
-    import { goto } from '$app/navigation';
+<script lang="ts">
+	import { goto } from "$app/navigation";
+	import { toastStore, type ToastSettings } from "@skeletonlabs/skeleton";
+
+  // import { enroll } from '../routes/home/+page.sever.ts';
     let targetPage = '/';
     let shown = false;
+    let logInId;
     export let ad; 
+    export let currentPage; // Add this prop to determine the current page
+    // export let logInId; // Add this prop to determine the current page
 
-    export function show(adData) {
+    const toast: ToastSettings = {
+        message: "You have already requested for this ad!",
+        background: "variant-filled-error"
+    }
+    
+    export function show(adData,selectedCardId,logInfo) {
         ad = adData;
       shown = true;
+      selectedCardId.cardId=ad.id;
+      logInId=logInfo.user.userId;
     }
     export function hide() {
       shown = false;
     }
-    export function changePage(adId) {
-      goto(targetPage);
+    export async function sendReq(ad) {
+      // goto(targetPage);
+      // console.log("Ad Id " +id);
+      // console.log(ad);
     
       shown = false;
+
+      const res = await fetch('/api/processReq', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ad)
+    });
+
+    // if(res)
+
+    try{
+      const data = await res.json();
+      console.log(data.message);
+      if(data.message == "No session found"){
+        // alert("Request Sent Successfully");
+        goto('/register');
+      }
+      else if(data.message == "Already requested"){
+        toastStore.trigger(toast);
+      }
+        
+      } catch (err) {
+        console.log(err);
+      }
     }
+
+
+//     function sendEnrollRequest(id) {
+//   // Call the function to trigger the enroll action
+//   // You might want to pass any necessary data as well
+//   enroll({ 
+//     id: id,
+//    });
+
+//   // Close the modal
+//   // modal.hide();
+//   shown = false;
+// }
+
+
+
+
   </script>
-  
-{#if shown}
+
+{#if currentPage == "home" && shown}
+<!-- {#if shown} -->
   <div class="modal-wrapper" on:click={() => hide()} on:keydown={(e) => { if (e.keyCode === 27) hide(); }}>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
     <div class="modal rounded-md" on:click={(e) => { e.stopPropagation(); }}>       
       <div class="modal-content">
 
@@ -40,10 +99,58 @@
       </div>
       <p>Last Login: {ad.lastLogin}</p>
       <p>Description: {ad.adDescription ? ad.adDescription : ''}</p>
+      <!-- <p>"Loged in user" {logInId}</p> -->
+      <!-- <p>"ad owner id" {ad.user}</p> -->
       <div class="button-container">
         <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
-        <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => changePage(ad.adId)}>Confirm</button>
+        {#if ad.userid != logInId}
+          <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => sendReq(ad)}>Confirm</button>
+        {/if}
+        <!-- <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" formaction="../routes/home?enroll" on:click>Confirm</button> -->
+        <!-- <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md"
+        on:click={() => sendEnrollRequest(ad.id)}>Confirm</button> -->
+
       </div>
+    </div>
+  </div>
+{/if}
+
+{#if currentPage == "myAds" && shown}
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
+<div class="modal-wrapper" on:click={() => hide()} on:keydown={(e) => { if (e.keyCode === 27) hide(); }}>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div class="modal rounded-md" on:click={(e) => { e.stopPropagation(); }}>       
+      <div class="modal-content">
+
+        <div class="user-image">
+          <img src={ad.userImage} alt="User" class="user-image" />
+        </div>
+
+        <div class="user-info">
+            <h3>AD Details</h3>
+            <p class="user-name">{ad.user}</p>
+            <p>Rate: {ad.salary}</p>
+            <p>Salary Type: {ad.salaryType}</p>
+            <p>Course: {ad.tags.join(', ')}</p>
+            <p>Upload: {ad.createdAt}</p>
+            <p>Tuition System: {ad.tutorType ? ad.tutorType : ''}</p>
+            <p>Institution: {ad.instituteName ? ad.instituteName: ' '}</p>
+        </div>
+      </div>
+      <p>Last Login: {ad.lastLogin}</p>
+      <p>Description: {ad.adDescription ? ad.adDescription : ''}</p>
+      <!-- <div class="button-container">
+        <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
+        <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => changePage(ad.adId)}>Confirm</button>
+      </div> -->
+<!-- 
+      <table>
+        <tr>
+          <td>Student</td>
+          <td>Name</td>
+          <td>Course</td>
+        </tr>
+      </table> -->
     </div>
   </div>
 {/if}

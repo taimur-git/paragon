@@ -22,7 +22,7 @@
   const handleSignup = async (e: Event) => { 
     e.preventDefault();
 
-    const res = await fetch('/api', {
+    const res = await fetch('/api/createUser', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

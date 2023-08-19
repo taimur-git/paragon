@@ -1,6 +1,6 @@
 <script lang="ts">
 
-	import { AppRail, AppRailAnchor, AppRailTile, AppShell } from "@skeletonlabs/skeleton";
+	import { AppRail, AppRailAnchor, AppRailTile, AppShell, Modal, Toast } from "@skeletonlabs/skeleton";
 
 
     import logo from '$lib/images/logo.svg';
@@ -67,7 +67,8 @@
     }
     
 </script>
-
+<Modal />
+<Toast position="tr"/>
 <AppShell>
 	<svelte:fragment slot="sidebarLeft">
         
