@@ -1,22 +1,68 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
+
+  // import { enroll } from '../routes/home/+page.sever.ts';
     let targetPage = '/';
     let shown = false;
+    let logInId;
     export let ad; 
     export let currentPage; // Add this prop to determine the current page
+    // export let logInId; // Add this prop to determine the current page
 
-
-    export function show(adData) {
+    export function show(adData,selectedCardId,logInfo) {
         ad = adData;
       shown = true;
+      selectedCardId.cardId=ad.id;
+      logInId=logInfo.user.userId;
     }
     export function hide() {
       shown = false;
     }
-    export function changePage(adId) {
-      goto(targetPage);
+    export async function sendReq(ad) {
+      // goto(targetPage);
+      // console.log("Ad Id " +id);
+      // console.log(ad);
     
       shown = false;
+
+      const res = await fetch('/api/processReq', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(ad)
+    });
+
+    // if(res)
+
+    try{
+      const data = await res.json();
+      console.log(data.message);
+      if(data.message == "No session found"){
+        // alert("Request Sent Successfully");
+        goto('/register');
+      }
+        
+      } catch (err) {
+        console.log(err);
+      }
     }
+
+
+//     function sendEnrollRequest(id) {
+//   // Call the function to trigger the enroll action
+//   // You might want to pass any necessary data as well
+//   enroll({ 
+//     id: id,
+//    });
+
+//   // Close the modal
+//   // modal.hide();
+//   shown = false;
+// }
+
+
+
 
   </script>
 
@@ -44,9 +90,17 @@
       </div>
       <p>Last Login: {ad.lastLogin}</p>
       <p>Description: {ad.adDescription ? ad.adDescription : ''}</p>
+      <!-- <p>"Loged in user" {logInId}</p> -->
+      <!-- <p>"ad owner id" {ad.user}</p> -->
       <div class="button-container">
         <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
-        <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => changePage(ad.adId)}>Confirm</button>
+        {#if ad.userid != logInId}
+          <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => sendReq(ad)}>Confirm</button>
+        {/if}
+        <!-- <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" formaction="../routes/home?enroll" on:click>Confirm</button> -->
+        <!-- <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md"
+        on:click={() => sendEnrollRequest(ad.id)}>Confirm</button> -->
+
       </div>
     </div>
   </div>

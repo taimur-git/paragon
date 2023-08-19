@@ -7,7 +7,18 @@
 
   $: ({ tags } = data);
   $: ({ ads } = data);
+  $: ({ logInfo } = data);
 
+
+  let selectedCardInfo: { cardId: string, filters: number[] } | null = null;
+
+  let filter_types = [
+		{ id: 1, text: `Course` },
+		{ id: 2, text: `Tution Type` },
+		{ id: 3, text: `Rate` }
+	];
+
+  let selected;
   let selectedTags: any[] = []; 
   let showAllFilters = false;
   let modal: AdModal;
@@ -23,8 +34,33 @@
   function toggleFilters() {
     showAllFilters = !showAllFilters;
   }
+  // let selectedCardId: string | null = null; // Store the ID of the selected card
 
-  function handleTagSelection(tagName: any) {
+//   function handleTagSelection(tagName: any) {
+//   if (selected === 1) {
+//     if (selectedTags.includes(tagName)) {
+//       selectedTags = selectedTags.filter(tag => tag !== tagName);
+//     } else {
+//       selectedTags = [...selectedTags, tagName];
+//     }
+//   } else if (selected === 3) {
+//     if (selectedTags.includes(tagName)) {
+//       selectedTags = selectedTags.filter(tag => tag !== tagName);
+//     } else {
+//       selectedTags = [...selectedTags, tagName];
+//     }
+//   } else if (selected === 2) {
+//     if (selectedTags.includes(tagName)) {
+//       selectedTags = selectedTags.filter(tag => tag !== tagName);
+//     } else {
+//       selectedTags = [...selectedTags, tagName];
+//     }
+//   }
+//       selectedCardId = cardId; // Update the selected card ID
+
+// }
+
+function handleTagSelection(tagName: any) {
     if (selectedTags.includes(tagName)) {
       selectedTags = selectedTags.filter(tag => tag !== tagName);
     } else {
@@ -32,11 +68,24 @@
     }
   }
 
+
+// function handleTagSelection(tagName: any, cardId: string) {
+//     if (selectedTags.includes(tagName)) {
+//       selectedTags = selectedTags.filter(tag => tag !== tagName);
+//     } else {
+//       selectedTags = [...selectedTags, tagName];
+//     }
+//     selectedCardInfo = { cardId, filters: selectedTags }; // Update the selected card info
+
+//     selectedCardId = cardId; // Update the selected card ID
+//   }
+
   function handleOutsideClick(event: { target: any; }) {
     const clickedElement = event.target;
-    console.log(clickedElement);
+    // console.log(clickedElement);
     if (
       !clickedElement.closest('.filter-button') &&
+      // !clickedElement.closest('.select_filter') &&
       // !clickedElement.closest('.flex-wrap') &&
       // !clickedElement.closest('.flex-wrap allad') &&
       // clickedElement.closest('.flex flex-wrap allad') &&
@@ -46,17 +95,120 @@
       selectedTags = []; 
     }
   }
+
+
+  function selectedTagsMatch(ad) {
+    return (
+      selectedTags.length === 0 ||
+      selectedTags.some(tag => ad.tags.includes(tag)) ||
+      selectedTags.includes(ad.salary) ||
+      selectedTags.includes(ad.typeOfTutor)
+    );
+  }
+
+  function selectedCardMatches(ad) {
+    return (
+      selectedCardInfo &&
+      ad.id === selectedCardInfo.cardId &&
+      selectedTags.every(tag => selectedCardInfo.filters.includes(tag))
+    );
+  }
+
+  let selectedCardId ={
+    cardId: ""
+  };  
+   // Store the ID of the selected card
+
+function sendReq(selectedCardId: Object) {
+  // console.log("Ad Id " + selectedCardId.cardId);
+  modal.hide();
+  // selectedCardId = id; // Update the selected card ID
+}
+
+
+
 </script>
+
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="fullPage" on:click={handleOutsideClick}>
-  <div class="tag flex flex-wrap {showAllFilters ? 'tag-expanded' : ''}">
-    <article class="m-2">
-      <button class="filter-button whitespace-nowrap" on:click={toggleFilters}>
-        {showAllFilters ? "Hide Filters" : "All Filters"}
-      </button>
-    </article>
+  
+  <!-- <select bind:value={selected}>
+    {#each questions as question}
+      <option value={question.id}>{question.text}</option>
+    {/each}
+  </select> -->
 
-    {#each tags as tag, index}
+  <div class="tag flex flex-wrap {showAllFilters ? 'tag-expanded' : ''}">
+    <select bind:value={selected} class="select_filter">
+      {#each filter_types as filter_type}
+        <option value={filter_type.id}>{filter_type.text}</option>
+      {/each}
+    </select>
+    
+
+    {#if selected === 1}
+      {#if tags.length > 24}
+      <article class="m-2">
+        <button class="filter-button whitespace-nowrap" on:click={toggleFilters}>
+          {showAllFilters ? "Hide Filters" : "All Filters"}
+        </button>
+      </article>
+      {/if}
+      {#each tags as tag, index}
+        <article class="m-2">
+          <button
+            class="filter-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''} "
+            on:click={() => handleTagSelection(tag.name)}
+            class:hidden="{!showAllFilters && index > 23}"
+          >
+            {tag.name}
+          </button>
+        </article>
+      {/each}
+    {/if}
+
+    {#if selected === 3}
+      {#if ads.map(ad => ad.salary).length > 24}
+        <article class="m-2">
+          <button class="filter-button whitespace-nowrap" on:click={toggleFilters}>
+            {showAllFilters ? "Hide Filters" : "All Filters"}
+          </button>
+        </article>
+      {/if}
+      {#each [...new Set(ads.map(ad => ad.salary))] as salary,index}
+        <article class="m-2">
+          <button
+          class="filter-button whitespace-nowrap {selectedTags.includes(salary) ? 'filter-button-active' : ''} "
+          on:click={() => handleTagSelection(salary)}
+          class:hidden="{!showAllFilters && index > 23}"
+          >
+            {salary}
+          </button>
+        </article>
+      {/each}
+    {/if}
+
+    {#if selected === 2}
+      {#if ads.map(ad => ad.typeOfTutor).length > 24}
+      <article class="m-2">
+        <button class="filter-button whitespace-nowrap" on:click={toggleFilters}>
+          {showAllFilters ? "Hide Filters" : "All Filters"}
+        </button>
+      </article>
+     {/if}
+      {#each [...new Set(ads.map(ad => ad.typeOfTutor))] as typeOfTutor,index}
+        <article class="m-2">
+          <button
+          class="filter-button whitespace-nowrap {selectedTags.includes(typeOfTutor) ? 'filter-button-active' : ''} "
+          on:click={() => handleTagSelection(typeOfTutor)}
+          class:hidden="{!showAllFilters && index > 23}"
+          >
+            {typeOfTutor}
+          </button>
+        </article>
+      {/each}
+    {/if}
+    <!-- {#each tags as tag, index}
       <article class="m-2">
         <button
           class="filter-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''}"
@@ -66,12 +218,14 @@
           {tag.name}
         </button>
       </article>
-    {/each}
+    {/each} -->
   </div>
 
+  
   <div class="flex flex-wrap allad">
     {#each ads as ad}
-      {#if selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(tag))}
+      {#if selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(tag)) || selectedTags.includes(ad.salary) || selectedTags.includes(ad.typeOfTutor) }
+      <!-- {#if (selectedTagsMatch(ad) && selectedCardMatches(ad))} -->
         <article class="m-2">
           <Card>
             <div slot="header">
@@ -93,7 +247,8 @@
             </div>
   
             <div slot="buttons">
-              <button on:click={() => modal.show(ad)} class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md w-full see-button">
+              <button
+              on:click={() => modal.show(ad,selectedCardId,logInfo)} class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md w-full see-button">
                 See...
               </button>
             </div>
@@ -104,7 +259,7 @@
   </div>
 </div>
 
-<AdModal bind:this={modal} currentPage={"home"}>
+<AdModal bind:this={modal} currentPage={"home"} on:click={() => sendReq(selectedCardId)}>
 <button on:click={() => modal.hide()}>Close</button>
 </AdModal>
 <style>
