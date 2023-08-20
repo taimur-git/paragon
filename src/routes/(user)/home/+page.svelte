@@ -251,7 +251,7 @@ let tagScrollPosition = 0;
               Name: {ad.user}
             </div>
             <div slot="studentLable">
-              <!-- Course:{ad.tags}  -->
+              <span class="courses">Course: </span>
               {#if ad.tags.length > 0}
                 {#each groupTags(ad.tags, 2) as tagGroup, groupIndex}
                   {#if groupIndex !== 0}<br />{/if}
@@ -267,6 +267,13 @@ let tagScrollPosition = 0;
               {:else}
                 Rate: {ad.salary}
               {/if}
+            </div>
+
+            <div slot="active">
+              Login: {ad.lastLogin}
+            </div>
+            <div slot="online">
+              Online: {ad.online==true ? "Yes" : "No"}
             </div>
             <div slot="buttons">
               <button
@@ -332,5 +339,8 @@ let tagScrollPosition = 0;
   .allad{
     display: flex;
     justify-content: flex-start;
+  }
+  .courses{
+    font-weight: bold;
   }
 </style>

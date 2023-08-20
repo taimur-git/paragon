@@ -49,7 +49,8 @@ export const load: PageServerLoad = async ({ locals }) => {
                 salaryType: ad.salaryType,
                 adDescription: ad.description,
                 updateAT: ad.dateUpdated.toISOString().split("T")[0],
-                instituteName: ad.user.institute?.name , // Use a default value if no institute is associated
+                instituteName: ad.user.institute?.name ,
+                online: ad.user.online, // Use a default value if no institute is associated
             })),
             logInfo,
           };

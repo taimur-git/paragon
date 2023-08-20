@@ -41,6 +41,8 @@ export const load: PageServerLoad = async ({ locals }) => {
                 adDescription: ad.description,
                 updatedAt: ad.dateUpdated.toISOString().split("T")[0],
                 instituteName: ad.user.institute?.name,
+                online: ad.user.online, // Use a default value if no institute is associated
+
             })),
         };
     } catch (error) {

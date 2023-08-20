@@ -100,6 +100,12 @@ const deleteAd = async (adId) => {
                   {/each}
                 {/if}
               </div>
+              <div slot="online">
+                Online: {ad.online==true ? "Yes" : "No"}
+              </div>
+              <div slot="active">
+                Last Update: {ad.updatedAt}
+              </div>
               <div slot="rate">
                 Rate: {ad.salary}
               </div>

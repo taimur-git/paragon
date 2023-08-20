@@ -59,7 +59,8 @@
       <div class="modal-content">
 
         <div class="user-image">
-          <img src={ad.userImage} alt="User" class="user-image" />
+          <!-- <img src={ad.userImage} alt="User" class="user-image" /> -->
+          <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar"  class="user-image"  />
         </div>
 
         <div class="user-info">
@@ -136,12 +137,12 @@
   .modal-content {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
   }
 
   .user-image {
-    width: 100px; /* Adjust the image size as needed */
-    height: 100px;  /* Adjust the image size as needed */
+    width: 150px; /* Adjust the image size as needed */
+    height: 150px;  /* Adjust the image size as needed */
     object-fit: cover;
     border-radius: 1%;
   }
