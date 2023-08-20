@@ -79,8 +79,11 @@ model User {
   //location
 
   ads Ad[]
+  joinRequests Request[]
   tuitions Tuition[]
   ratings Rating[]
+
+
 }
 
 model Credential{
@@ -131,6 +134,9 @@ model Ad{
   description String?
   
   ratings Rating[]
+
+  studentRequests Request[]
+  appointments Appointment[]
 }
 
 model Tag{
@@ -159,6 +165,20 @@ model AdTag{
   ad        Ad @relation(fields: [adId], references: [id])
 
   @@id([adId , tagId])
+}
+
+model Request{
+  // id Int @id @default(autoincrement())
+  adId Int
+  userId String
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime? @updatedAt
+  dateDeleted DateTime?
+  ad Ad @relation(fields: [adId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  status String? //pending, accepted, rejected
+  message String?
+  @@id(fields:[adId,userId],name:"request_id")
 }
 
 model TuitionTag{
@@ -227,15 +247,25 @@ model Notification{
 
 model Batch {
   id        Int     @id @default(autoincrement())
-  //teacher   User    @relation(fields: [teacherId], references: [id])
-  teacherId Int
-  //students  User[]  //@relation(fields: []),
+  // teacher   User    @relation(fields: [teacherId], references: [id])
+  // teacherId Int
+  adId      Int
+  // ad        Ad      @relation(fields: [adId], references: [id])
+
+  // students  User[]  //@relation(fields: []),
+  capacity  Int
+
 }
 
 model Appointment {
-  id    Int @id @default(autoincrement())
-  teacherId Int
+  // id    Int @id @default(autoincrement())
+  // teacherId Int
   studentId Int
-  date DateTime
+  // date DateTime
+  adId Int
+  ad Ad @relation(fields: [adId], references: [id])
+  @@id([studentId,adId])
+  dateJoined DateTime @default(now())
+  // schedule Schedule @relation(fields: [scheduleId], references: [id])
 }
 

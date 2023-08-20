@@ -6,7 +6,11 @@
     filter: invert(1);
   } */
 
-
+a {
+	  color: #500D7A;
+	  font-weight: 600;
+	  font-size: 1rem;
+}
 
 /* :root {
 	--font-body: Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
