@@ -48,6 +48,7 @@
 		"fullcalendar": "^6.1.8",
 		"lucia-auth": "^1.8.0",
 		"lucia-sveltekit": "^0.14.3",
+		"mapbox-gl": "^2.15.0",
 		"svelte-tags-input": "^5.0.0",
 		"talkjs": "^0.16.1"
 	}
