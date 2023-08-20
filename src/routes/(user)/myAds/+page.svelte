@@ -200,7 +200,12 @@ const deleteAd = async (adId) => {
       align-items: center;
       margin-bottom: 4px; 
     } */
-  
+.allad{
+    /* height: calc(100vh - 90px);
+    overflow-y: hidden; */
+    display: flex;
+    justify-content: flex-start;
+  }
   
   </style>
   

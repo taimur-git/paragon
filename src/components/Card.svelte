@@ -1,23 +1,20 @@
 <!-- card.svelte -->
 <style>
-	/* Use Tailwind CSS classes for styling */
 	.m-card {
 	  @apply w-full max-w-md border border-gray-300 rounded-md shadow-md card-hover p-4 m-2;
-	  background-color: #F0F4FF; /* Change the background color to a light blue shade */
+	  background-color: #F0F4FF;
 	  border-color: #C4C9FF;
-	  /* width: 244px */
-	  display: flex; /* Add display:flex to make the container a flex container */
-	  flex-direction: column; /* Make the container stack its children vertically */
-	  height: 100%; /* Make the container take up the full height of its parent */
+	  display: flex;
+	  flex-direction: column;
+	  /* justify-content: space-around; */
+	  height: 200px;
+	  width: 18rem;
 	}
   
-	/* Center the content within the card */
 	.card-content {
 	  @apply space-y-4;
-	  flex: 1; /* Make the content take up the available vertical space */
 	}
   
-	/* Ensure the button does not expand the card width */
 	.post button {
 	  @apply w-full;
 	  background-color: #BDB1E7;
@@ -25,15 +22,13 @@
 	  transition: background-color 0.3s, color 0.3s;
 	}
   
-	/* Apply hover effect */
 	.post button:hover {
 	  background-color: #4C0C74;
 	  color: white;
 	}
-  </style>
+</style>
   
-  <div class="m-card">
-	<!-- Use flex layout to vertically align content -->
+<div class="m-card">
 	<div class="card-content">
 	  <h2>
 		<slot name="header">Unknown item</slot>
@@ -55,5 +50,4 @@
 		</slot>
 	  </div>
 	</div>
-  </div>
-  
+</div>
