@@ -272,8 +272,8 @@ let tagScrollPosition = 0;
             <div slot="active">
               Login: {ad.lastLogin}
             </div>
-            <div slot="online">
-              Online: {ad.online==true ? "Yes" : "No"}
+            <div slot="tutionType">
+              Tution Type: {ad.tutorType ? ad.tutorType : " "}
             </div>
             <div slot="buttons">
               <button

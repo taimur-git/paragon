@@ -7,7 +7,7 @@
 	  display: flex;
 	  flex-direction: column;
 	  /* justify-content: space-around; */
-	  height: 230px;
+	  height: 250px;
 	  width: 18rem;
 	}
   
@@ -40,7 +40,7 @@
 		/* border-radius: 50%; */
 	}
 
-	.studentLable,.rate,.active,.post,.online{
+	.studentLable,.rate,.active,.post,.tutionType{
 		margin-top: 10px;
 	}
 	.user_info{
@@ -86,9 +86,9 @@
 			<div class="active">
 				<slot name="active">Unknown item</slot>
 			</div>
-			<div class="online">
+			<!-- <div class="online">
 				<slot name="online">Unknown item</slot>
-			</div>
+			</div> -->
 		</div>
 		
 
@@ -99,6 +99,9 @@
 	  </div>
 	  <div class="rate">
 		<slot name="rate">Unknown item</slot>
+	  </div>
+	  <div class="tutionType">
+		<slot name="tutionType">Unknown item</slot>
 	  </div>
 	  <div class="post">
 		<slot name="buttons">
