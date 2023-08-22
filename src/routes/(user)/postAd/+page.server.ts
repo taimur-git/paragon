@@ -45,6 +45,12 @@ export const actions: Actions = {
         const salary  =form.get("salary") ? form.get("salary") : "0";
         const expectedSalary = parseInt(salary) ;
         const tagIdsString = form.get("tagIds");
+        const workDays = form.getAll("workDays[]");
+        const startTime = form.get("startTime");
+        const endTime = form.get("endTime");
+        
+        const classDays:String = workDays.join('');
+
         //const tagIds = tagIdsString ? tagIdsString.split(',').map(id => ({ id: parseInt(id) })): [];
         //console.log(tagIds);
         //tagIds = tagIds;
@@ -67,7 +73,9 @@ export const actions: Actions = {
             expectedSalary : expectedSalary,
             typeOfTutor : typeOfTutor,
             description : description,
-
+            workDays : classDays,
+            startTime : startTime.toString(),
+            endTime : endTime.toString(),
             tags : {
                 create: tagIds
             }

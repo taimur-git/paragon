@@ -133,6 +133,11 @@ model Ad{
   salaryType String? //per week or per month  or negotiable
   description String?
   
+  workDays String? //monday, tuesday, wednesday, thursday, friday, saturday, sunday
+  startTime String?//the time of the day when the class starts
+  endTime  String?//the time of the day when the class ends
+
+  isLaunched Boolean @default(false)
   ratings Rating[]
 
   studentRequests Request[]
