@@ -5,6 +5,33 @@
 	//import { Button, ButtonSet, ImageLoader, InlineLoading, Link } from 'carbon-components-svelte';
 	//import PostAd from '../components/PostAd.svelte';
 
+
+
+	import { Autocomplete, InputChip } from "@skeletonlabs/skeleton";
+	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
+	import { Button, Form } from 'carbon-components-svelte';
+
+  import { onMount, setContext } from "svelte";
+  //let selectedEducationLevel: number;
+
+  let inputChip = '';
+  let inputChipList: string[] = []; //grab from backend
+  let idList: number[] = [];
+  function onInputChipSelect(event: any): void {
+		//console.log('onInputChipSelect', event.detail);
+		if (inputChipList.includes(event.detail.value) === false) {
+			inputChipList = [...inputChipList, event.detail.value];
+            idList = [...idList, event.detail.idValue];
+			inputChip = '';
+		}
+	}
+
+  export let data: PageData;
+//   let id = data.user.user.userId;
+  let tagOptions: AutocompleteOption[] = data.tagOptions;//data;
+ // console.log(data);
+
+
 </script>
 
 <svelte:head>
@@ -44,10 +71,35 @@
 	<section class="px-4 mx-auto flex flex-col justify-center items-center max-w-sm">
 		<h1 class="heroTitle">Find a tutor tailored to your need.</h1>
 		
-<div class="input-group input-group-divider grid-cols-[1fr_auto] ">
+<!-- <div class="input-group input-group-divider grid-cols-[1fr_auto] ">
 	<input type="search" placeholder="Search..." class="p-2"/>
 	<button class="px-1 variant-filled-secondary">Search</button>
+</div> -->
+<!-- <div class="input-group input-group-divider grid-cols-[1fr_auto] "> -->
+<Form  method="POST">
+<InputChip bind:input={inputChip} bind:value={inputChipList} name="chips" />
+<!-- <button class="px-1 variant-filled-secondary">Search</button> -->
+<!-- </div> -->
+
+<input type="hidden" name="tags" value={inputChipList} />
+<input type="hidden" name="tagIds" value={idList} />
+<div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1">
+	<Autocomplete 
+		bind:input={inputChip}
+		options={tagOptions}
+		denylist={inputChipList}
+		on:selection={onInputChipSelect}
+	/>
+
 </div>
+
+<Button kind="secondary" type="submit">Search...</Button>
+
+
+</Form>
+
+
+
 		
 	</section>
 	<section class="mx-auto ">
