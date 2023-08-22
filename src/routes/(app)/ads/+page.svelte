@@ -8,8 +8,8 @@
 	$: ({ tags } = data);
 	$: ({ ads } = data);
 	$: ({ logInfo } = data);
-	// logInfo=null
   
+	let selectedCards = [];
   
 	let selectedCardInfo: { cardId: string, filters: number[] } | null = null;
   
@@ -32,22 +32,54 @@
 	  return grouped;
 	}
 	
-	function toggleFilters() {
-	  showAllFilters = !showAllFilters;
-	}
+	// const tagsSelected={
+	//   tags: [],
+	//   newTags: [],
+	// }
 	// let selectedCardId: string | null = null; // Store the ID of the selected card
   
-  //   function handleTagSelection(tagName: any) {
+  //   async function handleTagSelection(tagName: any) {
   //   if (selected === 1) {
   //     if (selectedTags.includes(tagName)) {
   //       selectedTags = selectedTags.filter(tag => tag !== tagName);
   //     } else {
+  
   //       selectedTags = [...selectedTags, tagName];
   //     }
+  
   //   } else if (selected === 3) {
   //     if (selectedTags.includes(tagName)) {
   //       selectedTags = selectedTags.filter(tag => tag !== tagName);
   //     } else {
+  //     //   tagsSelected.tags=[...selectedTags];
+  //     //   tagsSelected.newTags=[tagName];
+  
+  //     //   const res = await fetch('/api/filterAds', {
+  //     //   method: 'POST',
+  //     //   headers: {
+  //     //     'Content-Type': 'application/json',
+  //     //   },
+  //     //   body: JSON.stringify(tagsSelected)
+  //     // });
+  
+  //     // try{
+  //     //   const data = await res.json();
+  //     //   console.log(data.message);
+  //     //   if(data.message == "No ads found"){
+  //     //     // alert("Request Sent Successfully");
+  //     //     selectedTags = [];
+  //     //   }
+  //     //   else{
+  //     //     ads = data.message;
+  //     //     console.log(ads);
+  //     //     // selectedTags = [...selectedTags, tagName];
+  //     //   }
+		  
+  //     //   } catch (err) {
+  //     //     console.log(err);
+  //     //   }
+  
+  
   //       selectedTags = [...selectedTags, tagName];
   //     }
   //   } else if (selected === 2) {
@@ -56,8 +88,9 @@
   //     } else {
   //       selectedTags = [...selectedTags, tagName];
   //     }
+  
   //   }
-  //       selectedCardId = cardId; // Update the selected card ID
+  //       // selectedCardId = cardId; // Update the selected card ID
   
   // }
   
@@ -69,76 +102,41 @@
 	  }
 	}
   
-  
-  // function handleTagSelection(tagName: any, cardId: string) {
-  //     if (selectedTags.includes(tagName)) {
-  //       selectedTags = selectedTags.filter(tag => tag !== tagName);
-  //     } else {
-  //       selectedTags = [...selectedTags, tagName];
-  //     }
-  //     selectedCardInfo = { cardId, filters: selectedTags }; // Update the selected card info
-  
-  //     selectedCardId = cardId; // Update the selected card ID
-  //   }
-  
 	function handleOutsideClick(event: { target: any; }) {
 	  const clickedElement = event.target;
-	  // console.log(clickedElement);
-	  if (
-		!clickedElement.closest('.filter-button') &&
-		// !clickedElement.closest('.select_filter') &&
-		// !clickedElement.closest('.flex-wrap') &&
-		// !clickedElement.closest('.flex-wrap allad') &&
-		// clickedElement.closest('.flex flex-wrap allad') &&
-		!clickedElement.closest('.m-card') 
-		// clickedElement.closest('.fullPage') 
-	  ) {
-		selectedTags = []; 
+	  if (!clickedElement.closest('.filter-button') && !clickedElement.closest('.scroll-button') && !clickedElement.closest('.m-card')  && !clickedElement.closest('.select_filter')) {
+		selectedTags = [];
 	  }
-	}
-  
-  
-	function selectedTagsMatch(ad) {
-	  return (
-		selectedTags.length === 0 ||
-		selectedTags.some(tag => ad.tags.includes(tag)) ||
-		selectedTags.includes(ad.salary) ||
-		selectedTags.includes(ad.typeOfTutor)
-	  );
-	}
-  
-	function selectedCardMatches(ad) {
-	  return (
-		selectedCardInfo &&
-		ad.id === selectedCardInfo.cardId &&
-		selectedTags.every(tag => selectedCardInfo.filters.includes(tag))
-	  );
 	}
   
 	let selectedCardId ={
 	  cardId: ""
 	};  
-	 // Store the ID of the selected card
   
   function sendReq(selectedCardId: Object) {
-	// console.log("Ad Id " + selectedCardId.cardId);
 	modal.hide();
-	// selectedCardId = id; // Update the selected card ID
   }
   
+  let tagScrollPosition = 0;
+	const tagsPerPage = 8;
+	
+	function scrollLeft() {
+	  if (tagScrollPosition > 0) {
+		tagScrollPosition -= tagsPerPage;
+	  }
+	}
   
+	function scrollRight() {
+	  if (tagScrollPosition + tagsPerPage < tags.length) {
+		tagScrollPosition += tagsPerPage;
+	  }
+	}
   
   </script>
   
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <div class="fullPage" on:click={handleOutsideClick}>
 	
-	<!-- <select bind:value={selected}>
-	  {#each questions as question}
-		<option value={question.id}>{question.text}</option>
-	  {/each}
-	</select> -->
-  
 	<div class="tag flex flex-wrap {showAllFilters ? 'tag-expanded' : ''}">
 	  <select bind:value={selected} class="select_filter">
 		{#each filter_types as filter_type}
@@ -146,94 +144,114 @@
 		{/each}
 	  </select>
 	  
-  
 	  {#if selected === 1}
-		{#if tags.length > 24}
-		<article class="m-2">
-		  <button class="filter-button whitespace-nowrap" on:click={toggleFilters}>
-			{showAllFilters ? "Hide Filters" : "All Filters"}
-		  </button>
-		</article>
+		{#if tags.length > tagsPerPage}
+		  <article class="m-2">
+			{#if tagScrollPosition>0}
+			  <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
+				&lt;
+			  </button>
+			{/if}
+		  </article>
 		{/if}
-		{#each tags as tag, index}
+  
+		{#each tags.slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as tag, index}
+	<!-- ... your existing code for showing tags ... -->
 		  <article class="m-2">
 			<button
 			  class="filter-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''} "
 			  on:click={() => handleTagSelection(tag.name)}
-			  class:hidden="{!showAllFilters && index > 23}"
 			>
 			  {tag.name}
 			</button>
 		  </article>
 		{/each}
-	  {/if}
   
-	  {#if selected === 3}
-		{#if ads.map(ad => ad.salary).length > 24}
-		  <article class="m-2">
-			<button class="filter-button whitespace-nowrap" on:click={toggleFilters}>
-			  {showAllFilters ? "Hide Filters" : "All Filters"}
-			</button>
-		  </article>
-		{/if}
-		{#each [...new Set(ads.map(ad => ad.salary))] as salary,index}
-		  <article class="m-2">
-			<button
-			class="filter-button whitespace-nowrap {selectedTags.includes(salary) ? 'filter-button-active' : ''} "
-			on:click={() => handleTagSelection(salary)}
-			class:hidden="{!showAllFilters && index > 23}"
-			>
-			  {salary}
-			</button>
-		  </article>
-		{/each}
-	  {/if}
-  
-	  {#if selected === 2}
-		{#if ads.map(ad => ad.typeOfTutor).length > 24}
-		<article class="m-2">
-		  <button class="filter-button whitespace-nowrap" on:click={toggleFilters}>
-			{showAllFilters ? "Hide Filters" : "All Filters"}
+		{#if tags.length > tagsPerPage && tagScrollPosition + tagsPerPage < tags.length}
+		  <button class="scroll-button filter-button whitespace-nowrap"  on:click={scrollRight}>
+			&gt;
 		  </button>
-		</article>
-	   {/if}
-		{#each [...new Set(ads.map(ad => ad.typeOfTutor))] as typeOfTutor,index}
-		  <article class="m-2">
-			<button
-			class="filter-button whitespace-nowrap {selectedTags.includes(typeOfTutor) ? 'filter-button-active' : ''} "
-			on:click={() => handleTagSelection(typeOfTutor)}
-			class:hidden="{!showAllFilters && index > 23}"
-			>
-			  {typeOfTutor}
+		{/if}
+	{/if}
+  
+	{#if selected === 3 }
+	  {@const tagScrollPosition=0}
+	  <article class="m-2"  >
+		{#if ads.map(ad => ad.salary).length > tagsPerPage}
+		  {#if tagScrollPosition>0}
+			<button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
+			  &lt;
 			</button>
-		  </article>
-		{/each}
-	  {/if}
-	  <!-- {#each tags as tag, index}
+		  {/if}
+		{/if}
+	  </article>
+	  {#each [...new Set(ads.map(ad => ad.salary))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as salary, index}
 		<article class="m-2">
 		  <button
-			class="filter-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''}"
-			on:click={() => handleTagSelection(tag.name)}
-			class:hidden="{!showAllFilters && index > 23}"
+			class="filter-button whitespace-nowrap {selectedTags.includes(salary) ? 'filter-button-active' : ''}"
+			on:click={() => handleTagSelection(salary)}
 		  >
-			{tag.name}
+		  {#if salary === 0}
+			{"Negotiable"}
+		  {:else}
+			{salary}
+		  {/if} 
 		  </button>
 		</article>
-	  {/each} -->
-	</div>
+	  {/each}
+	  <article class="m-2">
+		{#if [...new Set(ads.map(ad => ad.salary))].length > tagsPerPage && tagScrollPosition + tagsPerPage < ads.map(ad => ad.salary).length}
+		  <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollRight}>
+			&gt;
+		  </button>
+		{/if}
+	  </article>
+	{/if}
+  
+  
+	{#if selected === 2}
+	  {@const tagScrollPosition=0}
+	  <article class="m-2">
+		{#if ads.map(ad => ad.typeOfTutor).length > tagsPerPage}
+		  {#if tagScrollPosition>0}
+			<button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
+			  &lt;
+			</button>
+		  {/if}
+		{/if}
+	  </article>
+	  {#each [...new Set(ads.map(ad => ad.typeOfTutor))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as typeOfTutor, index}
+		<article class="m-2">
+		  <button
+			class="filter-button whitespace-nowrap {selectedTags.includes(typeOfTutor) ? 'filter-button-active' : ''}"
+			on:click={() => handleTagSelection(typeOfTutor)}
+		  >
+			{typeOfTutor}
+		  </button>
+		</article>
+	  {/each}
+  
+	  <article class="m-2">
+		{#if [...new Set(ads.map(ad => ad.typeOfTutor))].length > tagsPerPage && tagScrollPosition + tagsPerPage < ads.map(ad => ad.typeOfTutor).length}
+		  <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollRight}>
+			&gt;
+		  </button>
+		{/if}
+	  </article>
+	{/if}
+  </div>
   
 	
 	<div class="flex flex-wrap allad">
 	  {#each ads as ad}
 		{#if selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(tag)) || selectedTags.includes(ad.salary) || selectedTags.includes(ad.typeOfTutor) }
-		<!-- {#if (selectedTagsMatch(ad) && selectedCardMatches(ad))} -->
 		  <article class="m-2">
 			<Card>
 			  <div slot="header">
 				Name: {ad.user}
 			  </div>
 			  <div slot="studentLable">
-				Course:
+				<span class="courses">Course: </span>
 				{#if ad.tags.length > 0}
 				  {#each groupTags(ad.tags, 2) as tagGroup, groupIndex}
 					{#if groupIndex !== 0}<br />{/if}
@@ -244,9 +262,19 @@
 				{/if}
 			  </div>
 			  <div slot="rate">
-				Rate: {ad.salary}
+				{#if ad.salary === 0}
+				  Rate: {"Negotiable"}
+				{:else}
+				  Rate: {ad.salary}
+				{/if}
 			  </div>
-	
+  
+			  <div slot="active">
+				Login: {ad.lastLogin}
+			  </div>
+			  <div slot="tutionType">
+				Tution Type: {ad.tutorType ? ad.tutorType : " "}
+			  </div>
 			  <div slot="buttons">
 				<button
 				on:click={() => modal.show(ad,selectedCardId,logInfo)} class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md w-full see-button">
@@ -263,6 +291,7 @@
   <AdModal bind:this={modal} currentPage={"home"} on:click={() => sendReq(selectedCardId)}>
   <button on:click={() => modal.hide()}>Close</button>
   </AdModal>
+  
   <style>
 	.tag {
 	  display: flex;
@@ -271,6 +300,8 @@
 	  overflow: hidden;
 	  transition: max-height 0.3s ease-in-out;
 	  min-height: 100px; 
+	  /* padding-left: 10px;
+	  padding-right: 10px; */
 	}
   
 	.tag-expanded {
@@ -303,30 +334,13 @@
 	  color: white;
 	}
 	.fullPage{
-	  /* background-color: black; */
-	  /* overflow-y: hidden; */
-	  /* width: 100%; */
 	  height: 88dvh;
-	  /* padding-bottom: 5%; */
 	}
-	/* .allad{
-	  height: calc(100vh - 90px);
-	  overflow-y: hidden;
-	} */
-	/* Style for the tag list */
-	/* .tag-list {
+	.allad{
 	  display: flex;
-	  flex-wrap: wrap;
-	} */
-	
-	/* Style for each tag line */
-	/* .tag-line {
-	  display: flex;
-	  align-items: center;
-	  margin-bottom: 4px; 
-	} */
-  
-  
+	  justify-content: flex-start;
+	}
+	.courses{
+	  font-weight: bold;
+	}
   </style>
-  
-  

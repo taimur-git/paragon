@@ -2,6 +2,9 @@
   import type { PageData } from './$types';
   import Card from '../../../components/Card.svelte';
   import AdModal from '../../../components/AdModal.svelte';
+  import { Autocomplete, InputChip } from "@skeletonlabs/skeleton";
+	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
+	import { Button, Form } from 'carbon-components-svelte';
 
   export let data: PageData;
 
@@ -95,8 +98,9 @@
 // }
 
 function handleTagSelection(tagName: any) {
-    if (selectedTags.includes(tagName)) {
+    if (selectedTags.includes(tagName) || inputChipList.includes(tagName)) {
       selectedTags = selectedTags.filter(tag => tag !== tagName);
+      inputChipList=  inputChipList.filter(tag => tag !== tagName);
     } else {
       selectedTags = [...selectedTags, tagName];
     }
@@ -104,8 +108,9 @@ function handleTagSelection(tagName: any) {
 
   function handleOutsideClick(event: { target: any; }) {
     const clickedElement = event.target;
-    if (!clickedElement.closest('.filter-button') && !clickedElement.closest('.scroll-button') && !clickedElement.closest('.m-card')  && !clickedElement.closest('.select_filter')) {
+    if (!clickedElement.closest('.filter-button') && !clickedElement.closest('.scroll-button') && !clickedElement.closest('.m-card')  && !clickedElement.closest('.select_filter') && !clickedElement.closest('.search') && !clickedElement.closest('.courseSearch') && !clickedElement.closest('.autocomplete-item') ) {
       selectedTags = [];
+      inputChipList = [];
     }
   }
 
@@ -132,10 +137,88 @@ let tagScrollPosition = 0;
     }
   }
 
+  const handleSearch = async (e: Event) => { 
+    e.preventDefault();
+
+    const res = await fetch('/api/searchAd', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(idList)
+    });
+
+	try{
+		const data = await res.json();
+		// console.log(data);
+    // let tagsFromSearch = inputChipList;
+    selectedTags = [ ...inputChipList];
+    // tagsFromSearch=[];
+    console.log(selectedTags);
+
+	}catch(err){
+		console.log(err);
+	}
+  }
+
+  let inputChip = '';
+  let inputChipList: string[] = []; //grab from backend
+  let idList: number[] = [];
+  function onInputChipSelect(event: any): void {
+		//console.log('onInputChipSelect', event.detail);
+		if (inputChipList.includes(event.detail.value) === false) {
+			inputChipList = [...inputChipList, event.detail.value];
+            idList = [...idList, event.detail.idValue];
+			inputChip = '';
+      handleSearch(event);
+
+		}
+	}
+
+  let tagOptions: AutocompleteOption[] = data.tagOptions;//data;
+
+  let hide_tags: boolean = true;
+
+function hideTags() {
+  hide_tags = true;
+}
+function showTags() {
+  hide_tags = false;
+}
+
+
+
+
+
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="fullPage" on:click={handleOutsideClick}>
+  <InputChip bind:input={inputChip} bind:value={inputChipList} name="chips"
+ on:focus={hideTags} 
+on:input={showTags} class="courseSearch" 
+on:click={()=>{console.log(inputChipList),inputChipList.forEach(element => {
+  selectedTags = selectedTags.filter(tag => tag !== element);
+
+});}
+}
+/>
+
+
+<input type="hidden" name="tags" value={inputChipList} />
+<input type="hidden" name="tagIds" value={idList} />
+
+<div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1" class:hidden={hide_tags}>
+	<Autocomplete 
+		bind:input={inputChip}
+		options={tagOptions}
+		denylist={inputChipList}
+		on:selection={onInputChipSelect}
+	/>
+
+</div>
+
+<!-- <Button class="search" kind="secondary" type="submit" on:click={handleSearch}>Search...</Button> -->
   
   <div class="tag flex flex-wrap {showAllFilters ? 'tag-expanded' : ''}">
     <select bind:value={selected} class="select_filter">

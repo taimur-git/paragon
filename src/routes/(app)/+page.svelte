@@ -1,5 +1,9 @@
 <script lang='ts'>
 
+// import { writable } from 'svelte/store';
+
+
+
 	//import teacher from '$lib/images/teacher.svg';
 	import mainImg from '$lib/images/landingImg.jpg';
 	//import { Button, ButtonSet, ImageLoader, InlineLoading, Link } from 'carbon-components-svelte';
@@ -12,7 +16,10 @@
 	import { Button, Form } from 'carbon-components-svelte';
 
   import { onMount, setContext } from "svelte";
+	import { goto } from '$app/navigation';
   //let selectedEducationLevel: number;
+
+//   export const fetchedData = writable(null);
 
   let inputChip = '';
   let inputChipList: string[] = []; //grab from backend
@@ -31,6 +38,49 @@
   let tagOptions: AutocompleteOption[] = data.tagOptions;//data;
  // console.log(data);
 
+
+ const handleSearch = async (e: Event) => { 
+    e.preventDefault();
+
+    const res = await fetch('/api/searchAd', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(idList,inputChipList)
+    });
+
+	try{
+		const data = await res.json();
+		console.log(data);
+		// if (data.message === 'Success') {
+		// 	// goto('/login');
+		// 	console.log("Success");
+		// }
+		goto('/ads');
+
+	}catch(err){
+		console.log(err);
+	}
+    // try{
+    //   const data = await res.json();
+    //   console.log(data);
+    //   if (data.message === 'User created') {
+    //     goto('/login');
+    //   }
+    // } catch (err) {
+    //   console.log(err);
+    // }
+  }
+
+let hide_tags: boolean = true;
+
+	function hideTags() {
+		hide_tags = true;
+	}
+	function showTags() {
+		hide_tags = false;
+	}
 
 </script>
 
@@ -76,14 +126,19 @@
 	<button class="px-1 variant-filled-secondary">Search</button>
 </div> -->
 <!-- <div class="input-group input-group-divider grid-cols-[1fr_auto] "> -->
-<Form  method="POST">
-<InputChip bind:input={inputChip} bind:value={inputChipList} name="chips" />
+<!-- <Form  method="POST"> -->
+<InputChip bind:input={inputChip} bind:value={inputChipList} name="chips"
+ on:focus={hideTags} 
+on:input={showTags} 
+/>
 <!-- <button class="px-1 variant-filled-secondary">Search</button> -->
 <!-- </div> -->
 
 <input type="hidden" name="tags" value={inputChipList} />
 <input type="hidden" name="tagIds" value={idList} />
-<div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1">
+<input type="hidden" name="tags" value={inputChipList} />
+
+<div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1" class:hidden={hide_tags}>
 	<Autocomplete 
 		bind:input={inputChip}
 		options={tagOptions}
@@ -93,10 +148,10 @@
 
 </div>
 
-<Button kind="secondary" type="submit">Search...</Button>
+<Button kind="secondary" type="submit" on:click={handleSearch}>Search...</Button>
 
 
-</Form>
+<!-- </Form> -->
 
 
 
