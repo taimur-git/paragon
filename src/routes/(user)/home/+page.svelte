@@ -131,7 +131,7 @@ function sendReq(selectedCardId: Object) {
 }
 
 let tagScrollPosition = 0;
-  const tagsPerPage = 7;
+  const tagsPerPage = 6;
   
   function scrollLeft() {
     if (tagScrollPosition > 0) {
@@ -269,7 +269,7 @@ function removetag(){
   <!-- ... your existing code for showing tags ... -->
         <article class="m-2">
           <button
-            class="filter-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''} "
+            class="filter-button tag-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''} "
             on:click={() => handleTagSelection(tag.name)}
           >
             {tag.name}
@@ -477,5 +477,15 @@ function removetag(){
     width: 70%;
     margin-left: auto;
     margin-right: auto;
+  }
+  .tag-button {
+    /* width: auto; */
+    /* display: flex; */
+    width: 175px; /* Adjust the maximum width as needed */
+    /* flex-wrap: wrap;
+    justify-content: center;
+    align-items: center; */
+    white-space: normal;
+    display: inline-block;
   }
 </style>
