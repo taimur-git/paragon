@@ -24,6 +24,7 @@
 
   let selected;
   let selectedTags: any[] = []; 
+  let allTagBtn = true; 
   let showAllFilters = false;
   let modal: AdModal;
 
@@ -97,22 +98,29 @@
 
 // }
 
-function handleTagSelection(tagName: any) {
-    if (selectedTags.includes(tagName) || inputChipList.includes(tagName)) {
-      selectedTags = selectedTags.filter(tag => tag !== tagName);
-      inputChipList=  inputChipList.filter(tag => tag !== tagName);
-    } else {
-      selectedTags = [...selectedTags, tagName];
-    }
-  }
 
-  function handleOutsideClick(event: { target: any; }) {
-    const clickedElement = event.target;
-    if (!clickedElement.closest('.filter-button') && !clickedElement.closest('.scroll-button') && !clickedElement.closest('.m-card')  && !clickedElement.closest('.select_filter') && !clickedElement.closest('.search') && !clickedElement.closest('.courseSearch') && !clickedElement.closest('.autocomplete-item') ) {
-      selectedTags = [];
-      inputChipList = [];
-    }
+
+function handleTagSelection(tagName: any) {
+  if (selectedTags.includes(tagName) && inputChipList.includes(tagName)) {
+    selectedTags = selectedTags.filter(tag => tag !== tagName);
+    inputChipList = inputChipList.filter(tag => tag !== tagName);
+    if(selectedTags.length === 0){
+        allTagBtn=true;
+        hideTags();
+      }
+  } 
+  else if (tagName === 'all') {
+    inputChipList = [];
+    selectedTags = [];
+    hideTags();
+    allTagBtn=true;
   }
+  else {
+    inputChipList = [...inputChipList, tagName];
+    selectedTags = [...selectedTags, tagName];
+    allTagBtn=false;
+  }
+}
 
   let selectedCardId ={
     cardId: ""
@@ -123,7 +131,7 @@ function sendReq(selectedCardId: Object) {
 }
 
 let tagScrollPosition = 0;
-  const tagsPerPage = 8;
+  const tagsPerPage = 7;
   
   function scrollLeft() {
     if (tagScrollPosition > 0) {
@@ -154,7 +162,7 @@ let tagScrollPosition = 0;
     // let tagsFromSearch = inputChipList;
     selectedTags = [ ...inputChipList];
     // tagsFromSearch=[];
-    console.log(selectedTags);
+    // console.log(selectedTags);
 
 	}catch(err){
 		console.log(err);
@@ -184,37 +192,45 @@ function hideTags() {
 }
 function showTags() {
   hide_tags = false;
+  allTagBtn=false;
 }
 
-
+function removetag(){
+  selectedTags = inputChipList;
+  if(inputChipList.length === 0){
+        allTagBtn=true;
+        hideTags();
+      }
+}
 
 
 
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div class="fullPage" on:click={handleOutsideClick}>
-  <InputChip bind:input={inputChip} bind:value={inputChipList} name="chips"
- on:focus={hideTags} 
-on:input={showTags} class="courseSearch" 
-on:click={()=>{console.log(inputChipList),inputChipList.forEach(element => {
-  selectedTags = selectedTags.filter(tag => tag !== element);
-
-});}
-}
-/>
+<div class="fullPage" >
+  <div class="searchBar">
+    <InputChip bind:input={inputChip} bind:value={inputChipList} name="chips" placeholder="Search your desired subject, course..." 
+  on:focus={hideTags} 
+  on:input={showTags} class="courseSearch" 
+  on:click={removetag}
+ 
+  />
 
 
-<input type="hidden" name="tags" value={inputChipList} />
-<input type="hidden" name="tagIds" value={idList} />
+  <input type="hidden" name="tags" value={inputChipList} />
+  <input type="hidden" name="tagIds" value={idList} />
 
-<div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1" class:hidden={hide_tags}>
-	<Autocomplete 
-		bind:input={inputChip}
-		options={tagOptions}
-		denylist={inputChipList}
-		on:selection={onInputChipSelect}
-	/>
+  <div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1" class:hidden={hide_tags}>
+    <Autocomplete 
+      bind:input={inputChip}
+      options={tagOptions}
+      denylist={inputChipList}
+      on:selection={onInputChipSelect}
+
+    />
+
+  </div>
 
 </div>
 
@@ -226,6 +242,8 @@ on:click={()=>{console.log(inputChipList),inputChipList.forEach(element => {
         <option value={filter_type.id}>{filter_type.text}</option>
       {/each}
     </select>
+
+  
     
     {#if selected === 1}
       {#if tags.length > tagsPerPage}
@@ -237,6 +255,15 @@ on:click={()=>{console.log(inputChipList),inputChipList.forEach(element => {
           {/if}
         </article>
       {/if}
+      <article class="m-2">
+        <button
+          class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+          on:click={() => handleTagSelection('all')}
+        >
+          All
+        </button>
+      </article>
+        
 
       {#each tags.slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as tag, index}
   <!-- ... your existing code for showing tags ... -->
@@ -267,6 +294,15 @@ on:click={()=>{console.log(inputChipList),inputChipList.forEach(element => {
           </button>
         {/if}
       {/if}
+    </article>
+
+    <article class="m-2">
+      <button
+        class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+        on:click={() => handleTagSelection('all')}
+      >
+        All
+      </button>
     </article>
     {#each [...new Set(ads.map(ad => ad.salary))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as salary, index}
       <article class="m-2">
@@ -302,6 +338,15 @@ on:click={()=>{console.log(inputChipList),inputChipList.forEach(element => {
           </button>
         {/if}
       {/if}
+    </article>
+
+    <article class="m-2">
+      <button
+        class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+        on:click={() => handleTagSelection('all')}
+      >
+        All
+      </button>
     </article>
     {#each [...new Set(ads.map(ad => ad.typeOfTutor))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as typeOfTutor, index}
       <article class="m-2">
@@ -425,5 +470,12 @@ on:click={()=>{console.log(inputChipList),inputChipList.forEach(element => {
   }
   .courses{
     font-weight: bold;
+  }
+  .searchBar{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
   }
 </style>
