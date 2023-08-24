@@ -131,8 +131,16 @@ model Ad{
   typeOfTutor String? //online, offline, both
   expectedSalary Int? //per week or per month or negotiable
   salaryType String? //per week or per month  or negotiable
+  title String?
   description String?
+
+  //theme_img Bytes? //the theme image itself
   
+  workDays String? //monday, tuesday, wednesday, thursday, friday, saturday, sunday
+  startTime String?//the time of the day when the class starts
+  endTime  String?//the time of the day when the class ends
+
+  isLaunched Boolean @default(false)
   ratings Rating[]
 
   studentRequests Request[]
@@ -260,7 +268,7 @@ model Batch {
 model Appointment {
   // id    Int @id @default(autoincrement())
   // teacherId Int
-  studentId Int
+  studentId String
   // date DateTime
   adId Int
   ad Ad @relation(fields: [adId], references: [id])
