@@ -27,14 +27,6 @@
   let allTagBtn = true; 
   let showAllFilters = false;
   let modal: AdModal;
-
-  function groupTags(tags: string | any[], groupSize: number) {
-    const grouped = [];
-    for (let i = 0; i < tags.length; i += groupSize) {
-      grouped.push(tags.slice(i, i + groupSize));
-    }
-    return grouped;
-  }
   
   // const tagsSelected={
   //   tags: [],
@@ -244,7 +236,7 @@ function removetag(){
     </select>
 
   
-    
+   
     {#if selected === 1}
       {#if tags.length > tagsPerPage}
         <article class="m-2">
@@ -252,17 +244,21 @@ function removetag(){
             <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
               &lt;
             </button>
+          {:else if tagScrollPosition===0}
+            <article class="m-2">
+              <button
+                class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+                on:click={() => handleTagSelection('all')}
+              >
+                All
+              </button>
+            </article>
+            <!-- {/if} -->
+            
           {/if}
         </article>
       {/if}
-      <article class="m-2">
-        <button
-          class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
-          on:click={() => handleTagSelection('all')}
-        >
-          All
-        </button>
-      </article>
+     
         
 
       {#each tags.slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as tag, index}
@@ -379,14 +375,14 @@ function removetag(){
               Name: {ad.user}
             </div>
             <div slot="studentLable">
-              <span class="courses">Course: </span>
+              <!-- <span class="courses">Course: </span> -->
+              Course:
               {#if ad.tags.length > 0}
-                {#each groupTags(ad.tags, 2) as tagGroup, groupIndex}
-                  {#if groupIndex !== 0}<br />{/if}
-                  {#each tagGroup as tag, index}
-                    <span class="mr-2">{tag}{index !== tagGroup.length - 1 ? ',' : ''}</span>
+                <span class="tagsOfCard">
+                  {#each ad.tags as tag, index}
+                    <span class="mr-2">{tag}{index !== ad.tags.length - 1 ? ',' : ''}</span>
                   {/each}
-                {/each}
+                </span>
               {/if}
             </div>
             <div slot="rate">
@@ -467,12 +463,14 @@ function removetag(){
   .allad{
     display: flex;
     justify-content: flex-start;
+    /* flex-wrap: wrap; */
+    gap: 25px;
   }
   .courses{
     font-weight: bold;
   }
   .searchBar{
-    margin-bottom: 10px;
+    /* margin-bottom: 5px; */
     margin-top: 10px;
     width: 70%;
     margin-left: auto;

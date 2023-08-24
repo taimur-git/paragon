@@ -8,7 +8,7 @@
 	  flex-direction: column;
 	  /* justify-content: space-around; */
 	  height: 250px;
-	  width: 18rem;
+	  width: 19rem;
 	}
   
 	.card-content {

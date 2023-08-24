@@ -2,6 +2,9 @@
 	import type { PageData } from './$types';
 	import Card from '../../../components/Card.svelte';
 	import AdModal from '../../../components/AdModal.svelte';
+	import { Autocomplete, InputChip } from "@skeletonlabs/skeleton";
+	  import type { AutocompleteOption } from '@skeletonlabs/skeleton';
+	  import { Button, Form } from 'carbon-components-svelte';
   
 	export let data: PageData;
   
@@ -21,16 +24,9 @@
   
 	let selected;
 	let selectedTags: any[] = []; 
+	let allTagBtn = true; 
 	let showAllFilters = false;
 	let modal: AdModal;
-  
-	function groupTags(tags: string | any[], groupSize: number) {
-	  const grouped = [];
-	  for (let i = 0; i < tags.length; i += groupSize) {
-		grouped.push(tags.slice(i, i + groupSize));
-	  }
-	  return grouped;
-	}
 	
 	// const tagsSelected={
 	//   tags: [],
@@ -94,20 +90,29 @@
   
   // }
   
-  function handleTagSelection(tagName: any) {
-	  if (selectedTags.includes(tagName)) {
-		selectedTags = selectedTags.filter(tag => tag !== tagName);
-	  } else {
-		selectedTags = [...selectedTags, tagName];
-	  }
-	}
   
-	function handleOutsideClick(event: { target: any; }) {
-	  const clickedElement = event.target;
-	  if (!clickedElement.closest('.filter-button') && !clickedElement.closest('.scroll-button') && !clickedElement.closest('.m-card')  && !clickedElement.closest('.select_filter')) {
-		selectedTags = [];
-	  }
+  
+  function handleTagSelection(tagName: any) {
+	if (selectedTags.includes(tagName) && inputChipList.includes(tagName)) {
+	  selectedTags = selectedTags.filter(tag => tag !== tagName);
+	  inputChipList = inputChipList.filter(tag => tag !== tagName);
+	  if(selectedTags.length === 0){
+		  allTagBtn=true;
+		  hideTags();
+		}
+	} 
+	else if (tagName === 'all') {
+	  inputChipList = [];
+	  selectedTags = [];
+	  hideTags();
+	  allTagBtn=true;
 	}
+	else {
+	  inputChipList = [...inputChipList, tagName];
+	  selectedTags = [...selectedTags, tagName];
+	  allTagBtn=false;
+	}
+  }
   
 	let selectedCardId ={
 	  cardId: ""
@@ -118,7 +123,7 @@
   }
   
   let tagScrollPosition = 0;
-	const tagsPerPage = 8;
+	const tagsPerPage = 6;
 	
 	function scrollLeft() {
 	  if (tagScrollPosition > 0) {
@@ -132,10 +137,96 @@
 	  }
 	}
   
+	const handleSearch = async (e: Event) => { 
+	  e.preventDefault();
+  
+	  const res = await fetch('/api/searchAd', {
+		method: 'POST',
+		headers: {
+		  'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(idList)
+	  });
+  
+	  try{
+		  const data = await res.json();
+		  // console.log(data);
+	  // let tagsFromSearch = inputChipList;
+	  selectedTags = [ ...inputChipList];
+	  // tagsFromSearch=[];
+	  // console.log(selectedTags);
+  
+	  }catch(err){
+		  console.log(err);
+	  }
+	}
+  
+	let inputChip = '';
+	let inputChipList: string[] = []; //grab from backend
+	let idList: number[] = [];
+	function onInputChipSelect(event: any): void {
+		  //console.log('onInputChipSelect', event.detail);
+		  if (inputChipList.includes(event.detail.value) === false) {
+			  inputChipList = [...inputChipList, event.detail.value];
+			  idList = [...idList, event.detail.idValue];
+			  inputChip = '';
+		handleSearch(event);
+  
+		  }
+	  }
+  
+	let tagOptions: AutocompleteOption[] = data.tagOptions;//data;
+  
+	let hide_tags: boolean = true;
+  
+  function hideTags() {
+	hide_tags = true;
+  }
+  function showTags() {
+	hide_tags = false;
+	allTagBtn=false;
+  }
+  
+  function removetag(){
+	selectedTags = inputChipList;
+	if(inputChipList.length === 0){
+		  allTagBtn=true;
+		  hideTags();
+		}
+  }
+  
+  
+  
   </script>
   
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="fullPage" on:click={handleOutsideClick}>
+  <div class="fullPage" >
+	<div class="searchBar">
+	  <InputChip bind:input={inputChip} bind:value={inputChipList} name="chips" placeholder="Search your desired subject, course..." 
+	on:focus={hideTags} 
+	on:input={showTags} class="courseSearch" 
+	on:click={removetag}
+   
+	/>
+  
+  
+	<input type="hidden" name="tags" value={inputChipList} />
+	<input type="hidden" name="tagIds" value={idList} />
+  
+	<div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1" class:hidden={hide_tags}>
+	  <Autocomplete 
+		bind:input={inputChip}
+		options={tagOptions}
+		denylist={inputChipList}
+		on:selection={onInputChipSelect}
+  
+	  />
+  
+	</div>
+  
+  </div>
+  
+  <!-- <Button class="search" kind="secondary" type="submit" on:click={handleSearch}>Search...</Button> -->
 	
 	<div class="tag flex flex-wrap {showAllFilters ? 'tag-expanded' : ''}">
 	  <select bind:value={selected} class="select_filter">
@@ -143,7 +234,9 @@
 		  <option value={filter_type.id}>{filter_type.text}</option>
 		{/each}
 	  </select>
-	  
+  
+	
+	 
 	  {#if selected === 1}
 		{#if tags.length > tagsPerPage}
 		  <article class="m-2">
@@ -151,15 +244,28 @@
 			  <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
 				&lt;
 			  </button>
+			{:else if tagScrollPosition===0}
+			  <article class="m-2">
+				<button
+				  class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+				  on:click={() => handleTagSelection('all')}
+				>
+				  All
+				</button>
+			  </article>
+			  <!-- {/if} -->
+			  
 			{/if}
 		  </article>
 		{/if}
+	   
+		  
   
 		{#each tags.slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as tag, index}
 	<!-- ... your existing code for showing tags ... -->
 		  <article class="m-2">
 			<button
-			  class="filter-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''} "
+			  class="filter-button tag-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''} "
 			  on:click={() => handleTagSelection(tag.name)}
 			>
 			  {tag.name}
@@ -184,6 +290,15 @@
 			</button>
 		  {/if}
 		{/if}
+	  </article>
+  
+	  <article class="m-2">
+		<button
+		  class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+		  on:click={() => handleTagSelection('all')}
+		>
+		  All
+		</button>
 	  </article>
 	  {#each [...new Set(ads.map(ad => ad.salary))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as salary, index}
 		<article class="m-2">
@@ -220,6 +335,15 @@
 		  {/if}
 		{/if}
 	  </article>
+  
+	  <article class="m-2">
+		<button
+		  class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+		  on:click={() => handleTagSelection('all')}
+		>
+		  All
+		</button>
+	  </article>
 	  {#each [...new Set(ads.map(ad => ad.typeOfTutor))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as typeOfTutor, index}
 		<article class="m-2">
 		  <button
@@ -251,14 +375,14 @@
 				Name: {ad.user}
 			  </div>
 			  <div slot="studentLable">
-				<span class="courses">Course: </span>
+				<!-- <span class="courses">Course: </span> -->
+				Course:
 				{#if ad.tags.length > 0}
-				  {#each groupTags(ad.tags, 2) as tagGroup, groupIndex}
-					{#if groupIndex !== 0}<br />{/if}
-					{#each tagGroup as tag, index}
-					  <span class="mr-2">{tag}{index !== tagGroup.length - 1 ? ',' : ''}</span>
+				  <span class="tagsOfCard">
+					{#each ad.tags as tag, index}
+					  <span class="mr-2">{tag}{index !== ad.tags.length - 1 ? ',' : ''}</span>
 					{/each}
-				  {/each}
+				  </span>
 				{/if}
 			  </div>
 			  <div slot="rate">
@@ -339,8 +463,28 @@
 	.allad{
 	  display: flex;
 	  justify-content: flex-start;
+	  /* flex-wrap: wrap; */
+	  gap: 35px;
+	  margin-left: 2.5%;
 	}
 	.courses{
 	  font-weight: bold;
+	}
+	.searchBar{
+	  /* margin-bottom: 5px; */
+	  margin-top: 10px;
+	  width: 70%;
+	  margin-left: auto;
+	  margin-right: auto;
+	}
+	.tag-button {
+	  /* width: auto; */
+	  /* display: flex; */
+	  width: 175px; /* Adjust the maximum width as needed */
+	  /* flex-wrap: wrap;
+	  justify-content: center;
+	  align-items: center; */
+	  white-space: normal;
+	  display: inline-block;
 	}
   </style>

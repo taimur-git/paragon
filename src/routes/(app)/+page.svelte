@@ -21,6 +21,7 @@
 
 //   export const fetchedData = writable(null);
 
+	let tagsFromLanding =[];
   let inputChip = '';
   let inputChipList: string[] = []; //grab from backend
   let idList: number[] = [];
@@ -53,9 +54,11 @@
 	try{
 		const data = await res.json();
 		console.log(data);
+		// tagsFromLanding = ['Physics']
 		// if (data.message === 'Success') {
 		// 	// goto('/login');
 		// 	console.log("Success");
+		// tagsFromLanding=['Mathmetic'];
 		// }
 		goto('/ads');
 

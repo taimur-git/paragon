@@ -12,13 +12,6 @@ $: ({ ads } = data);
 let selectedTags: any[] = []; 
 // let showAllFilters = false;
 
-function groupTags(tags: string | any[], groupSize: number) {
-  const grouped = [];
-  for (let i = 0; i < tags.length; i += groupSize) {
-    grouped.push(tags.slice(i, i + groupSize));
-  }
-  return grouped;
-}
 
 // function toggleFilters() {
 //   showAllFilters = !showAllFilters;
@@ -92,16 +85,12 @@ const deleteAd = async (adId) => {
               <div slot="studentLable">
                 Course:
                 {#if ad.tags.length > 0}
-                  {#each groupTags(ad.tags, 2) as tagGroup, groupIndex}
-                    {#if groupIndex !== 0}<br />{/if}
-                    {#each tagGroup as tag, index}
-                      <span class="mr-2">{tag}{index !== tagGroup.length - 1 ? ',' : ''}</span>
+                  <span class="tagsOfCard">
+                    {#each ad.tags as tag, index}
+                      <span class="mr-2">{tag}{index !== ad.tags.length - 1 ? ',' : ''}</span>
                     {/each}
-                  {/each}
+                  </span>
                 {/if}
-              </div>
-              <div slot="online">
-                Online: {ad.online==true ? "Yes" : "No"}
               </div>
               <div slot="active">
                 Last Update: {ad.updatedAt}
@@ -109,7 +98,9 @@ const deleteAd = async (adId) => {
               <div slot="rate">
                 Rate: {ad.salary}
               </div>
-
+              <div slot="tutionType">
+                Tution Type: {ad.tutorType ? ad.tutorType : " "}
+                </div>
               <div slot="buttons" class="buttons">
                 <button class="fixed-button bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md see-button" on:click={()=>deleteAd(ad.adId)}>
                   Delete
@@ -206,11 +197,11 @@ const deleteAd = async (adId) => {
       align-items: center;
       margin-bottom: 4px; 
     } */
-.allad{
-    /* height: calc(100vh - 90px);
-    overflow-y: hidden; */
+    .allad{
     display: flex;
     justify-content: flex-start;
+    /* flex-wrap: wrap; */
+    gap: 25px;
   }
   
   </style>
