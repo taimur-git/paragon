@@ -1,5 +1,7 @@
 <script lang="ts">
-	import type { PageData } from './$types';
+	import { Form } from 'carbon-components-svelte';
+import type { PageData } from './$types';
+	import { goto } from '$app/navigation';
 	export let data: PageData;
   
 	let editedData = {
@@ -9,48 +11,53 @@
 	  phone: data.user?.phone || '',
     photo: data.user?.image || '',
 	};
-  async function updateProfile(event) {
-    event.preventDefault();
+  
 
-    const formData = new FormData();
-    formData.append('name', editedData.name);
-    formData.append('email', editedData.email);
-    formData.append('bio', editedData.bio);
-    formData.append('phone', editedData.phone);
-    formData.append('photo', editedData.photo); // Append the selected photo file
+  // function backToProfile(){
+  //   goto(`/profile`);
+  // }
+  // async function updateProfile(event) {
+  //   event.preventDefault();
 
-    try {
-      const response = await fetch('/uploadProfilePhoto', {
-        method: 'POST',
-        body: formData,
-      });
+  //   const formData = new FormData();
+  //   formData.append('name', editedData.name);
+  //   formData.append('email', editedData.email);
+  //   formData.append('bio', editedData.bio);
+  //   formData.append('phone', editedData.phone);
+  //   formData.append('photo', editedData.photo); // Append the selected photo file
 
-      if (response.ok) {
-        const responseData = await response.json();
-        // Update the user's profile with the new photo URL
-        const updateResponse = await fetch('/updateProfile', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            photo: responseData.url,
-          }),
-        });
-        // ... update the UI or do further processing ...
-        return true;
-        } 
-        else throw Error("Couldn't upload image");
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  //   try {
+  //     const response = await fetch('/uploadProfilePhoto', {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
+
+  //     if (response.ok) {
+  //       const responseData = await response.json();
+  //       // Update the user's profile with the new photo URL
+  //       const updateResponse = await fetch('/updateProfile', {
+  //         method: 'POST',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           photo: responseData.url,
+  //         }),
+  //       });
+  //       // ... update the UI or do further processing ...
+  //       return true;
+  //       } 
+  //       else throw Error("Couldn't upload image");
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
 </script>
 
 <div class="edit-container">
 	<h1>Edit Profile</h1>
-	<form on:submit={updateProfile}>
+	<Form method="POST">
 
 		<div class="profile-info">
 			<img src={data.user?.image} alt="Profile Photo" class="profile-photo" />
@@ -61,23 +68,24 @@
 		<input type="file" id="photo" bind:value={editedData.photo} />
 
 		<label for="name">Name:</label>
-		<input type="text" id="name" bind:value={editedData.name} />
+		<input type="text" id="name" bind:value={editedData.name} name="username"/>
 
 		<label for="email">Email:</label>
-		<input type="email" id="email" bind:value={editedData.email} />
+		<input type="email" id="email" bind:value={editedData.email} name="email" />
 
 		<label for="bio">Bio:</label>
-		<textarea id="bio" bind:value={editedData.bio}></textarea>
+		<textarea id="bio" bind:value={editedData.bio} name="bio"></textarea>
 
 		<label for="phone">Phone Number:</label>
-		<input type="tel" id="phone" bind:value={editedData.phone} />
+		<input type="tel" id="phone" bind:value={editedData.phone} name="phone"/>
 		
+    <input type="hidden" name="userid" value={data.id} />
 
 		<button type="submit" class="action-button">Save Changes</button>
 		
 		<button type="button" class="action-button" on:click={() => (window.location.href = '/profile')}>Cancel</button>
 
-	</form>
+	</Form>
 </div>
 
 <style>
