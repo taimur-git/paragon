@@ -2,7 +2,10 @@
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
 	import AdModal from '../../../components/AdModal.svelte';
+	import mapboxgl from 'mapbox-gl';
+	import { onMount } from 'svelte';
 
+	
 	export let data: PageData;
 	let institutes = data.institute;
     let userLocation; 
@@ -14,6 +17,30 @@
 		let data = await res.json();
 		console.log(data);
 	}
+
+	let map;
+
+	onMount(() => {
+  mapboxgl.accessToken = 'pk.eyJ1IjoiYXNpZnVkZGluYWhtZWQiLCJhIjoiY2xsaXk0aGRvMG12bDNmbmw2NXJnNmhnZiJ9.v_j4f14vNUCaC5tWQq5sCA'; // Replace with your Mapbox API key
+
+  map = new mapboxgl.Map({
+	container: 'map',
+	style: 'mapbox://styles/mapbox/streets-v11',
+	center: [-74.5, 40],
+	zoom: 9,
+  });
+
+  if ('geolocation' in navigator) {
+	navigator.geolocation.getCurrentPosition((position) => {
+	  const { latitude, longitude } = position.coords;
+	  userLocation = [longitude, latitude];
+
+	  new mapboxgl.Marker().setLngLat(userLocation).addTo(map);
+
+	  map.setCenter(userLocation);
+	});
+  }
+});
 </script>
 
 <body>   
@@ -52,6 +79,11 @@
 			<span class="detail-label">University:</span>
 			{data.user?.institute?.name}
 		</p>
+
+		<div class="mapbox-location">
+			<p class="location-label">Location</p>
+			<div id="map" class="mapbox-container"></div>
+		  </div>
 
 
 		<div class="edit-button">
@@ -144,6 +176,8 @@ body {
 	}
     .edit-button {
         margin-top: 1rem;
+		text-align: center;
+		cursor: pointer;
     }
     .edit-button button {
         padding: 0.5rem 1rem;
@@ -155,6 +189,7 @@ body {
         font-weight: bold;
         cursor: pointer;
         transition: all 0.3s ease;
+		
     }
     .edit-button button:hover {
         background-color: #7b3fe5;
@@ -166,6 +201,30 @@ body {
     .edit-button button:active {
         transform: scale(0.98);
     }
+
+	.mapbox-location {
+    text-align: center;
+    margin-top: 2rem; /* Adjust margin as needed */
+  }
+
+  .location-label {
+    font-size: larger;
+    font-weight: bold;
+    color: #020202; /* Adjust color to match other detail labels */
+    background-color: #decaff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .mapbox-container {
+    width: 100%;
+    height: 400px;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
     @media screen and (max-width: 768px) {
 		.profile-container {
 			flex-direction: column;
