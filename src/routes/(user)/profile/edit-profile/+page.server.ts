@@ -191,48 +191,4 @@ export const load: PageServerLoad = async ({ locals }) => {
   };
 };
 
-export const actions: Actions = {
-  default: async ({ request, locals }) => {
-    const form = await request.formData();
-    
-    const id = form.get("userid");
-    const username = form.get("username");
-    const bio = form.get("bio");
-    const email = form.get("email");
-    const phone = form.get("phone");
-        
-      try{
-          await prisma.user.update({
-              data: {
-                  username: username,
-                  name: username,
-                  email: email,
-                  bio: bio,
-                  phone: phone,
-              },
-              where: {
-                  id: id,
-              },
-              include: {
-                  location: true,
-                  institute: true,
-                  credentials: true,
-                  ads: true,
-              }
-          })
-          await prisma.authUser.update({
-              data: {
-                  username: username,
-              },
-              where: {
-                  id: id,
-              }
-          })
 
-          throw redirect(302, "/profile");
-          
-      } catch (err) { 
-          console.error(err);
-      }
-  }
-}
