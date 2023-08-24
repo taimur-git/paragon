@@ -1,6 +1,8 @@
 import type { Actions, PageServerLoad } from "./$types"
 import { prisma } from "$lib/server/prisma"
 import { fail } from "@sveltejs/kit"
+import { ex } from "@fullcalendar/core/internal-common";
+import { exclude_internal_props } from "svelte/internal";
 
 export const load: PageServerLoad = async ({ locals }) => {
     try {
@@ -14,11 +16,14 @@ export const load: PageServerLoad = async ({ locals }) => {
                 include: {
                     institute: true // Include the institute (university) relationship
                 }
+                
             }, // Include the user relation
+            
               tags: {
                 select: { tag: true } // Include only the tag relation and select the 'tag' field (which is the Tag model)
               } // Include the user relation
             },
+            
             
             // where: {
             //     // Use the selectedTag value to filter the ads
@@ -47,9 +52,11 @@ export const load: PageServerLoad = async ({ locals }) => {
                 lastLogin: ad.user.lastLogin.toISOString().split("T")[0],
                 tutorType: ad.typeOfTutor,
                 salaryType: ad.salaryType,
+                adTitle: ad.title,
                 adDescription: ad.description,
                 updateAT: ad.dateUpdated.toISOString().split("T")[0],
-                instituteName: ad.user.institute?.name , // Use a default value if no institute is associated
+                instituteName: ad.user.institute?.name,
+                 // Use a default value if no institute is associated
             })),
             logInfo,
           };

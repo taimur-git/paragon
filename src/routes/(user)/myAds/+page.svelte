@@ -3,6 +3,9 @@ import type { PageData } from './$types';
 import Card from '../../../components/Card.svelte';
 import AdModal from '../../../components/AdModal.svelte';
 	import { modalStore, toastStore, type ModalSettings } from '@skeletonlabs/skeleton';
+	import { goto } from '$app/navigation';
+	import { fade, scale } from 'svelte/transition';
+  import { flip } from "svelte/animate";
 
 let modal: AdModal;
 export let data: PageData;
@@ -32,21 +35,7 @@ function groupTags(tags: string | any[], groupSize: number) {
 //   }
 // }
 
-function handleOutsideClick(event: { target: any; }) {
-  const clickedElement = event.target;
-  console.log(clickedElement);
-  if (
-    !clickedElement.closest('.filter-button') &&
-    // !clickedElement.closest('.flex-wrap') &&
-    // !clickedElement.closest('.flex-wrap allad') &&
-    // clickedElement.closest('.flex flex-wrap allad') &&
-    !clickedElement.closest('.m-card') 
-    // clickedElement.closest('.fullPage') 
-  ) 
-  {
-    selectedTags = []; 
-  }
-}
+
 
 const deleteAd = async (adId) => {
   const confirmDelete: ModalSettings = {
@@ -80,12 +69,21 @@ const deleteAd = async (adId) => {
 </script>
 
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="fullPage" on:click={handleOutsideClick}>
-    <div class="flex flex-wrap allad">
-      {#each ads as ad}
+  <div class="page_title">
+    <h1>My Ads</h1>
+  </div>
+  <div class="fullPage ">
+    <div class="flex flex-wrap allad mt-6">
+      {#each ads as ad (ad.adId)}
         <!-- {#if selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(tag))} -->
-          <article class="m-2">
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <div class="relative" animate:flip={{duration: 500}}>
+            <button on:click={()=>deleteAd(ad.adId)} class="btn-icon btn-icon-sm variant-filled-error absolute -top-1.5 -right-1.5 z-10">X</button>
+          <article class="m-2 cursor-pointer" in:fade out:scale|local on:click={()=>{
+            goto(`/myAds/${ad.adId}`);
+          }}>
             <Card>
+              
               <div slot="header">
                 Name: {ad.user}
               </div>
@@ -105,19 +103,14 @@ const deleteAd = async (adId) => {
               </div>
 
               <div slot="buttons" class="buttons">
-                <button class="fixed-button bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md see-button" on:click={()=>deleteAd(ad.adId)}>
-                  Delete
-                </button>
-                <a
-                href={`/myAds/${ad.adId}`}  
-                class="fixed-button bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-md see-button"
-                >
-                Update
-              </a>
+                <!-- <button class=" font-medium btn btn-sm variant-filled-tertiary font-semibold fixed-button" on:click={()=>deleteAd(ad.adId)}>Delete</button>
+                <a href={`/myAds/${ad.adId}`} class="font-medium btn btn-sm variant-filled-primary font-semibold fixed-button">Edit</a> -->
               </div>
               
             </Card>
           </article>
+          </div>
+          
         <!-- {/if} -->
       {/each}
     </div>
@@ -168,40 +161,18 @@ const deleteAd = async (adId) => {
     width: 120px; /* Set a fixed width for the buttons */
   }
   
-    .filter-button:hover, .see-button:hover {
-      background-color: #4C0C74;
-      color: white;
-    }
-  
-    .filter-button-active {
-      background-color: #4C0C74;
-      color: white;
-    }
-    .fullPage{
-      /* background-color: black; */
-      /* overflow-y: hidden; */
-      /* width: 100%; */
-      height: 88dvh;
-      /* padding-bottom: 5%; */
-    }
-    /* .allad{
-      height: calc(100vh - 90px);
-      overflow-y: hidden;
-    } */
-    /* Style for the tag list */
-    /* .tag-list {
-      display: flex;
-      flex-wrap: wrap;
-    } */
-    
-    /* Style for each tag line */
-    /* .tag-line {
-      display: flex;
-      align-items: center;
-      margin-bottom: 4px; 
-    } */
-  
-  
-  </style>
-  
-  
+  .fullPage{
+    margin: 0 auto;
+    width: 80%;
+  }
+
+  .page_title {
+    background-color: #f9f8f8;
+    min-height: 20dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 2px 3px 0px, rgba(60, 64, 67, 0.15) 0px 6px 10px 4px;
+  }
+</style>
+ 

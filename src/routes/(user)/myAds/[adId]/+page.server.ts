@@ -48,6 +48,35 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             }
         });
 
+        const joinRequests = await prisma.request.findMany({
+            where: {
+                adId: parseInt(params.adId)
+            }
+        });
+
+        // console.log(joinRequests.length);
+
+        const req_users = await prisma.user.findMany({
+            where: {
+                id: {
+                    in: joinRequests.map((request) => request.userId)
+                }
+            }
+        });
+
+        const appointments = await prisma.appointment.findMany({
+            where: {
+                adId: parseInt(params.adId)
+            }
+        });
+
+        const app_users = await prisma.user.findMany({
+            where: {
+                id: {
+                    in: appointments.map((appointment) => appointment.studentId)
+                }
+            }
+        });
         return {
             tagOptions,
             adId: ads.id,
@@ -56,7 +85,11 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             teachingType: ads.typeOfTutor,
             salary: ads.expectedSalary,
             adDescription: ads.description,
-            tags:ads.tags.map((tag) => tag.tag.name), 
+            tags:ads.tags.map((tag) => tag.tag.name),
+            req_users: req_users,
+            app_users: app_users,
+            numRequests: joinRequests.length,
+            numAppointments: appointments.length,
         };
     } catch (error) {
         console.error("Error loading data from Prisma:", error);

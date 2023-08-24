@@ -9,6 +9,7 @@
 	  display: flex; /* Add display:flex to make the container a flex container */
 	  flex-direction: column; /* Make the container stack its children vertically */
 	  height: 100%; /* Make the container take up the full height of its parent */
+	  position: relative; /* Make the container a positioning context for its children */
 	}
   
 	/* Center the content within the card */
@@ -34,6 +35,9 @@
   
   <div class="m-card">
 	<!-- Use flex layout to vertically align content -->
+	<slot name="overlayBtn">
+
+	</slot>
 	<div class="card-content">
 	  <h2>
 		<slot name="header">Unknown item</slot>
