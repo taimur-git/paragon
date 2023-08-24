@@ -8,7 +8,8 @@
   $: ({ tags } = data);
   $: ({ ads } = data);
   $: ({ logInfo } = data);
-
+  
+  
 
   let selectedCardInfo: { cardId: string, filters: number[] } | null = null;
 
@@ -229,6 +230,7 @@ function sendReq(selectedCardId: Object) {
         <article class="m-2">
           <Card>
             <div slot="header">
+              <!-- Title: {ad.title} -->
               Name: {ad.user}
             </div>
             <div slot="studentLable">

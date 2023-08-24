@@ -4,6 +4,8 @@ import Card from '../../../components/Card.svelte';
 import AdModal from '../../../components/AdModal.svelte';
 	import { modalStore, toastStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { goto } from '$app/navigation';
+	import { fade, scale } from 'svelte/transition';
+  import { flip } from "svelte/animate";
 
 let modal: AdModal;
 export let data: PageData;
@@ -70,15 +72,18 @@ const deleteAd = async (adId) => {
   <div class="page_title">
     <h1>My Ads</h1>
   </div>
-  <div class="fullPage">
-    <div class="flex flex-wrap allad">
-      {#each ads as ad}
+  <div class="fullPage ">
+    <div class="flex flex-wrap allad mt-6">
+      {#each ads as ad (ad.adId)}
         <!-- {#if selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(tag))} -->
           <!-- svelte-ignore a11y-click-events-have-key-events -->
-          <article class="m-2">
-            <Card on:click={()=>{
-              goto(`/myAds/${ad.adId}`);
-            }}>
+          <div class="relative" animate:flip={{duration: 500}}>
+            <button on:click={()=>deleteAd(ad.adId)} class="btn-icon btn-icon-sm variant-filled-error absolute -top-1.5 -right-1.5 z-10">X</button>
+          <article class="m-2 cursor-pointer" in:fade out:scale|local on:click={()=>{
+            goto(`/myAds/${ad.adId}`);
+          }}>
+            <Card>
+              
               <div slot="header">
                 Name: {ad.user}
               </div>
@@ -98,12 +103,14 @@ const deleteAd = async (adId) => {
               </div>
 
               <div slot="buttons" class="buttons">
-                <button class=" font-medium btn btn-sm variant-filled-tertiary font-semibold fixed-button" on:click={()=>deleteAd(ad.adId)}>Delete</button>
-                <a href={`/myAds/${ad.adId}`} class="font-medium btn btn-sm variant-filled-primary font-semibold fixed-button">Edit</a>
+                <!-- <button class=" font-medium btn btn-sm variant-filled-tertiary font-semibold fixed-button" on:click={()=>deleteAd(ad.adId)}>Delete</button>
+                <a href={`/myAds/${ad.adId}`} class="font-medium btn btn-sm variant-filled-primary font-semibold fixed-button">Edit</a> -->
               </div>
               
             </Card>
           </article>
+          </div>
+          
         <!-- {/if} -->
       {/each}
     </div>
