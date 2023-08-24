@@ -150,14 +150,14 @@
                 </AccordionItem>
                 <!-- ... -->
             </Accordion>
-			<button class="btn btn-lg variant-outline-primary hover:variant-filled-primary">Launch 🚀</button>
+			<button class="mt-auto btn btn-lg variant-outline-primary hover:variant-filled-secondary">Launch 🚀</button>
         </div>
     </svelte:fragment>
 	
 
 
 	<div class="flex justify-center myads_content">
-		<div class="w-full sm:w-3/5 md:w-1/3" id="popup">
+		<div class="w-full px-14 py-3" id="popup">
 			<!-- <h1 class="text-2xl font-bold mb-2.5">Post Your {data.teachingType}</h1> -->
 	
 			<!-- <h1 class="text-lg font-normal mb-4">It is recommended to finish your <a href='/profile'>Profile</a> before posting an ad.</h1> -->
@@ -233,7 +233,8 @@
 				<input type="hidden" name="ad_Id" value={id} />
 				<!-- <input type = "hidden" name="userid" value="{adId}" /> -->
 	
-				<Button kind="secondary" type="submit">Update</Button>
+				<!-- <Button kind="secondary" type="submit">Update</Button> -->
+				<button class="mt-3 btn variant-outline-primary hover:variant-filled-primary" type="submit">update</button>
 			</Form>
 		</div>
 	</div>
@@ -275,6 +276,8 @@
     border-left: 1px solid #a18cad;
     padding: 1em .5em;
     min-height: 91dvh;
+	display: flex;
+	flex-direction: column;
   }
 
   .req_num {

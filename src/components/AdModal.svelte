@@ -8,9 +8,13 @@
   export let ad; 
   export let currentPage; // Add this prop to determine the current page
 
-  const toast: ToastSettings = {
+  const error_toast: ToastSettings = {
       message: "You have already requested for this ad!",
       background: "variant-filled-error"
+  }
+  const req_toast: ToastSettings = {
+      message: "Your request has been sent successfully!",
+      background: "variant-ghost-success"
   }
   
   export function show(adData,selectedCardId,logInfo=null) {
@@ -41,9 +45,13 @@
       goto('/register');
     }
     else if(data.message == "Already requested"){
-      toastStore.trigger(toast);
+      toastStore.trigger(error_toast);
     }
-      
+    
+    else if(data.message == "Requested"){
+      toastStore.trigger(req_toast);
+    }
+
     } catch (err) {
       console.log(err);
     }

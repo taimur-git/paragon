@@ -151,7 +151,7 @@ on:input={showTags}
 
 </div>
 
-<Button kind="secondary" type="submit" on:click={handleSearch}>Search...</Button>
+<button class="btn mt-1 variant-filled-secondary" on:click={handleSearch}>Search</button>
 
 
 <!-- </Form> -->
