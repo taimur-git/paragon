@@ -15,13 +15,6 @@ $: ({ ads } = data);
 let selectedTags: any[] = []; 
 // let showAllFilters = false;
 
-function groupTags(tags: string | any[], groupSize: number) {
-  const grouped = [];
-  for (let i = 0; i < tags.length; i += groupSize) {
-    grouped.push(tags.slice(i, i + groupSize));
-  }
-  return grouped;
-}
 
 // function toggleFilters() {
 //   showAllFilters = !showAllFilters;
@@ -90,18 +83,22 @@ const deleteAd = async (adId) => {
               <div slot="studentLable">
                 Course:
                 {#if ad.tags.length > 0}
-                  {#each groupTags(ad.tags, 2) as tagGroup, groupIndex}
-                    {#if groupIndex !== 0}<br />{/if}
-                    {#each tagGroup as tag, index}
-                      <span class="mr-2">{tag}{index !== tagGroup.length - 1 ? ',' : ''}</span>
+                  <span class="tagsOfCard">
+                    {#each ad.tags as tag, index}
+                      <span class="mr-2">{tag}{index !== ad.tags.length - 1 ? ',' : ''}</span>
                     {/each}
-                  {/each}
+                  </span>
                 {/if}
+              </div>
+              <div slot="active">
+                Last Update: {ad.updatedAt}
               </div>
               <div slot="rate">
                 Rate: {ad.salary}
               </div>
-
+              <div slot="tutionType">
+                Tution Type: {ad.tutorType ? ad.tutorType : " "}
+                </div>
               <div slot="buttons" class="buttons">
                 <!-- <button class=" font-medium btn btn-sm variant-filled-tertiary font-semibold fixed-button" on:click={()=>deleteAd(ad.adId)}>Delete</button>
                 <a href={`/myAds/${ad.adId}`} class="font-medium btn btn-sm variant-filled-primary font-semibold fixed-button">Edit</a> -->
@@ -174,5 +171,46 @@ const deleteAd = async (adId) => {
     align-items: center;
     box-shadow: rgba(60, 64, 67, 0.3) 0px 2px 3px 0px, rgba(60, 64, 67, 0.15) 0px 6px 10px 4px;
   }
-</style>
  
+    .filter-button:hover, .see-button:hover {
+      background-color: #4C0C74;
+      color: white;
+    }
+  
+    .filter-button-active {
+      background-color: #4C0C74;
+      color: white;
+    }
+    .fullPage{
+      /* background-color: black; */
+      /* overflow-y: hidden; */
+      /* width: 100%; */
+      height: 88dvh;
+      /* padding-bottom: 5%; */
+    }
+    /* .allad{
+      height: calc(100vh - 90px);
+      overflow-y: hidden;
+    } */
+    /* Style for the tag list */
+    /* .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+    } */
+    
+    /* Style for each tag line */
+    /* .tag-line {
+      display: flex;
+      align-items: center;
+      margin-bottom: 4px; 
+    } */
+    .allad{
+    display: flex;
+    justify-content: flex-start;
+    /* flex-wrap: wrap; */
+    gap: 25px;
+  }
+  
+  </style>
+  
+  

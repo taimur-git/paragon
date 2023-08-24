@@ -2,78 +2,54 @@
 	import { goto } from "$app/navigation";
 	import { toastStore, type ToastSettings } from "@skeletonlabs/skeleton";
 
-  // import { enroll } from '../routes/home/+page.sever.ts';
-    let targetPage = '/';
-    let shown = false;
-    let logInId;
-    export let ad; 
-    export let currentPage; // Add this prop to determine the current page
-    // export let logInId; // Add this prop to determine the current page
+  let targetPage = '/';
+  let shown = false;
+  let logInId;
+  export let ad; 
+  export let currentPage; // Add this prop to determine the current page
 
-    const toast: ToastSettings = {
-        message: "You have already requested for this ad!",
-        background: "variant-filled-error"
+  const toast: ToastSettings = {
+      message: "You have already requested for this ad!",
+      background: "variant-filled-error"
+  }
+  
+  export function show(adData,selectedCardId,logInfo=null) {
+      ad = adData;
+    shown = true;
+    selectedCardId.cardId=ad.id;
+    logInId=logInfo.user.userId;
+  }
+  export function hide() {
+    shown = false;
+  }
+  export async function sendReq(ad) {
+    shown = false;
+
+    const res = await fetch('/api/processReq', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(ad)
+  });
+
+  try{
+    const data = await res.json();
+    console.log(data.message);
+    if(data.message == "No session found"){
+      // alert("Request Sent Successfully");
+      goto('/register');
     }
-    
-    export function show(adData,selectedCardId,logInfo) {
-        ad = adData;
-      shown = true;
-      selectedCardId.cardId=ad.id;
-      logInId=logInfo.user.userId;
+    else if(data.message == "Already requested"){
+      toastStore.trigger(toast);
     }
-    export function hide() {
-      shown = false;
+      
+    } catch (err) {
+      console.log(err);
     }
-    export async function sendReq(ad) {
-      // goto(targetPage);
-      // console.log("Ad Id " +id);
-      // console.log(ad);
-    
-      shown = false;
+  }
 
-      const res = await fetch('/api/processReq', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(ad)
-    });
-
-    // if(res)
-
-    try{
-      const data = await res.json();
-      console.log(data.message);
-      if(data.message == "No session found"){
-        // alert("Request Sent Successfully");
-        goto('/register');
-      }
-      else if(data.message == "Already requested"){
-        toastStore.trigger(toast);
-      }
-        
-      } catch (err) {
-        console.log(err);
-      }
-    }
-
-
-//     function sendEnrollRequest(id) {
-//   // Call the function to trigger the enroll action
-//   // You might want to pass any necessary data as well
-//   enroll({ 
-//     id: id,
-//    });
-
-//   // Close the modal
-//   // modal.hide();
-//   shown = false;
-// }
-
-
-
-
-  </script>
+</script>
 
 {#if currentPage == "home" && shown}
 <!-- {#if shown} -->
@@ -83,13 +59,14 @@
       <div class="modal-content">
 
         <div class="user-image">
-          <img src={ad.userImage} alt="User" class="user-image" />
+          <!-- <img src={ad.userImage} alt="User" class="user-image" /> -->
+          <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar"  class="user-image"  />
         </div>
 
         <div class="user-info">
             <h3>AD Details</h3>
             <p class="user-name">{ad.user}</p>
-            <p>Rate: {ad.salary}</p>
+            <p>Rate: {ad.salary==0? "Negotiable":ad.salary}</p>
             <p>Salary Type: {ad.salaryType}</p>
             <p>Course: {ad.tags.join(', ')}</p>
             <p>Upload: {ad.createdAt}</p>
@@ -99,16 +76,11 @@
       </div>
       <p>Last Login: {ad.lastLogin}</p>
       <p>Description: {ad.adDescription ? ad.adDescription : ''}</p>
-      <!-- <p>"Loged in user" {logInId}</p> -->
-      <!-- <p>"ad owner id" {ad.user}</p> -->
       <div class="button-container">
         <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
         {#if ad.userid != logInId}
           <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => sendReq(ad)}>Confirm</button>
         {/if}
-        <!-- <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" formaction="../routes/home?enroll" on:click>Confirm</button> -->
-        <!-- <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md"
-        on:click={() => sendEnrollRequest(ad.id)}>Confirm</button> -->
 
       </div>
     </div>
@@ -139,18 +111,6 @@
       </div>
       <p>Last Login: {ad.lastLogin}</p>
       <p>Description: {ad.adDescription ? ad.adDescription : ''}</p>
-      <!-- <div class="button-container">
-        <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
-        <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => changePage(ad.adId)}>Confirm</button>
-      </div> -->
-<!-- 
-      <table>
-        <tr>
-          <td>Student</td>
-          <td>Name</td>
-          <td>Course</td>
-        </tr>
-      </table> -->
     </div>
   </div>
 {/if}
@@ -177,12 +137,12 @@
   .modal-content {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
   }
 
   .user-image {
-    width: 100px; /* Adjust the image size as needed */
-    height: 100px;  /* Adjust the image size as needed */
+    width: 150px; /* Adjust the image size as needed */
+    height: 150px;  /* Adjust the image size as needed */
     object-fit: cover;
     border-radius: 1%;
   }
