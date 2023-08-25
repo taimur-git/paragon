@@ -12,12 +12,6 @@
   $: ({ ads } = data);
   $: ({ logInfo } = data);
   
-  
-
-  let selectedCards = [];
-
-  let selectedCardInfo: { cardId: string, filters: number[] } | null = null;
-
   let filter_types = [
 		{ id: 1, text: `Course` },
 		{ id: 2, text: `Tution Type` },
@@ -29,88 +23,22 @@
   let allTagBtn = true; 
   let showAllFilters = false;
   let modal: AdModal;
-  
-  // const tagsSelected={
-  //   tags: [],
-  //   newTags: [],
-  // }
-  // let selectedCardId: string | null = null; // Store the ID of the selected card
-
-//   async function handleTagSelection(tagName: any) {
-//   if (selected === 1) {
-//     if (selectedTags.includes(tagName)) {
-//       selectedTags = selectedTags.filter(tag => tag !== tagName);
-//     } else {
-
-//       selectedTags = [...selectedTags, tagName];
-//     }
-
-//   } else if (selected === 3) {
-//     if (selectedTags.includes(tagName)) {
-//       selectedTags = selectedTags.filter(tag => tag !== tagName);
-//     } else {
-//     //   tagsSelected.tags=[...selectedTags];
-//     //   tagsSelected.newTags=[tagName];
-
-//     //   const res = await fetch('/api/filterAds', {
-//     //   method: 'POST',
-//     //   headers: {
-//     //     'Content-Type': 'application/json',
-//     //   },
-//     //   body: JSON.stringify(tagsSelected)
-//     // });
-
-//     // try{
-//     //   const data = await res.json();
-//     //   console.log(data.message);
-//     //   if(data.message == "No ads found"){
-//     //     // alert("Request Sent Successfully");
-//     //     selectedTags = [];
-//     //   }
-//     //   else{
-//     //     ads = data.message;
-//     //     console.log(ads);
-//     //     // selectedTags = [...selectedTags, tagName];
-//     //   }
-        
-//     //   } catch (err) {
-//     //     console.log(err);
-//     //   }
-
-
-//       selectedTags = [...selectedTags, tagName];
-//     }
-//   } else if (selected === 2) {
-//     if (selectedTags.includes(tagName)) {
-//       selectedTags = selectedTags.filter(tag => tag !== tagName);
-//     } else {
-//       selectedTags = [...selectedTags, tagName];
-//     }
-
-//   }
-//       // selectedCardId = cardId; // Update the selected card ID
-
-// }
-
 
 
 function handleTagSelection(tagName: any) {
-  if (selectedTags.includes(tagName) && inputChipList.includes(tagName)) {
+  if (selectedTags.includes(tagName) || inputChipList.includes(tagName)) {
     selectedTags = selectedTags.filter(tag => tag !== tagName);
     inputChipList = inputChipList.filter(tag => tag !== tagName);
     if(selectedTags.length === 0){
         allTagBtn=true;
-        hideTags();
       }
   } 
   else if (tagName === 'all') {
     inputChipList = [];
     selectedTags = [];
-    hideTags();
     allTagBtn=true;
   }
   else {
-    inputChipList = [...inputChipList, tagName];
     selectedTags = [...selectedTags, tagName];
     allTagBtn=false;
   }
@@ -139,96 +67,54 @@ let tagScrollPosition = 0;
     }
   }
 
-  const handleSearch = async (e: Event) => { 
-    e.preventDefault();
+  let inputChip = '';
+  let inputChipList = []; //grab from backend
+  let idList: number[] = [];
 
-    const res = await fetch('/api/searchAd', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(idList)
-    });
+function display_inputChipList(){
+  if(inputChipList.length!==0){
+    let  num = 0;
+      num = parseInt(inputChipList);
+      if(isNaN(num)){
 
-	try{
-		const data = await res.json();
-		// console.log(data);
-    // let tagsFromSearch = inputChipList;
-    selectedTags = [ ...inputChipList];
-    // tagsFromSearch=[];
-    // console.log(selectedTags);
+        selectedTags=[capitalizeFirstLetter(inputChipList)];
+      }
+      else{
+        selectedTags.push(num);
+      }
+    allTagBtn=false;
+  }
+  else{
+    handleTagSelection('all');
 
-	}catch(err){
-		console.log(err);
-	}
   }
 
-  let inputChip = '';
-  let inputChipList: string[] = []; //grab from backend
-  let idList: number[] = [];
-  function onInputChipSelect(event: any): void {
-		//console.log('onInputChipSelect', event.detail);
-		if (inputChipList.includes(event.detail.value) === false) {
-			inputChipList = [...inputChipList, event.detail.value];
-            idList = [...idList, event.detail.idValue];
-			inputChip = '';
-      handleSearch(event);
-
-		}
-	}
-
-  let tagOptions: AutocompleteOption[] = data.tagOptions;//data;
-
-  let hide_tags: boolean = true;
-
-function hideTags() {
-  hide_tags = true;
-}
-function showTags() {
-  hide_tags = false;
-  allTagBtn=false;
-}
-
-function removetag(){
-  selectedTags = inputChipList;
-  if(inputChipList.length === 0){
-        allTagBtn=true;
-        hideTags();
-      }
 }
 
 
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  }
+
+  function searchMatchesTag(courseTags, tag) {
+  return courseTags.some(courseTag => {
+    const courseStart = courseTag.toLowerCase().substring(0, tag.length);
+    return courseStart === tag.toLowerCase();
+  });
+}
+
+let foundResults = false;
+
+let res = false;
 
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="fullPage" >
-  <div class="searchBar">
-    <InputChip bind:input={inputChip} bind:value={inputChipList} name="chips" placeholder="Search your desired subject, course..." 
-  on:focus={hideTags} 
-  on:input={showTags} class="courseSearch" 
-  on:click={removetag}
- 
-  />
-
-
-  <input type="hidden" name="tags" value={inputChipList} />
-  <input type="hidden" name="tagIds" value={idList} />
-
-  <div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1" class:hidden={hide_tags}>
-    <Autocomplete 
-      bind:input={inputChip}
-      options={tagOptions}
-      denylist={inputChipList}
-      on:selection={onInputChipSelect}
-
-    />
-
+  <div class="input-group input-group-divider grid-cols-[auto_1fr_auto] searchBar">
+    <input class="searchInput"  bind:value={inputChipList} type="search" placeholder="Search..." /> 
+    <button class="variant-filled-secondary searchBtn"  on:click={display_inputChipList}>Submit</button>
   </div>
-
-</div>
-
-<!-- <Button class="search" kind="secondary" type="submit" on:click={handleSearch}>Search...</Button> -->
   
   <div class="tag flex flex-wrap {showAllFilters ? 'tag-expanded' : ''}">
     <select bind:value={selected} class="select_filter">
@@ -236,8 +122,6 @@ function removetag(){
         <option value={filter_type.id}>{filter_type.text}</option>
       {/each}
     </select>
-
-  
    
     {#if selected === 1}
       {#if tags.length > tagsPerPage}
@@ -370,15 +254,13 @@ function removetag(){
   
   <div class="flex flex-wrap allad">
     {#each ads as ad}
-      {#if selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(tag)) || selectedTags.includes(ad.salary) || selectedTags.includes(ad.typeOfTutor) }
+    {#if res = (selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) || selectedTags.some(tag => searchMatchesTag(ad.tags, tag)) || selectedTags.includes(capitalizeFirstLetter(ad.typeOfTutor))  || selectedTags.includes(capitalizeFirstLetter(ad.user)) || selectedTags.includes(capitalizeFirstLetter(ad.salaryType))) }
         <article class="m-2">
           <Card>
             <div slot="header">
-              <!-- Title: {ad.title} -->
               Name: {ad.user}
             </div>
             <div slot="studentLable">
-              <!-- <span class="courses">Course: </span> -->
               Course:
               {#if ad.tags.length > 0}
                 <span class="tagsOfCard">
@@ -410,8 +292,15 @@ function removetag(){
             </div>
           </Card>
         </article>
+        <!-- {#if !foundResults}
+          {@html foundResults = true}
+        {/if} -->
       {/if}
     {/each}
+<!-- {res} -->
+    <!-- {#if res==false }
+      <p>No results found.</p>
+    {/if} -->
   </div>
 </div>
 
@@ -478,6 +367,8 @@ function removetag(){
     width: 70%;
     margin-left: auto;
     margin-right: auto;
+    display: flex;
+    justify-content: space-between;
   }
   .tag-button {
     /* width: auto; */
@@ -489,4 +380,10 @@ function removetag(){
     white-space: normal;
     display: inline-block;
   }
+  .searchInput{
+    width: 100%;
+    /* margin-left: 10px; */
+    /* margin-right: 10px; */
+  }
+  
 </style>
