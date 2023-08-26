@@ -17,8 +17,14 @@
 		AppShell
 	} from '@skeletonlabs/skeleton';
 	import type { PageData } from './$types';
+	import { goto } from '$app/navigation';
+	import { enhance } from '$app/forms';
+	import { page } from '$app/stores';
+	/** @type {import('./$types').ActionData} */
+	export let form;
+
 	export let data: PageData;
-	let id = data.adId;
+	let adId = data.adId;
 
 	// import { onMount, setContext } from "svelte";
 
@@ -70,47 +76,61 @@
 		hide_tags = false;
 	}
 
-	const addAppointment = (userId) => {
-		fetch(`/api/createAppointment`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				userId: userId,
-				adId: id
-			})
-		}).then((res) => {
-			if (res.status === 201) {
-				toastStore.trigger({
-					message: 'Appointment made successfully',
-					background: 'variant-ghost-success'
-				});
-			} else {
-				alert('Appointment not added');
-			}
-		});
+	const addAppointment = () => {
+		
+		console.log(form?.success);
+		if (form?.success) {
+			toastStore.trigger({
+				message: 'Appointment made successfully',
+				background: 'variant-ghost-success'
+			});
+		} else {
+			toastStore.trigger({
+				message: 'Appointment not made',
+				background: 'variant-ghost-error'
+			});
+		}
 	};
 
-	const deleteRequest = (userId) => {
-		fetch(`/api/deleteRequest`, {
-			method: 'POST',
+	const deleteRequest = () => {
+		if (form?.success) {
+			toastStore.trigger({
+				message: 'Join request deleted!',
+				background: 'variant-ghost-error'
+			});
+		} else {
+			toastStore.trigger({
+				message: 'Request not deleted',
+				background: 'variant-ghost-surface'
+			});
+		}
+	};
+
+	const launchCourse = (adId) => {
+		fetch('/api/launchCourse', {
+			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				userId: userId,
-				adId: id
+				adId: adId
 			})
+			
 		}).then((res) => {
-			if (res.status === 201) {
+			if (res.ok) {
 				toastStore.trigger({
-					message: 'Join request deleted!',
+					message: 'Course launched successfully',
+					background: 'variant-ghost-success'
+				});
+				goto('/myAds');
+			} else {
+				toastStore.trigger({
+					message: 'Course not launched',
 					background: 'variant-ghost-error'
 				});
-			} else {
-				alert('Request not deleted');
 			}
+		}).catch((err) => {
+			console.log(err);
 		});
 	};
 </script>
@@ -147,18 +167,13 @@
 								<div class="font-semibold text-base">
 									{user.name}
 								</div>
-								<div class="flex gap-1">
-									<button
-										on:click={() => addAppointment(user.id)}
-										class="btn btn-sm variant-outline-success hover:variant-filled-success"
-										>Accept</button
+								<form method="POST" class="flex gap-1" use:enhance>
+									<button formaction="?/createAppointment" class="btn btn-sm variant-outline-success hover:variant-filled-success" on:click={()=>addAppointment()}>Accept</button>
+									<input type="hidden" name="userId" value={user.id}>
+									<!-- <input type="hidden" name="adId" value={id}> -->
+									<button formaction="?/deleteRequest" class="btn btn-sm variant-outline-error hover:variant-filled-error" on:click={()=>deleteRequest()}>Reject</button
 									>
-									<button
-										on:click={() => deleteRequest(user.id)}
-										class="btn btn-sm variant-outline-error hover:variant-filled-error"
-										>Reject</button
-									>
-								</div>
+								</form>
 							</div>
 						{/each}
 					</svelte:fragment>
@@ -179,18 +194,20 @@
 					</svelte:fragment>
 					<svelte:fragment slot="content">
 						{#each data.app_users as user (user.id)}
-							<div
-								class="font-semibold text-base shadow-[0px_1px_20px_0.5px_#00000024] p-3 rounded-sm"
-							>
+						<div class="flex justify-between items-center shadow-[0px_1px_20px_0.5px_#00000024] p-3 rounded-sm">
+							<div class="font-semibold text-base">
 								{user.name}
 							</div>
+							<button on:click={()=>{
+								goto(`/profile/${user.id}`);
+							  }} class="btn btn-sm variant-outline-surface hover:variant-filled-surface">View profile</button>
+						</div>
 						{/each}
 					</svelte:fragment>
 				</AccordionItem>
 				<!-- ... -->
 			</Accordion>
-			<button class="mt-auto btn btn-lg variant-outline-primary hover:variant-filled-secondary"
-				>Launch 🚀</button
+			<button class="mt-auto btn btn-lg variant-outline-primary hover:variant-filled-secondary" on:click={()=>launchCourse(adId)}>Launch 🚀</button
 			>
 		</div>
 	</svelte:fragment>
@@ -201,9 +218,9 @@
 
 			<!-- <h1 class="text-lg font-normal mb-4">It is recommended to finish your <a href='/profile'>Profile</a> before posting an ad.</h1> -->
 
-			<Form method="POST">
+			<Form method="POST" action="?/updateAd">
 				<label for="title">Title:</label>
-				<input type="text" name="title" id="title" class="input" placeholder="Enter a title" />
+				<input type="text" name="title" id="title" class="input" placeholder="Enter a title" value={data.adTitle}/>
 
 				<label for="description">Description:</label>
 				<textarea
@@ -275,10 +292,22 @@
 				<div>
 					<label for="workDays[]">Select days you want to take the class:</label>
 					<div class="flex gap-1">
-						{#each weekDays as day}
-							<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} />
-							<label class="checkboxLabel" for={day}>{day}</label>
-						{/each}
+						{#if data.workDays !== undefined}
+							{#each weekDays as day}
+								{#if data.workDays.includes(weekDays.indexOf(day))}
+									<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} checked />
+								{:else}
+									<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} />
+								{/if}
+								<label class="checkboxLabel" for={day}>{day}</label>
+							{/each}
+						{:else}
+							{#each weekDays as day}
+								<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} />
+								<label class="checkboxLabel" for={day}>{day}</label>
+							{/each}
+						{/if}
+						
 					</div>
 				</div>
 				<div>
@@ -292,7 +321,7 @@
 					</div>
 				</div>
 
-				<input type="hidden" name="ad_Id" value={id} />
+				<input type="hidden" name="ad_Id" value={adId} />
 				<!-- <input type = "hidden" name="userid" value="{adId}" /> -->
 
 				<!-- <Button kind="secondary" type="submit">Update</Button> -->

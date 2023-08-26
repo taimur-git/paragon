@@ -26,6 +26,27 @@ export const load: PageServerLoad = async ({ locals }) => {
             }
         });
 
+        const courses = await prisma.ad.findMany({
+            include: {
+                user: {
+                    include: {
+                        institute: true
+                    }
+                },
+                tags: {
+                    select: { tag: true }
+                }
+            },
+            where: {
+                AND: [
+                    { userid: id },
+                    { isLaunched: true }
+                ]
+            }
+        });
+
+        // console.log(courses);
+
         return {
             ads: ads.map((ad) => ({
                 ...ad,
@@ -39,11 +60,32 @@ export const load: PageServerLoad = async ({ locals }) => {
                 tutorType: ad.typeOfTutor,
                 salaryType: ad.salaryType,
                 adDescription: ad.description,
+                adTitle: ad.title,
                 updatedAt: ad.dateUpdated.toISOString().split("T")[0],
                 instituteName: ad.user.institute?.name,
                 online: ad.user.online, // Use a default value if no institute is associated
+                isLaunched: ad.isLaunched
 
             })),
+            courses: courses.map((ad) => ({
+                ...ad,
+                adId: ad.id,
+                userid: ad.user.id,
+                user: ad.user.name,
+                tags: ad.tags.map((tag) => tag.tag.name),
+                salary: ad.expectedSalary,
+                createdAt: ad.dateCreated.toISOString().split("T")[0],
+                lastLogin: ad.user.lastLogin.toISOString().split("T")[0],
+                tutorType: ad.typeOfTutor,
+                salaryType: ad.salaryType,
+                adDescription: ad.description,
+                adTitle: ad.title,
+                updatedAt: ad.dateUpdated.toISOString().split("T")[0],
+                instituteName: ad.user.institute?.name,
+                online: ad.user.online, // Use a default value if no institute is associated
+                isLaunched: ad.isLaunched
+
+            }))
         };
     } catch (error) {
         console.error("Error loading data from Prisma:", error);

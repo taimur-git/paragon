@@ -23,7 +23,7 @@ export const POST = async ({ request, locals }) => {
         const students  = await locals.auth.validateUser();
 
         try{
-            const checkif = await prisma.request.findMany({
+            const checkif_req = await prisma.request.findMany({
                 where: { 
                     AND: [
                         {adId: adId},
@@ -32,11 +32,20 @@ export const POST = async ({ request, locals }) => {
                 },
             })
 
+            const checkif_app = await prisma.appointment.findMany({
+                where: { 
+                    AND: [
+                        {adId: adId},
+                        {studentId: students.user.userId}
+                    ]
+                },
+            })
+
             // console.log(checkif);
             // console.log(students.user.userId);
             // console.log(adId);
 
-            if(checkif.length===0){
+            if(checkif_req.length===0 && checkif_app.length===0){
                 try{
                     await prisma.request.create({
                         data: {
@@ -56,7 +65,13 @@ export const POST = async ({ request, locals }) => {
         
             else{
                 // reqResponse.message =;
-                return json( {message:  'Already requested'}, { status: 201 });
+                if(checkif_app.length!==0){
+                    return json( {message:  'Already appointed'}, { status: 201 });
+                }
+                else if(checkif_req.length!==0){
+                    return json( {message:  'Already requested'}, { status: 201 });
+                }
+
             }
 
         }
