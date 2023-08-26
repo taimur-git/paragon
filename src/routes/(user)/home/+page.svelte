@@ -15,7 +15,7 @@
   let filter_types = [
 		{ id: 1, text: `Course` },
 		{ id: 2, text: `Tution Type` },
-		{ id: 3, text: `Rate` }
+		{ id: 3, text: `Payment Plans` }
 	];
 
   let selected;
@@ -26,6 +26,10 @@
 
 
 function handleTagSelection(tagName: any) {
+  // console.log(tagName);
+  tagName = capitalizeFirstLetter(tagName);
+    console.log(tagName);
+
   if (selectedTags.includes(tagName) || inputChipList.includes(tagName)) {
     selectedTags = selectedTags.filter(tag => tag !== tagName);
     inputChipList = inputChipList.filter(tag => tag !== tagName);
@@ -33,7 +37,7 @@ function handleTagSelection(tagName: any) {
         allTagBtn=true;
       }
   } 
-  else if (tagName === 'all') {
+  else if (tagName === 'All') {
     inputChipList = [];
     selectedTags = [];
     allTagBtn=true;
@@ -105,15 +109,22 @@ function capitalizeFirstLetter(string) {
 
 let foundResults = false;
 
-let res = false;
+// let res = false;
+let resOfFoundResults = false;
+
+function handleSearchKey(event) {
+  if (event.key === "Enter") {
+    display_inputChipList();
+  }
+}
 
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="fullPage" >
   <div class="input-group input-group-divider grid-cols-[auto_1fr_auto] searchBar">
-    <input class="searchInput"  bind:value={inputChipList} type="search" placeholder="Search..." /> 
-    <button class="variant-filled-secondary searchBtn"  on:click={display_inputChipList}>Submit</button>
+    <input class="searchInput"  bind:value={inputChipList} type="search" placeholder="Search..." on:keydown={handleSearchKey}/> 
+    <button class="variant-filled-secondary searchBtn"  on:click={display_inputChipList}>Search</button>
   </div>
   
   <div class="tag flex flex-wrap {showAllFilters ? 'tag-expanded' : ''}">
@@ -151,7 +162,7 @@ let res = false;
   <!-- ... your existing code for showing tags ... -->
         <article class="m-2">
           <button
-            class="filter-button tag-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''} "
+            class="filter-button tag-button whitespace-nowrap {selectedTags.includes(capitalizeFirstLetter(tag.name)) ? 'filter-button-active' : ''} "
             on:click={() => handleTagSelection(tag.name)}
           >
             {tag.name}
@@ -165,50 +176,6 @@ let res = false;
         </button>
       {/if}
   {/if}
-
-  {#if selected === 3 }
-    {@const tagScrollPosition=0}
-    <article class="m-2"  >
-      {#if ads.map(ad => ad.salary).length > tagsPerPage}
-        {#if tagScrollPosition>0}
-          <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
-            &lt;
-          </button>
-        {/if}
-      {/if}
-    </article>
-
-    <article class="m-2">
-      <button
-        class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
-        on:click={() => handleTagSelection('all')}
-      >
-        All
-      </button>
-    </article>
-    {#each [...new Set(ads.map(ad => ad.salary))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as salary, index}
-      <article class="m-2">
-        <button
-          class="filter-button whitespace-nowrap {selectedTags.includes(salary) ? 'filter-button-active' : ''}"
-          on:click={() => handleTagSelection(salary)}
-        >
-        {#if salary === 0}
-          {"Negotiable"}
-        {:else}
-          {salary}
-        {/if} 
-        </button>
-      </article>
-    {/each}
-    <article class="m-2">
-      {#if [...new Set(ads.map(ad => ad.salary))].length > tagsPerPage && tagScrollPosition + tagsPerPage < ads.map(ad => ad.salary).length}
-        <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollRight}>
-          &gt;
-        </button>
-      {/if}
-    </article>
-  {/if}
-
 
   {#if selected === 2}
     {@const tagScrollPosition=0}
@@ -231,14 +198,16 @@ let res = false;
       </button>
     </article>
     {#each [...new Set(ads.map(ad => ad.typeOfTutor))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as typeOfTutor, index}
-      <article class="m-2">
-        <button
-          class="filter-button whitespace-nowrap {selectedTags.includes(typeOfTutor) ? 'filter-button-active' : ''}"
-          on:click={() => handleTagSelection(typeOfTutor)}
-        >
-          {typeOfTutor}
-        </button>
-      </article>
+      {#if typeOfTutor !== "undefined"}        
+        <article class="m-2">
+          <button
+            class="filter-button whitespace-nowrap {selectedTags.includes(capitalizeFirstLetter(typeOfTutor)) ? 'filter-button-active' : ''}"
+            on:click={() => handleTagSelection(typeOfTutor)}
+          >
+            {typeOfTutor}
+          </button>
+        </article>
+      {/if}
     {/each}
 
     <article class="m-2">
@@ -249,12 +218,55 @@ let res = false;
       {/if}
     </article>
   {/if}
+
+  {#if selected === 3 }
+  {@const tagScrollPosition=0}
+  <article class="m-2"  >
+    {#if ads.map(ad => ad.salaryType).length > tagsPerPage}
+      {#if tagScrollPosition>0}
+        <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
+          &lt;
+        </button>
+      {/if}
+    {/if}
+  </article>
+
+  <article class="m-2">
+    <button
+      class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+      on:click={() => handleTagSelection('all')}
+    >
+      All
+    </button>
+  </article>
+  {#each [...new Set(ads.map(ad => ad.salaryType))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as salaryType, index}
+    <article class="m-2">
+      <button
+        class="filter-button whitespace-nowrap {selectedTags.includes(capitalizeFirstLetter(salaryType)) ? 'filter-button-active' : ''}"
+        on:click={() => handleTagSelection(salaryType)}
+      >
+      {salaryType}
+      </button>
+    </article>
+  {/each}
+  <article class="m-2">
+    {#if [...new Set(ads.map(ad => ad.salaryType))].length > tagsPerPage && tagScrollPosition + tagsPerPage < ads.map(ad => ad.salaryType).length}
+      <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollRight}>
+        &gt;
+      </button>
+    {/if}
+  </article>
+{/if}
 </div>
 
   
   <div class="flex flex-wrap allad">
+    <!-- {foundResults} -->
     {#each ads as ad}
-    {#if res = (selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) || selectedTags.some(tag => searchMatchesTag(ad.tags, tag)) || selectedTags.includes(capitalizeFirstLetter(ad.typeOfTutor))  || selectedTags.includes(capitalizeFirstLetter(ad.user)) || selectedTags.includes(capitalizeFirstLetter(ad.salaryType))) }
+    {#if (selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) || selectedTags.some(tag => searchMatchesTag(ad.tags, tag)) || selectedTags.includes(capitalizeFirstLetter(ad.typeOfTutor))  || selectedTags.includes(capitalizeFirstLetter(ad.user)) || selectedTags.includes(capitalizeFirstLetter(ad.salaryType)))}
+        <!-- {foundResults} -->
+        <!-- {resOfFoundResults=true}
+        {resOfFoundResults} -->
         <article class="m-2">
           <Card>
             <div slot="header">
@@ -292,13 +304,10 @@ let res = false;
             </div>
           </Card>
         </article>
-        <!-- {#if !foundResults}
-          {@html foundResults = true}
-        {/if} -->
       {/if}
     {/each}
-<!-- {res} -->
-    <!-- {#if res==false }
+        <!-- {foundResults} -->
+    <!-- {#if resOfFoundResults===false }
       <p>No results found.</p>
     {/if} -->
   </div>
