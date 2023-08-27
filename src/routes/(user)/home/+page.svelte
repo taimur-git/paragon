@@ -1,10 +1,9 @@
 <script lang="ts">
-  import type { PageData } from './$types';
-  import Card from '../../../components/Card.svelte';
-  import AdModal from '../../../components/AdModal.svelte';
-  import { Autocomplete, InputChip } from "@skeletonlabs/skeleton";
-	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
-	import { Button, Form } from 'carbon-components-svelte';
+ import type { PageData } from './$types';
+	import Card from '../../../components/Card.svelte';
+	import AdModal from '../../../components/AdModal.svelte';
+	import { onMount, afterUpdate } from 'svelte';
+
 
   export let data: PageData;
 
@@ -23,12 +22,12 @@
   let allTagBtn = true; 
   let showAllFilters = false;
   let modal: AdModal;
-
+  let inputChipList = []; 
 
 function handleTagSelection(tagName: any) {
   // console.log(tagName);
   tagName = capitalizeFirstLetter(tagName);
-    console.log(tagName);
+    // console.log(tagName);
 
   if (selectedTags.includes(tagName) || inputChipList.includes(tagName)) {
     selectedTags = selectedTags.filter(tag => tag !== tagName);
@@ -72,29 +71,19 @@ let tagScrollPosition = 0;
   }
 
   let inputChip = '';
-  let inputChipList = []; //grab from backend
   let idList: number[] = [];
 
-function display_inputChipList(){
-  if(inputChipList.length!==0){
-    let  num = 0;
-      num = parseInt(inputChipList);
-      if(isNaN(num)){
-
-        selectedTags=[capitalizeFirstLetter(inputChipList)];
-      }
-      else{
-        selectedTags.push(num);
-      }
-    allTagBtn=false;
+  function display_inputChipList(){
+    if(inputChipList.length!==0){
+      selectedTags=[capitalizeFirstLetter(inputChipList)];
+      console.log(selectedTags);
+        allTagBtn=false;
+    }
+    else{
+      handleTagSelection('all');
+    
+    }
   }
-  else{
-    handleTagSelection('all');
-
-  }
-
-}
-
 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -107,16 +96,27 @@ function capitalizeFirstLetter(string) {
   });
 }
 
-let foundResults = false;
-
-// let res = false;
-let resOfFoundResults = false;
-
-function handleSearchKey(event) {
-  if (event.key === "Enter") {
-    display_inputChipList();
+  function handleSearchKey(event) {
+    if (event.key === "Enter") {
+      display_inputChipList();
+    }
   }
-}
+
+  let matchingAds = []; // Define the matchingAds array here
+
+  // This function updates the `matchingAds` array whenever `selectedTags` changes
+  function updateMatchingAds() {
+  matchingAds = ads.filter(ad =>
+    (selectedTags.length === 0 ||
+    selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) ||
+    selectedTags.some(tag => searchMatchesTag(ad.tags, tag)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.typeOfTutor)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.user)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.salaryType)))
+  );
+  }
+  onMount(updateMatchingAds);
+  afterUpdate(updateMatchingAds);
 
 </script>
 
@@ -261,12 +261,8 @@ function handleSearchKey(event) {
 
   
   <div class="flex flex-wrap allad">
-    <!-- {foundResults} -->
-    {#each ads as ad}
-    {#if (selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) || selectedTags.some(tag => searchMatchesTag(ad.tags, tag)) || selectedTags.includes(capitalizeFirstLetter(ad.typeOfTutor))  || selectedTags.includes(capitalizeFirstLetter(ad.user)) || selectedTags.includes(capitalizeFirstLetter(ad.salaryType)))}
-        <!-- {foundResults} -->
-        <!-- {resOfFoundResults=true}
-        {resOfFoundResults} -->
+    {#if matchingAds.length > 0}
+	  	{#each matchingAds as ad, adIndex}
         <article class="m-2">
           <Card>
             <div slot="header">
@@ -304,17 +300,15 @@ function handleSearchKey(event) {
             </div>
           </Card>
         </article>
-      {/if}
-    {/each}
-        <!-- {foundResults} -->
-    <!-- {#if resOfFoundResults===false }
-      <p>No results found.</p>
-    {/if} -->
-  </div>
+      {/each}
+    {:else}
+	  	<h3 class="NoResult">No results found.</h3> 
+	  {/if} 
+   </div>
 </div>
 
 <AdModal bind:this={modal} currentPage={"home"} on:click={() => sendReq(selectedCardId)}>
-<button on:click={() => modal.hide()}>Close</button>
+  <button on:click={() => modal.hide()}>Close</button>
 </AdModal>
 
 <style>
@@ -367,9 +361,7 @@ function handleSearchKey(event) {
     /* flex-wrap: wrap; */
     gap: 25px;
   }
-  .courses{
-    font-weight: bold;
-  }
+  
   .searchBar{
     /* margin-bottom: 5px; */
     margin-top: 10px;
@@ -394,5 +386,9 @@ function handleSearchKey(event) {
     /* margin-left: 10px; */
     /* margin-right: 10px; */
   }
+	.NoResult{
+		margin-left: auto;
+		margin-right: auto;
+	}
   
 </style>

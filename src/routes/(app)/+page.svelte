@@ -1,89 +1,25 @@
 <script lang='ts'>
-
-// import { writable } from 'svelte/store';
-
-
-
-	//import teacher from '$lib/images/teacher.svg';
 	import mainImg from '$lib/images/landingImg.jpg';
-	//import { Button, ButtonSet, ImageLoader, InlineLoading, Link } from 'carbon-components-svelte';
-	//import PostAd from '../components/PostAd.svelte';
-
-
-
-	import { Autocomplete, InputChip } from "@skeletonlabs/skeleton";
-	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
-	import { Button, Form } from 'carbon-components-svelte';
-
-  import { onMount, setContext } from "svelte";
 	import { goto } from '$app/navigation';
-  //let selectedEducationLevel: number;
 
-//   export const fetchedData = writable(null);
+  	let inputChipList = ""; 
+	let searchRes = "";
 
-	let tagsFromLanding =[];
-  let inputChip = '';
-  let inputChipList: string[] = []; //grab from backend
-  let idList: number[] = [];
-  function onInputChipSelect(event: any): void {
-		//console.log('onInputChipSelect', event.detail);
-		if (inputChipList.includes(event.detail.value) === false) {
-			inputChipList = [...inputChipList, event.detail.value];
-            idList = [...idList, event.detail.idValue];
-			inputChip = '';
-		}
+function handleSearchKey(event) {
+	if (event.key === "Enter") {
+		display_inputChipList();
 	}
+}
 
-  export let data: PageData;
-//   let id = data.user.user.userId;
-  let tagOptions: AutocompleteOption[] = data.tagOptions;//data;
- // console.log(data);
-
-
- const handleSearch = async (e: Event) => { 
-    e.preventDefault();
-
-    const res = await fetch('/api/searchAd', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(idList,inputChipList)
-    });
-
-	try{
-		const data = await res.json();
-		console.log(data);
-		// tagsFromLanding = ['Physics']
-		// if (data.message === 'Success') {
-		// 	// goto('/login');
-		// 	console.log("Success");
-		// tagsFromLanding=['Mathmetic'];
-		// }
-		goto('/ads');
-
-	}catch(err){
-		console.log(err);
+function display_inputChipList(){
+	if(inputChipList.length!==0){
+		searchRes=inputChipList;
+		goto(`/ads/${searchRes}`);
 	}
-    // try{
-    //   const data = await res.json();
-    //   console.log(data);
-    //   if (data.message === 'User created') {
-    //     goto('/login');
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
-  }
+	else{
 
-let hide_tags: boolean = true;
-
-	function hideTags() {
-		hide_tags = true;
 	}
-	function showTags() {
-		hide_tags = false;
-	}
+}
 
 </script>
 
@@ -92,80 +28,20 @@ let hide_tags: boolean = true;
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<!-- <section> -->
-
-	<!--ImageLoader fadeIn class="mx-auto w-1/4 my-8"
-	src={teacher}
->
-  <svelte:fragment slot="loading">
-    <InlineLoading />
-  </svelte:fragment>
-  <svelte:fragment slot="error">An error occurred.</svelte:fragment>
-</ImageLoader -->
-
-    <!-- <img src={teacher} alt="Teacher" class="mx-auto w-1/4 my-8" />
-
-	<h1>A site where students find teachers, and teachers find students.</h1>
-
-	
-	<ButtonSet>
-		<Button href="/listings"  kind="secondary">
-			Search Teachers
-		</Button>
-		<Button href="/post-ad" kind="secondary">	
-			Post an Ad
-		</Button>
-	  </ButtonSet> -->
-	
-
-<!-- </section> -->
-
 <div class="mt-20 flex justify-center items-center gap-8">
 	<section class="px-4 mx-auto flex flex-col justify-center items-center max-w-sm">
 		<h1 class="heroTitle">Find a tutor tailored to your need.</h1>
-		
-<!-- <div class="input-group input-group-divider grid-cols-[1fr_auto] ">
-	<input type="search" placeholder="Search..." class="p-2"/>
-	<button class="px-1 variant-filled-secondary">Search</button>
-</div> -->
-<!-- <div class="input-group input-group-divider grid-cols-[1fr_auto] "> -->
-<!-- <Form  method="POST"> -->
-<InputChip bind:input={inputChip} bind:value={inputChipList} name="chips"
- on:focus={hideTags} 
-on:input={showTags} 
-/>
-<!-- <button class="px-1 variant-filled-secondary">Search</button> -->
-<!-- </div> -->
 
-<input type="hidden" name="tags" value={inputChipList} />
-<input type="hidden" name="tagIds" value={idList} />
-<input type="hidden" name="tags" value={inputChipList} />
+		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto] searchBar">
+			<input class="searchInput"  bind:value={inputChipList} type="search" placeholder="Search..." on:keydown={handleSearchKey}/> 
+			<button class="variant-filled-secondary searchBtn"  on:click={display_inputChipList}>Search</button>
+		</div>
 
-<div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1" class:hidden={hide_tags}>
-	<Autocomplete 
-		bind:input={inputChip}
-		options={tagOptions}
-		denylist={inputChipList}
-		on:selection={onInputChipSelect}
-	/>
-
-</div>
-
-<button class="btn mt-1 variant-filled-secondary" on:click={handleSearch}>Search</button>
-
-
-<!-- </Form> -->
-
-
-
-		
 	</section>
 	<section class="mx-auto ">
 		<img src={mainImg} class="BubbleImg --stroke" alt="student and teacher">
 	</section>
 </div>
-  
-
 
 <style>
 	
@@ -192,6 +68,19 @@ on:input={showTags}
 		align-items: center;
 		flex: 0.6;
 	} */
-
+	.searchBar{
+    /* margin-bottom: 5px; */
+    margin-top: 10px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: space-between;
+  }
+  .searchInput{
+    width: 100%;
+    /* margin-left: 10px; */
+    /* margin-right: 10px; */
+  }
 </style>
 		

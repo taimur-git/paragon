@@ -1,11 +1,13 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Card from '../../../components/Card.svelte';
-	import AdModal from '../../../components/AdModal.svelte';
+	import Card from '../../../../components/Card.svelte';
+	import AdModal from '../../../../components/AdModal.svelte';
+	import {page} from '$app/stores';
 	import { onMount, afterUpdate } from 'svelte';
 
 
 	export let data: PageData;
+	let searchRes;
   
 	$: ({ tags } = data);
 	$: ({ ads } = data);
@@ -17,6 +19,7 @@
 		  { id: 3, text: `Payment Plans` }
 	  ];
   
+	searchRes = capitalizeFirstLetter($page.params.searchRes);
 
 	let selected;
 	let selectedTags: any[] = []; 
@@ -24,6 +27,11 @@
 	let showAllFilters = false;
 	let modal: AdModal;
 	let inputChipList = []; 
+
+	selectedTags = [searchRes];
+	inputChipList = [searchRes];
+	allTagBtn=false;
+
 
   	function handleTagSelection(tagName: any) {
 	// console.log(tagName);
@@ -299,6 +307,7 @@
 				</Card>
 			</article>
 	  	{/each}
+
 	  {:else}
 	  	<h3 class="NoResult">No results found.</h3> 
 	  {/if}
