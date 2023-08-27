@@ -77,6 +77,10 @@ export const load: PageServerLoad = async ({ locals,params }) => {
                 }
             }
         });
+
+        const workDays = ads.workDays?.split("").map((day) => parseInt(day));
+        // console.log(workDays);
+
         return {
             tagOptions,
             adId: ads.id,
@@ -84,8 +88,12 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             salaryType: ads.salaryType,
             teachingType: ads.typeOfTutor,
             salary: ads.expectedSalary,
+            adTitle: ads.title,
             adDescription: ads.description,
             tags:ads.tags.map((tag) => tag.tag.name),
+            workDays: workDays,
+            startTime: ads.startTime,
+            endTime: ads.endTime,
             req_users: req_users,
             app_users: app_users,
             numRequests: joinRequests.length,
@@ -98,12 +106,13 @@ export const load: PageServerLoad = async ({ locals,params }) => {
 }
 
 export const actions: Actions = {
-	default: async ({ request, locals,params }) => {
+	updateAd: async ({ request, locals,params }) => {
 		const form = await request.formData();
         const salaryType = form.get("salaryType");
         const salary  =form.get("salary") ? form.get("salary") : "0";
         const expectedSalary = parseInt(salary) ;
         const tagIdsString = form.get("tagIds");
+        const title = form.get("title");
         //const tagIds = tagIdsString ? tagIdsString.split(',').map(id => ({ id: parseInt(id) })): [];
         //console.log(tagIds);
         //tagIds = tagIds;
@@ -120,12 +129,21 @@ export const actions: Actions = {
         const description = form.get("description");
         const ad_Id = form.get("ad_Id");
 
+        const workDays = form.getAll("workDays[]");
+        const startTime = form.get("startTime");
+        const endTime = form.get("endTime");
+
+        const classDays: String = workDays.join('');
+
         const ad = {
             salaryType : salaryType,
             expectedSalary : expectedSalary,
             typeOfTutor : typeOfTutor,
             description : description,
-
+            title : title,
+            workDays: classDays,
+            startTime: startTime.toString(),
+            endTime: endTime.toString(),
             tags : {
                 create: tagIds
             }
@@ -140,7 +158,62 @@ export const actions: Actions = {
         });
 
         throw redirect(302, '/myAds');
-	}
+	},
+
+    createAppointment: async ({ request, params }) => {
+        const form = await request.formData();
+        const userId = form.get("userId");
+        const adId = parseInt(params.adId);
+        let success = false;
+        try{
+            await prisma.appointment.create({
+                data: {
+                    studentId: userId,
+                    adId: adId
+                }  
+            })
+
+            await prisma.request.deleteMany({
+                where: {
+                    userId: userId,
+                    adId: adId
+                }
+            });
+            success = true;
+        } catch (err) { 
+            console.error(err);
+        }
+
+        return {
+            success: success
+        }
+    },
+
+    deleteRequest: async ({ request, params }) => {
+        let deleted = false;
+        const form = await request.formData();
+        const userId = form.get("userId");
+        const adId = parseInt(params.adId);
+
+        try{
+            await prisma.request.deleteMany({
+                where: {
+                    userId: userId,
+                    adId: adId
+                }
+            });
+            deleted = true;
+        } catch (err) { 
+            console.error(err);
+            deleted = false;
+        }
+
+        return {
+            //success: true,
+            deleted: deleted
+        }
+    }
+
 
     
 };

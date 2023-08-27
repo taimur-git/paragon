@@ -124,6 +124,7 @@ model Ad{
   dateCreated DateTime @default(now())
   dateUpdated DateTime @updatedAt
   dateDeleted DateTime?
+  dateLaunched String?
   visible Boolean @default(true)
 
   tags AdTag[]
@@ -140,7 +141,7 @@ model Ad{
   startTime String?//the time of the day when the class starts
   endTime  String?//the time of the day when the class ends
 
-  isLaunched Boolean @default(false)
+  isLaunched Boolean @default(false) //if ad is launched, it will be become a course
   ratings Rating[]
 
   studentRequests Request[]
@@ -277,3 +278,9 @@ model Appointment {
   // schedule Schedule @relation(fields: [scheduleId], references: [id])
 }
 
+// model Schedule {
+//   id Int @id @default(autoincrement())
+//   startTime String
+//   endTime String
+//   day String
+// }

@@ -12,17 +12,11 @@
 		AccordionItem,
 		AppShell
 	} from '@skeletonlabs/skeleton';
-	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
-	// /** @type {import('./$types').ActionData} */
-	// export let form;
 
-	// let isSubmitted = false;
-	// $: if ($page.form) { isSubmitted = true; }
+    export let data;
 
-	export let data: PageData;
 	let adId = data.adId;
 
 	// import { onMount, setContext } from "svelte";
@@ -103,130 +97,10 @@
 	// 		});
 	// };
 
-	const launchCourse = (adId) => {
-		fetch('/api/launchCourse', {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				adId: adId
-			})
-			
-		}).then((res) => {
-			if (res.ok) {
-				toastStore.trigger({
-					message: 'Course launched successfully',
-					background: 'variant-ghost-success'
-				});
-				goto('/myAds');
-			} else {
-				toastStore.trigger({
-					message: 'Course not launched',
-					background: 'variant-ghost-error'
-				});
-			}
-		}).catch((err) => {
-			console.log(err);
-		});
-	};
+	
 </script>
 
-<AppShell>
-	<svelte:fragment slot="header">
-		<div class="page_title">
-			<h1>Ad details</h1>
-		</div>
-	</svelte:fragment>
-	<!-- (sidebarLeft) -->
-	<svelte:fragment slot="sidebarRight">
-		<div class="requestAndAppointments">
-			<!-- <div class="hidden">
-				{#if form?.success && isSubmitted}
-					{addAppointmentSuccess()}
-					{:else}
-					{addAppointmentFail()}
-				{/if}
-				
-				{#if form?.deleted && isSubmitted}
-					{deleteRequestSuccess()}
-					{:else}
-					{deleteRequestFail()}
-				{/if}
-			</div> -->			
-			<Accordion hover="hover:bg-primary-hover-token">
-				<AccordionItem>
-					<svelte:fragment slot="lead"
-						><svg xmlns="http://www.w3.org/2000/svg" height="1.8em" viewBox="0 0 640 512"
-							><path
-								d="M224 0a128 128 0 1 1 0 256A128 128 0 1 1 224 0zM178.3 304h91.4c20.6 0 40.4 3.5 58.8 9.9C323 331 320 349.1 320 368c0 59.5 29.5 112.1 74.8 144H29.7C13.3 512 0 498.7 0 482.3C0 383.8 79.8 304 178.3 304zM352 368a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-80c-8.8 0-16 7.2-16 16v64c0 8.8 7.2 16 16 16h48c8.8 0 16-7.2 16-16s-7.2-16-16-16H512V304c0-8.8-7.2-16-16-16z"
-							/></svg
-						></svelte:fragment
-					>
-					<svelte:fragment slot="summary">
-						<div class="flex justify-between">
-							<h4>Requests</h4>
-							<span class="badge variant-filled-surface">{data.numRequests}</span>
-						</div>
-					</svelte:fragment>
-					<svelte:fragment slot="content">
-						{#each data.req_users as user (user.id)}
-							<div
-								class="flex justify-between items-center shadow-[0px_1px_20px_0.5px_#00000024] p-3 rounded-sm"
-							>
-								<div class="font-semibold text-base">
-									{user.name}
-								</div>
-								<form method="POST" class="flex gap-1" use:enhance>
-									<button formaction="?/createAppointment" class="btn btn-sm variant-outline-success hover:variant-filled-success">Accept</button>
-									<input type="hidden" name="userId" value={user.id}>
-									<!-- <input type="hidden" name="adId" value={id}> -->
-									<button formaction="?/deleteRequest" class="btn btn-sm variant-outline-error 
-									hover:variant-filled-error">Reject</button
-									>
-								</form>
-							</div>
-						{/each}
-					</svelte:fragment>
-				</AccordionItem>
-				<AccordionItem>
-					<svelte:fragment slot="lead"
-						><svg xmlns="http://www.w3.org/2000/svg" height="1.8em" viewBox="0 0 640 512"
-							><path
-								d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM625 177L497 305c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L591 143c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
-							/></svg
-						></svelte:fragment
-					>
-					<svelte:fragment slot="summary">
-						<div class="flex justify-between">
-							<h4>Enrolled students</h4>
-							<span class="badge variant-filled-surface">{data.numAppointments}</span>
-						</div>
-					</svelte:fragment>
-					<svelte:fragment slot="content">
-						{#each data.app_users as user (user.id)}
-						<div class="flex justify-between items-center shadow-[0px_1px_20px_0.5px_#00000024] p-3 rounded-sm">
-							<div class="font-semibold text-base">
-								{user.name}
-							</div>
-							<button on:click={()=>{
-								goto(`/profile/${user.id}`);
-							  }} class="btn btn-sm variant-outline-surface hover:variant-filled-surface">View profile</button>
-						</div>
-						{/each}
-					</svelte:fragment>
-				</AccordionItem>
-				<!-- ... -->
-			</Accordion>
-			{#if data.numAppointments>0}
-				<button class="mt-auto btn btn-lg variant-outline-primary hover:variant-filled-secondary" on:click={()=>launchCourse(adId)}>Launch 🚀</button>
-				{:else}
-				<button class="mt-auto btn btn-lg variant-filled-secondary" disabled>Launch 🚀</button>
-			{/if}
-			
-		</div>
-	</svelte:fragment>
-
+<div class="flex w-full justify-evenly">
 	<div class="flex justify-center myads_content">
 		<div class="w-full px-14 py-3" id="popup">
 			<!-- <h1 class="text-2xl font-bold mb-2.5">Post Your {data.teachingType}</h1> -->
@@ -307,9 +181,10 @@
 				<div>
 					<label for="workDays[]">Select days you want to take the class:</label>
 					<div class="flex gap-1">
-						{#if data.workDays !== undefined}
+						
+						{#if data.workDaysCheckbox !== undefined}
 							{#each weekDays as day}
-								{#if data.workDays.includes(weekDays.indexOf(day))}
+								{#if data.workDaysCheckbox.includes(weekDays.indexOf(day))}
 									<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} checked />
 								{:else}
 									<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} />
@@ -340,17 +215,97 @@
 				<!-- <input type = "hidden" name="userid" value="{adId}" /> -->
 
 				<!-- <Button kind="secondary" type="submit">Update</Button> -->
-				<button class="mt-3 btn variant-outline-primary hover:variant-filled-primary" type="submit"
+				<button class="mt-7 btn variant-outline-primary hover:variant-filled-primary" type="submit"
 					>update</button
 				>
 			</Form>
 		</div>
 	</div>
 
-	<!-- ---- / ---- -->
-	<!-- (pageFooter) -->
-	<!-- (footer) -->
-</AppShell>
+	<div class="requestAndAppointments">
+		<!-- <div class="hidden">
+			{#if form?.success && isSubmitted}
+				{addAppointmentSuccess()}
+				{:else}
+				{addAppointmentFail()}
+			{/if}
+			
+			{#if form?.deleted && isSubmitted}
+				{deleteRequestSuccess()}
+				{:else}
+				{deleteRequestFail()}
+			{/if}
+		</div> -->
+		<div class="border border-slate-700 h-72">
+			<h1 class="text-2xl font-bold mb-2.5 text-center">Announcements</h1>
+		</div>		
+		<Accordion hover="hover:bg-primary-hover-token">
+			<AccordionItem>
+				<svelte:fragment slot="lead"
+					><svg xmlns="http://www.w3.org/2000/svg" height="1.8em" viewBox="0 0 640 512"
+						><path
+							d="M224 0a128 128 0 1 1 0 256A128 128 0 1 1 224 0zM178.3 304h91.4c20.6 0 40.4 3.5 58.8 9.9C323 331 320 349.1 320 368c0 59.5 29.5 112.1 74.8 144H29.7C13.3 512 0 498.7 0 482.3C0 383.8 79.8 304 178.3 304zM352 368a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-80c-8.8 0-16 7.2-16 16v64c0 8.8 7.2 16 16 16h48c8.8 0 16-7.2 16-16s-7.2-16-16-16H512V304c0-8.8-7.2-16-16-16z"
+						/></svg
+					></svelte:fragment
+				>
+				<svelte:fragment slot="summary">
+					<div class="flex justify-between">
+						<h4>Requests</h4>
+						<span class="badge variant-filled-surface">{data.numRequests}</span>
+					</div>
+				</svelte:fragment>
+				<svelte:fragment slot="content">
+					{#each data.req_users as user (user.id)}
+						<div
+							class="flex justify-between items-center shadow-[0px_1px_20px_0.5px_#00000024] p-3 rounded-sm"
+						>
+							<div class="font-semibold text-base">
+								{user.name}
+							</div>
+							<form method="POST" class="flex gap-1" use:enhance>
+								<button formaction="?/createAppointment" class="btn btn-sm variant-outline-success hover:variant-filled-success">Accept</button>
+								<input type="hidden" name="userId" value={user.id}>
+								<!-- <input type="hidden" name="adId" value={id}> -->
+								<button formaction="?/deleteRequest" class="btn btn-sm variant-outline-error 
+								hover:variant-filled-error">Reject</button
+								>
+							</form>
+						</div>
+					{/each}
+				</svelte:fragment>
+			</AccordionItem>
+			<AccordionItem>
+				<svelte:fragment slot="lead"
+					><svg xmlns="http://www.w3.org/2000/svg" height="1.8em" viewBox="0 0 640 512"
+						><path
+							d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM625 177L497 305c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L591 143c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"
+						/></svg
+					></svelte:fragment
+				>
+				<svelte:fragment slot="summary">
+					<div class="flex justify-between">
+						<h4>Enrolled students</h4>
+						<span class="badge variant-filled-surface">{data.numAppointments}</span>
+					</div>
+				</svelte:fragment>
+				<svelte:fragment slot="content">
+					{#each data.app_users as user (user.id)}
+					<div class="flex justify-between items-center shadow-[0px_1px_20px_0.5px_#00000024] p-3 rounded-sm">
+						<div class="font-semibold text-base">
+							{user.name}
+						</div>
+						<button on:click={()=>{
+							goto(`/profile/${user.id}`);
+							}} class="btn btn-sm variant-outline-surface hover:variant-filled-surface">View profile</button>
+					</div>
+					{/each}
+				</svelte:fragment>
+			</AccordionItem>
+			<!-- ... -->
+		</Accordion>
+		
+	</div>
+</div>
 
 <style>
 	/* .myads_content{
@@ -370,20 +325,20 @@
 
   } */
 
-	.page_title {
+	/* .page_title {
 		background-color: #f9f8f8;
 		min-height: 8.7dvh;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		box-shadow: rgba(60, 64, 67, 0.3) 0px 2px 3px 0px, rgba(60, 64, 67, 0.15) 0px 6px 10px 4px;
-	}
+	} */
 
 	.requestAndAppointments {
 		width: 25em;
 		border-left: 1px solid #a18cad;
 		padding: 1em 0.5em;
-		min-height: 91dvh;
+		margin-top: 1em;
 		display: flex;
 		flex-direction: column;
 	}

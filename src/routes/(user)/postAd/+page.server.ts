@@ -90,7 +90,7 @@ export const actions: Actions = {
                 create: tagIds
             }
         }
-        console.log(ad);
+        // console.log(ad);
         
         await prisma.ad.create({
             data: ad
