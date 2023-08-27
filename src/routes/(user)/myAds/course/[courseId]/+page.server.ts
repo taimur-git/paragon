@@ -76,7 +76,7 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             }
         });
 
-        //const workDays = ads.workDays?.split("").map((day) => parseInt(day));
+        const workDaysCheckbox = ads.workDays?.split("").map((day) => parseInt(day));
         // console.log(workDays);
 
         
@@ -105,10 +105,13 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             adDescription: ads.description,
             tags:ads.tags.map((tag) => tag.tag.name),
             classEvent: classEvent,
+            startTime: ads.startTime,
+            endTime: ads.endTime,
             req_users: req_users,
             app_users: app_users,
             numRequests: joinRequests.length,
             numAppointments: appointments.length,
+            workDaysCheckbox: workDaysCheckbox,
         };
     } catch (error) {
         console.error("Error loading data from Prisma:", error);

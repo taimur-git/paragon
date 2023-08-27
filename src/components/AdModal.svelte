@@ -18,7 +18,7 @@
   }
   const req_toast: ToastSettings = {
       message: "Your request has been sent successfully!",
-      background: "variant-filled-success"
+      background: "variant-ghost-success"
   }
   
   export function show(adData,selectedCardId,logInfo=null) {

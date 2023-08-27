@@ -18,9 +18,9 @@
 </div>
 
 <style>
-    .tabs {
+    /* .tabs {
         margin-bottom: 40px;
-    }
+    } */
     ul {
         display: flex;
         justify-content: center;
@@ -30,12 +30,12 @@
     li {
         margin: 0 16px;
         font-size: 18px;
-        color: #555;
+        color: white;
         cursor: pointer;
     }
     .active {
-        color: #d91b42;
-        border-bottom: 2px solid #d91b42;
+        color: #F2D853;
+        border-bottom: 2px solid #F2D853;
         padding-bottom: 8px;
     }
 </style>

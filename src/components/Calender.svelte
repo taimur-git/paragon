@@ -32,6 +32,7 @@
 
     padding: 2em;
     gap: 1em;
+    margin: 0 auto;
 
     height: 500px;
 	width: 900px;
