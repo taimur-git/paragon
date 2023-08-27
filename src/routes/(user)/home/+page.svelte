@@ -3,6 +3,7 @@
 	import Card from '../../../components/Card.svelte';
 	import AdModal from '../../../components/AdModal.svelte';
 	import { onMount, afterUpdate } from 'svelte';
+  import loadingSvg from '$lib/images/Loading.svg';
 
 
   export let data: PageData;
@@ -23,6 +24,7 @@
   let showAllFilters = false;
   let modal: AdModal;
   let inputChipList = []; 
+  let isLoading = true;
 
 function handleTagSelection(tagName: any) {
   // console.log(tagName);
@@ -106,6 +108,8 @@ function capitalizeFirstLetter(string) {
 
   // This function updates the `matchingAds` array whenever `selectedTags` changes
   function updateMatchingAds() {
+    isLoading = true; // Show loading animation
+
   matchingAds = ads.filter(ad =>
     (selectedTags.length === 0 ||
     selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) ||
@@ -114,6 +118,8 @@ function capitalizeFirstLetter(string) {
     selectedTags.includes(capitalizeFirstLetter(ad.user)) ||
     selectedTags.includes(capitalizeFirstLetter(ad.salaryType)))
   );
+  isLoading = false; // Show loading animation
+
   }
   onMount(updateMatchingAds);
   afterUpdate(updateMatchingAds);
@@ -261,7 +267,14 @@ function capitalizeFirstLetter(string) {
 
   
   <div class="flex flex-wrap allad">
-    {#if matchingAds.length > 0}
+    {#if isLoading}
+    <!-- Loading animation HTML or component here -->
+    <!-- <p class="loder">Loading...</p> -->
+    <div class="loder">
+      <img src={loadingSvg} alt="Loading" />
+      <!-- <p class="loadingText">Loading...</p> -->
+    </div>
+    {:else if matchingAds.length > 0}
 	  	{#each matchingAds as ad, adIndex}
         <article class="m-2">
           <Card>
@@ -390,5 +403,21 @@ function capitalizeFirstLetter(string) {
 		margin-left: auto;
 		margin-right: auto;
 	}
+  .loder{
+   position: fixed;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   display: grid;
+   place-items: center;
+   background-color: white;
+   z-index: 9999;
+  }
+  /* .loadingText {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  } */
   
 </style>
