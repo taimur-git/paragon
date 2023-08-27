@@ -37,9 +37,9 @@
 		conversation.setParticipant(currentUser);
 
 
-        const dummy_conversation = session.getOrCreateConversation(chatdata[2].id+chatdata[3].id);
-        dummy_conversation.setParticipant(currentUser);
-        dummy_conversation.setParticipant(otherUsers[0]);
+        // const dummy_conversation = session.getOrCreateConversation(chatdata[2].id+chatdata[3].id);
+        // dummy_conversation.setParticipant(currentUser);
+        // dummy_conversation.setParticipant(otherUsers[0]);
         
 		for (let i = 0; i < otherUsers.length; i++) {
             conversation.setParticipant(otherUsers[i]);
@@ -53,7 +53,7 @@
 		//const chatbox = session.createChatbox();
         const inbox = session.createInbox();
 		inbox.select(conversation);
-		inbox.select(dummy_conversation);
+		// inbox.select(dummy_conversation);
 		// @ts-ignore
 		inbox.mount(inboxEl);
     });

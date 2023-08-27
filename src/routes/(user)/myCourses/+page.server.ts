@@ -9,23 +9,7 @@ export const load: PageServerLoad = async ({ locals }) => {
         
         const id = authUser.user.userId; // Assuming id is the correct authenticated user's ID
 
-        const ads = await prisma.ad.findMany({
-            include: {
-                user: {
-                    include: {
-                        institute: true
-                    }
-                },
-                tags: {
-                    select: { tag: true }
-                }
-            },
-            where: {
-                userid: id // Filter ads based on the authenticated user's ID
-            }
-        });
-
-        const courses = await prisma.ad.findMany({
+        const launched_courses = await prisma.ad.findMany({
             include: {
                 user: {
                     include: {
@@ -38,16 +22,35 @@ export const load: PageServerLoad = async ({ locals }) => {
             },
             where: {
                 AND: [
-                    { userid: id },
-                    { isLaunched: true }
-                ]
-            }
+                    {isLaunched: true},
+                    {appointments: {some: {studentId: id}}},
+                ],
+            },
         });
 
-        // console.log(courses);
+        const pending_courses = await prisma.ad.findMany({
+            include: {
+                user: {
+                    include: {
+                        institute: true
+                    }
+                },
+                tags: {
+                    select: { tag: true }
+                }
+            },
+            where: {
+                AND: [
+                    {isLaunched: false},
+                    {appointments: {some: {studentId: id}}},
+                ],
+            },
+        });
+
+        //console.log(courses);
 
         return {
-            ads: ads.map((ad) => ({
+            launched_courses: launched_courses.map((ad) => ({
                 ...ad,
                 adId: ad.id,
                 userid: ad.user.id,
@@ -66,7 +69,8 @@ export const load: PageServerLoad = async ({ locals }) => {
                 isLaunched: ad.isLaunched
 
             })),
-            courses: courses.map((ad) => ({
+
+            pending_courses: pending_courses.map((ad) => ({
                 ...ad,
                 adId: ad.id,
                 userid: ad.user.id,
@@ -83,8 +87,7 @@ export const load: PageServerLoad = async ({ locals }) => {
                 instituteName: ad.user.institute?.name,
                 online: ad.user.online, // Use a default value if no institute is associated
                 isLaunched: ad.isLaunched
-
-            }))
+            })),
         };
     } catch (error) {
         console.error("Error loading data from Prisma:", error);

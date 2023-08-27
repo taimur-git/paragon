@@ -17,6 +17,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
                     studentId: userid
                 },
             });
+
             let has_app = false;
             if(user_app.length > 0){
                 has_app = true;

@@ -25,7 +25,11 @@
       ad = adData;
     shown = true;
     selectedCardId.cardId=ad.id;
-    logInId=logInfo.user.userId;
+    if(logInfo!=null)
+    {
+      logInId=logInfo.user.userId;
+    }
+    // logInId=logInfo.user.userId;
   }
   export function hide() {
     shown = false;
@@ -65,7 +69,7 @@
 
 </script>
 
-{#if currentPage == "home" && shown}
+{#if currentPage == "home" && shown || currentPage == "myCourses" && shown}
 <!-- {#if shown} -->
   <div class="modal-wrapper" on:click={() => hide()} on:keydown={(e) => { if (e.keyCode === 27) hide(); }}>
     <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -92,7 +96,7 @@
       <p>Description: {ad.adDescription ? ad.adDescription : ''}</p>
       <div class="button-container">
         <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
-        {#if ad.userid != logInId}
+        {#if ad.userid != logInId && logInId != null}
           <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => sendReq(ad)}>Join</button>
         {/if}
 
