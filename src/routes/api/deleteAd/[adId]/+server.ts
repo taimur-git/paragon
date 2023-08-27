@@ -4,6 +4,19 @@ export const DELETE = async ({ request, locals, params }) => {
     const adId = params.adId;
 
     try {
+
+        await prisma.request.deleteMany({
+            where: {
+                adId: parseInt(adId),
+            },
+        });
+
+        await prisma.appointment.deleteMany({
+            where: {
+                adId: parseInt(adId),
+            },
+        });
+
         await prisma.adTag.deleteMany({
             where: {    
                 adId: parseInt(adId),
