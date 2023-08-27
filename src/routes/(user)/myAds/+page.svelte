@@ -10,7 +10,7 @@
 	let modal: AdModal;
 	export let data: PageData;
 
-	$: ({ ads } = data);
+	$: ({ ads, courses } = data);
 
 	let selectedTags: any[] = [];
 	// let showAllFilters = false;
@@ -40,6 +40,8 @@
 					if (res.ok) {
 						const newAds = ads.filter((ad) => ad.adId !== adId);
 						ads = newAds;
+						const newCourses = courses.filter((course) => course.adId !== adId);
+						courses = newCourses;
 					}
 					toastStore.trigger({
 						message: 'Ad deleted successfully',
@@ -56,7 +58,7 @@
 		modalStore.trigger(confirmDelete);
 	};
 
-	console.log(data.courses);
+	// console.log(data.courses);
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -65,10 +67,10 @@
 </div>
 
 <div class="fullPage">
-	{#if data.courses!=undefined && data.courses.length>0}
+	{#if courses!=undefined && courses.length>0}
 		<h5 class="mt-7">Launched courses</h5>
 		<div class="flex flex-wrap allad mt-6">
-		{#each data.courses as course (course.adId)}
+		{#each courses as course (course.adId)}
 			<div class="relative" animate:flip={{ duration: 500 }}>
 				<button
 					on:click={() => deleteAd(course.adId)}
@@ -82,7 +84,7 @@
 					in:fade
 					out:scale|local
 					on:click={() => {
-						goto(`/myAds/${course.adId}`);
+						goto(`/myAds/course/${course.adId}`);
 					}}
 				>
 					<Card>
@@ -155,7 +157,7 @@
 							{#if ad.tags.length > 0}
 								<span class="tagsOfCard">
 									{#each ad.tags as tag, index}
-										<span class="mr-2">{tag}{index !== ad.tags.length - 1 ? ',' : ''}</span>
+										<span class="badge variant-filled m-1">{tag}</span>
 									{/each}
 								</span>
 							{/if}

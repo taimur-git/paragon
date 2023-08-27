@@ -124,6 +124,7 @@ model Ad{
   dateCreated DateTime @default(now())
   dateUpdated DateTime @updatedAt
   dateDeleted DateTime?
+  dateLaunched String?
   visible Boolean @default(true)
 
   tags AdTag[]
@@ -274,15 +275,12 @@ model Appointment {
   ad Ad @relation(fields: [adId], references: [id])
   @@id([studentId,adId])
   dateJoined DateTime @default(now())
-  schedule Schedule @relation(fields: [scheduleId], references: [id])
+  // schedule Schedule @relation(fields: [scheduleId], references: [id])
 }
 
-model Schedule {
-  id Int @id @default(autoincrement())
-  adId Int
-  ad Ad @relation(fields: [adId], references: [id])
-  startTime String
-  endTime String
-  day String
-  appointments Appointment[] //a schedule can be made for multiple appointments 
-}
+// model Schedule {
+//   id Int @id @default(autoincrement())
+//   startTime String
+//   endTime String
+//   day String
+// }

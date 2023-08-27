@@ -12,17 +12,11 @@
 		AccordionItem,
 		AppShell
 	} from '@skeletonlabs/skeleton';
-	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
 	import { enhance } from '$app/forms';
-	import { page } from '$app/stores';
-	// /** @type {import('./$types').ActionData} */
-	// export let form;
 
-	// let isSubmitted = false;
-	// $: if ($page.form) { isSubmitted = true; }
+    export let data: any;
 
-	export let data: PageData;
 	let adId = data.adId;
 
 	// import { onMount, setContext } from "svelte";
@@ -103,41 +97,10 @@
 	// 		});
 	// };
 
-	const launchCourse = (adId) => {
-		fetch('/api/launchCourse', {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				adId: adId
-			})
-			
-		}).then((res) => {
-			if (res.ok) {
-				toastStore.trigger({
-					message: 'Course launched successfully',
-					background: 'variant-ghost-success'
-				});
-				goto('/myAds');
-			} else {
-				toastStore.trigger({
-					message: 'Course not launched',
-					background: 'variant-ghost-error'
-				});
-			}
-		}).catch((err) => {
-			console.log(err);
-		});
-	};
+	
 </script>
 
 <AppShell>
-	<svelte:fragment slot="header">
-		<div class="page_title">
-			<h1>Ad details</h1>
-		</div>
-	</svelte:fragment>
 	<!-- (sidebarLeft) -->
 	<svelte:fragment slot="sidebarRight">
 		<div class="requestAndAppointments">
@@ -153,7 +116,10 @@
 					{:else}
 					{deleteRequestFail()}
 				{/if}
-			</div> -->			
+			</div> -->
+            <div class="border border-slate-700 h-96">
+                <h1 class="text-2xl font-bold mb-2.5">Anouncements</h1>
+            </div>		
 			<Accordion hover="hover:bg-primary-hover-token">
 				<AccordionItem>
 					<svelte:fragment slot="lead"
@@ -218,11 +184,6 @@
 				</AccordionItem>
 				<!-- ... -->
 			</Accordion>
-			{#if data.numAppointments>0}
-				<button class="mt-auto btn btn-lg variant-outline-primary hover:variant-filled-secondary" on:click={()=>launchCourse(adId)}>Launch 🚀</button>
-				{:else}
-				<button class="mt-auto btn btn-lg variant-filled-secondary" disabled>Launch 🚀</button>
-			{/if}
 			
 		</div>
 	</svelte:fragment>

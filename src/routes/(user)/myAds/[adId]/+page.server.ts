@@ -164,7 +164,7 @@ export const actions: Actions = {
         const form = await request.formData();
         const userId = form.get("userId");
         const adId = parseInt(params.adId);
-
+        let success = false;
         try{
             await prisma.appointment.create({
                 data: {
@@ -179,17 +179,18 @@ export const actions: Actions = {
                     adId: adId
                 }
             });
+            success = true;
         } catch (err) { 
             console.error(err);
         }
 
         return {
-            success: true
+            success: success
         }
     },
 
     deleteRequest: async ({ request, params }) => {
-
+        let deleted = false;
         const form = await request.formData();
         const userId = form.get("userId");
         const adId = parseInt(params.adId);
@@ -201,12 +202,15 @@ export const actions: Actions = {
                     adId: adId
                 }
             });
+            deleted = true;
         } catch (err) { 
             console.error(err);
+            deleted = false;
         }
 
         return {
-            success: true
+            //success: true,
+            deleted: deleted
         }
     }
 
