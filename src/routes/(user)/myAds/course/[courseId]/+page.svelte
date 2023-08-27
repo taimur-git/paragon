@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Calender from '../../../../../components/Calender.svelte';
+	import CourseChat from '../../../../../components/CourseChat.svelte';
     import GeneralCourseInfo from '../../../../../components/GeneralCourseInfo.svelte';
     import Tabs from '../../../../../components/Tabs.svelte';
     import type { PageData } from './$types';
@@ -13,9 +14,13 @@
 		activeItem = event.detail;
 	}
 
+    //schedule
     const classEvents = data.classEvent;
-    console.log(classEvents);
+    // console.log(classEvents);
 
+    //chat
+    const chatdata = data.chatdata;
+    console.log(chatdata);
 </script>
 
 <div class="course_theme">
@@ -27,7 +32,7 @@
 {:else if activeItem === 'Schedule'}
     <Calender classevents={classEvents}/>
 {:else if activeItem === 'Chat'}
-    <h1>Chat</h1>
+    <CourseChat chatdata={chatdata}/>
 {/if}
 
 <style>

@@ -94,6 +94,22 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             startRecur: startRecurrence // Adjust the start date accordingly
         }];
 
+
+        const chatdata = [ads.id,ads.title,
+            {
+            id: ads.user.id,
+            name: ads.user.name,
+            email: ads.user.email,
+        },];
+
+        for (let i = 0; i < app_users.length; i++) {
+            chatdata.push({
+                id: app_users[i].id,
+                name: app_users[i].name,
+                email: app_users[i].email,
+            });
+            //console.log(app_users[i].name);
+        }
         return {
             tagOptions,
             adId: ads.id,
@@ -112,9 +128,123 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             numRequests: joinRequests.length,
             numAppointments: appointments.length,
             workDaysCheckbox: workDaysCheckbox,
+            chatdata: chatdata,
         };
     } catch (error) {
         console.error("Error loading data from Prisma:", error);
         return fail(500, "Internal Server Error");
     }
 }
+
+export const actions: Actions = {
+	updateAd: async ({ request, locals,params }) => {
+		const form = await request.formData();
+        const salaryType = form.get("salaryType");
+        const salary  =form.get("salary") ? form.get("salary") : "0";
+        const expectedSalary = parseInt(salary) ;
+        const tagIdsString = form.get("tagIds");
+        const title = form.get("title");
+        //const tagIds = tagIdsString ? tagIdsString.split(',').map(id => ({ id: parseInt(id) })): [];
+        //console.log(tagIds);
+        //tagIds = tagIds;
+        const tagIds = tagIdsString
+            ? tagIdsString.split(',').map(id => ({
+                tag: {
+                    connect: {
+                    id: parseInt(id),
+                    },
+                },
+                }))
+            : [];
+        const typeOfTutor = (form.get("teachingType"));
+        const description = form.get("description");
+        const ad_Id = form.get("ad_Id");
+
+        const workDays = form.getAll("workDays[]");
+        const startTime = form.get("startTime");
+        const endTime = form.get("endTime");
+
+        const classDays: String = workDays.join('');
+
+        const ad = {
+            salaryType : salaryType,
+            expectedSalary : expectedSalary,
+            typeOfTutor : typeOfTutor,
+            description : description,
+            title : title,
+            workDays: classDays,
+            startTime: startTime.toString(),
+            endTime: endTime.toString(),
+            tags : {
+                create: tagIds
+            }
+        }
+        console.log(ad);
+
+        await prisma.ad.update({
+            where: {    
+                id: parseInt(params.adId) ,
+            },
+            data: ad
+        });
+
+        throw redirect(302, '/myAds');
+	},
+
+    createAppointment: async ({ request, params }) => {
+        const form = await request.formData();
+        const userId = form.get("userId");
+        const adId = parseInt(params.courseId);
+        let success = false;
+        try{
+            await prisma.appointment.create({
+                data: {
+                    studentId: userId,
+                    adId: adId
+                }  
+            })
+
+            await prisma.request.deleteMany({
+                where: {
+                    userId: userId,
+                    adId: adId
+                }
+            });
+            success = true;
+        } catch (err) { 
+            console.error(err);
+        }
+
+        return {
+            success: success
+        }
+    },
+
+    deleteRequest: async ({ request, params }) => {
+        let deleted = false;
+        const form = await request.formData();
+        const userId = form.get("userId");
+        const adId = parseInt(params.courseId);
+
+        try{
+            await prisma.request.deleteMany({
+                where: {
+                    userId: userId,
+                    adId: adId
+                }
+            });
+            deleted = true;
+        } catch (err) { 
+            console.error(err);
+            deleted = false;
+        }
+
+        return {
+            //success: true,
+            deleted: deleted
+        }
+    }
+
+
+    
+};
