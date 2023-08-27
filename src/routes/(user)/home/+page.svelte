@@ -282,21 +282,20 @@ function capitalizeFirstLetter(string) {
               Name: {ad.user}
             </div>
             <div slot="studentLable">
-              Course:
               {#if ad.tags.length > 0}
                 <span class="tagsOfCard">
                   {#each ad.tags as tag, index}
-                    <span class="mr-2">{tag}{index !== ad.tags.length - 1 ? ',' : ''}</span>
+                    <span class="badge variant-filled m-1">{tag}</span>
                   {/each}
                 </span>
               {/if}
             </div>
             <div slot="rate">
-              {#if ad.salary === 0}
-                Rate: {"Negotiable"}
-              {:else}
-                Rate: {ad.salary}
-              {/if}
+              {#if ad.salaryType != 'egotiable' && ad.salaryType != undefined}
+								Rate: {ad.salary} {ad.salaryType}
+							{:else}
+								Rate: Negotiable
+							{/if}
             </div>
 
             <div slot="active">
