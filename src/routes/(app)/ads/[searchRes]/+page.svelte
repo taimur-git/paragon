@@ -4,6 +4,8 @@
 	import AdModal from '../../../../components/AdModal.svelte';
 	import {page} from '$app/stores';
 	import { onMount, afterUpdate } from 'svelte';
+	import loadingSvg from '$lib/images/Loading.svg';
+
 
 
 	export let data: PageData;
@@ -27,6 +29,7 @@
 	let showAllFilters = false;
 	let modal: AdModal;
 	let inputChipList = []; 
+	let isLoading = true;
 
 	selectedTags = [searchRes];
 	inputChipList = [searchRes];
@@ -114,15 +117,19 @@
 
 	// This function updates the `matchingAds` array whenever `selectedTags` changes
 	function updateMatchingAds() {
-	matchingAds = ads.filter(ad =>
-		(selectedTags.length === 0 ||
-		selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) ||
-		selectedTags.some(tag => searchMatchesTag(ad.tags, tag)) ||
-		selectedTags.includes(capitalizeFirstLetter(ad.typeOfTutor)) ||
-		selectedTags.includes(capitalizeFirstLetter(ad.user)) ||
-		selectedTags.includes(capitalizeFirstLetter(ad.salaryType)))
-	);
-	}
+    isLoading = true; // Show loading animation
+
+  matchingAds = ads.filter(ad =>
+    (selectedTags.length === 0 ||
+    selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) ||
+    selectedTags.some(tag => searchMatchesTag(ad.tags, tag)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.typeOfTutor)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.user)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.salaryType)))
+  );
+  isLoading = false; // Show loading animation
+
+  }
 	onMount(updateMatchingAds);
 	afterUpdate(updateMatchingAds);
 
@@ -266,8 +273,15 @@
   </div>
   
 
-	<div class="flex flex-wrap allad">
-	  {#if matchingAds.length > 0}
+  <div class="flex flex-wrap allad">
+    {#if isLoading}
+    <!-- Loading animation HTML or component here -->
+    <!-- <p class="loder">Loading...</p> -->
+    <div class="loder">
+      <img src={loadingSvg} alt="Loading" />
+      <!-- <p class="loadingText">Loading...</p> -->
+    </div>
+    {:else if matchingAds.length > 0}
 	  	{#each matchingAds as ad, adIndex}
 			<article class="m-2">
 				<Card>
@@ -275,22 +289,21 @@
 					Name: {ad.user}
 				</div>
 				<div slot="studentLable">
-					Course:
 					{#if ad.tags.length > 0}
 					<span class="tagsOfCard">
 						{#each ad.tags as tag, index}
-						<span class="mr-2">{tag}{index !== ad.tags.length - 1 ? ',' : ''}</span>
+						<span class="badge variant-filled m-1">{tag}</span>
 						{/each}
 					</span>
 					{/if}
 				</div>
 				<div slot="rate">
-					{#if ad.salary === 0}
-					Rate: {"Negotiable"}
+					{#if ad.salaryType != 'negotiable' && ad.salaryType != undefined}
+						Rate: {ad.salary} {ad.salaryType}
 					{:else}
-					Rate: {ad.salary}
+						Rate: Negotiable
 					{/if}
-				</div>
+				  </div>
 
 				<div slot="active">
 					Login: {ad.lastLogin}
@@ -396,5 +409,15 @@
 		margin-left: auto;
 		margin-right: auto;
 	}
-	
+	.loder{
+   position: fixed;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   display: grid;
+   place-items: center;
+   background-color: white;
+   z-index: 9999;
+  }
   </style>
