@@ -18,6 +18,9 @@
     export let data;
 
 	let adId = data.adId;
+	let adUserId = data.adUserId;
+	let currentUserId = data.currentUserId;
+
 
 	// import { onMount, setContext } from "svelte";
 
@@ -68,45 +71,16 @@
 	function showTags() {
 		hide_tags = false;
 	}
-
-	// const addAppointmentSuccess = () => {
-	// 	toastStore.trigger({
-	// 			message: 'Appointment made successfully',
-	// 			background: 'variant-ghost-success'
-	// 		});
-	// };
-
-	// const addAppointmentFail = () => {
-	// 	toastStore.trigger({
-	// 			message: 'Appointment not made',
-	// 			background: 'variant-ghost-error'
-	// 		});
-	// }
-
-	// const deleteRequestSuccess = () => {
-	// 	toastStore.trigger({
-	// 			message: 'Join request deleted!',
-	// 			background: 'variant-ghost-error'
-	// 		});
-	// };
-
-	// const deleteRequestFail = () => {
-	// 	toastStore.trigger({
-	// 			message: 'Request not deleted',
-	// 			background: 'variant-ghost-error'
-	// 		});
-	// };
-
 	
 </script>
 
-<div class="flex w-full justify-evenly">
+<div class="flex w-full justify-evenly h-full">
 	<div class="flex justify-center myads_content">
 		<div class="w-full px-14 py-3" id="popup">
 			<!-- <h1 class="text-2xl font-bold mb-2.5">Post Your {data.teachingType}</h1> -->
 
 			<!-- <h1 class="text-lg font-normal mb-4">It is recommended to finish your <a href='/profile'>Profile</a> before posting an ad.</h1> -->
-
+			{#if currentUserId === adUserId}
 			<Form method="POST" action="?/updateAd">
 				<label for="title">Title:</label>
 				<input type="text" name="title" id="title" class="input" placeholder="Enter a title" value={data.adTitle}/>
@@ -219,27 +193,65 @@
 					>update</button
 				>
 			</Form>
+			{/if}
+
+			{#if currentUserId !== adUserId}
+				<div class="flex flex-col gap-2">
+					<h2>{data.adTitle}</h2>
+					<p>{data.adDescription}</p>
+					<div class="flex gap-1">
+						{#each data.tags as tag}
+							<span class="badge variant-filled m-1">{tag}</span>
+						{/each}
+					</div>
+					
+					<div class="flex">
+						<b>Rate: </b>
+						{#if data.salaryType !== 'negotiable'}
+							{data.salary} {data.salaryType}
+						{:else}
+							{data.salaryType}
+						{/if}
+					</div>
+					
+					<div class="flex">
+						<b>Teaching type: </b> {data.teachingType}
+					</div>
+
+					<b>Days:</b>
+					<div class="flex">
+						{#if data.workDaysCheckbox !== undefined}
+							{#each weekDays as day}
+								{#if data.workDaysCheckbox.includes(weekDays.indexOf(day))}
+									<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} checked disabled/>
+								{:else}
+									<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} disabled/>
+								{/if}
+								<label class="checkboxLabel" for={day}>{day}</label>
+							{/each}
+						{:else}
+							{#each weekDays as day}
+								<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)} disabled/>
+								<label class="checkboxLabel" for={day}>{day}</label>
+							{/each}
+						{/if}
+					</div>
+				</div>
+				
+			{/if}
 		</div>
 	</div>
 
 	<div class="requestAndAppointments">
-		<!-- <div class="hidden">
-			{#if form?.success && isSubmitted}
-				{addAppointmentSuccess()}
-				{:else}
-				{addAppointmentFail()}
-			{/if}
-			
-			{#if form?.deleted && isSubmitted}
-				{deleteRequestSuccess()}
-				{:else}
-				{deleteRequestFail()}
+		<!-- <div class="border border-slate-700 h-72">
+			<h1 class="text-2xl font-bold mb-2.5 text-center">Announcements</h1>
+			{#if currentUserId===adUserId}
+			<button class="btn variant-outline-surface hover:variant-filled-surface mx-auto">Create</button>
 			{/if}
 		</div> -->
-		<div class="border border-slate-700 h-72">
-			<h1 class="text-2xl font-bold mb-2.5 text-center">Announcements</h1>
-		</div>		
+				
 		<Accordion hover="hover:bg-primary-hover-token">
+			{#if currentUserId===adUserId}
 			<AccordionItem>
 				<svelte:fragment slot="lead"
 					><svg xmlns="http://www.w3.org/2000/svg" height="1.8em" viewBox="0 0 640 512"
@@ -274,6 +286,7 @@
 					{/each}
 				</svelte:fragment>
 			</AccordionItem>
+			{/if}
 			<AccordionItem>
 				<svelte:fragment slot="lead"
 					><svg xmlns="http://www.w3.org/2000/svg" height="1.8em" viewBox="0 0 640 512"
@@ -284,7 +297,12 @@
 				>
 				<svelte:fragment slot="summary">
 					<div class="flex justify-between">
+						{#if currentUserId===adUserId}
 						<h4>Enrolled students</h4>
+						{:else}
+						<h4>Classmates</h4>
+						{/if}
+						
 						<span class="badge variant-filled-surface">{data.numAppointments}</span>
 					</div>
 				</svelte:fragment>

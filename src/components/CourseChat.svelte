@@ -7,17 +7,20 @@
     let inboxEl;
 
     onMount(async () => {
-        let currentuserObj = {
-			id: chatdata[2].id,
-			name: chatdata[2].name,
-			email: chatdata[2].email,
+
+        // ad creator
+        let adCreatorObj = {
+			id: chatdata[3].id,
+			name: chatdata[3].name,
+			email: chatdata[3].email,
 			welcomeMessage: 'Welcome students!',
 		}
 
-        const currentUser = new Talk.User(currentuserObj);
+        let currentUser = new Talk.User(adCreatorObj);
 
+        // students
         const otherUsers = [];
-		for (let i = 3; i < chatdata.length; i++) {
+		for (let i = 4; i < chatdata.length; i++) {
             let userObj = {
                 id: chatdata[i].id,
                 name: chatdata[i].name,
@@ -27,32 +30,46 @@
             const otherUser = new Talk.User(userObj);
             otherUsers.push(otherUser);
         }
+
+        otherUsers.forEach(otherUser => {
+            if(otherUser.id === chatdata[2]) {
+                currentUser = otherUser;
+                console.log('hello');
+            }
+        });
 		const session = new Talk.Session({
 			appId: 'tcaoDSc4',
 			me: currentUser
 		});
 
-		// After `Talk.ready` and creating users
-		const conversation = session.getOrCreateConversation(toString(chatdata[0]));
-		conversation.setParticipant(currentUser);
+        console.log(currentUser);
+		// Course group conversation
+		const group_conversation = session.getOrCreateConversation(chatdata[0].toString());
+		group_conversation.setParticipant(currentUser);
 
-
+        // One on one conversation with each student and the teacher
+        const oneOnOneConversation = [];
+        for (let i=4; i < chatdata.length; i++) {
+            oneOnOneConversation.push(session.getOrCreateConversation(chatdata[2].id+chatdata[i].id));
+            oneOnOneConversation[i-4].setParticipant(currentUser);
+            oneOnOneConversation[i-4].setParticipant(otherUsers[i-4]);
+        }
         // const dummy_conversation = session.getOrCreateConversation(chatdata[2].id+chatdata[3].id);
         // dummy_conversation.setParticipant(currentUser);
         // dummy_conversation.setParticipant(otherUsers[0]);
         
 		for (let i = 0; i < otherUsers.length; i++) {
-            conversation.setParticipant(otherUsers[i]);
+            group_conversation.setParticipant(otherUsers[i]);
         }
 
-        conversation.setAttributes({
+        group_conversation.setAttributes({
             photoUrl: "https://picsum.photos/300",
             subject: chatdata[1]
         });
 		// After creating the conversation
 		//const chatbox = session.createChatbox();
         const inbox = session.createInbox();
-		inbox.select(conversation);
+		inbox.select(group_conversation);
 		// inbox.select(dummy_conversation);
 		// @ts-ignore
 		inbox.mount(inboxEl);

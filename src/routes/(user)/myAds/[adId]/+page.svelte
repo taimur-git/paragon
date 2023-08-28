@@ -346,10 +346,6 @@
 			</Form>
 		</div>
 	</div>
-
-	<!-- ---- / ---- -->
-	<!-- (pageFooter) -->
-	<!-- (footer) -->
 </AppShell>
 
 <style>
