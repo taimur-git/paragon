@@ -28,8 +28,7 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             });
         });
         
-        const id = authUser.user.userId; // Assuming id is the correct authenticated user's ID
-
+        const currentUserId = authUser.user.userId; // Assuming id is the correct authenticated user's ID
         const ads = await prisma.ad.findUnique({
             include: {
                 user: {
@@ -42,23 +41,7 @@ export const load: PageServerLoad = async ({ locals,params }) => {
                 }
             },
             where: {
-                id: parseInt(params.courseId)   // Filter ads based on the authenticated user's ID
-            }
-        });
-
-        const joinRequests = await prisma.request.findMany({
-            where: {
-                adId: parseInt(params.courseId)
-            }
-        });
-
-        // console.log(joinRequests.length);
-
-        const req_users = await prisma.user.findMany({
-            where: {
-                id: {
-                    in: joinRequests.map((request) => request.userId)
-                }
+                id: parseInt(params.courseId)  
             }
         });
 
@@ -95,7 +78,10 @@ export const load: PageServerLoad = async ({ locals,params }) => {
         }];
 
 
-        const chatdata = [ads.id,ads.title,
+        const chatdata = [
+            ads.id,
+            ads.title,
+            authUser.user.userId,
             {
             id: ads.user.id,
             name: ads.user.name,
@@ -113,6 +99,8 @@ export const load: PageServerLoad = async ({ locals,params }) => {
         return {
             tagOptions,
             adId: ads.id,
+            currentUserId: currentUserId,
+            adUserId: ads.user.authid,
             username: ads?.user.name,
             salaryType: ads.salaryType,
             teachingType: ads.typeOfTutor,
@@ -123,9 +111,7 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             classEvent: classEvent,
             startTime: ads.startTime,
             endTime: ads.endTime,
-            req_users: req_users,
             app_users: app_users,
-            numRequests: joinRequests.length,
             numAppointments: appointments.length,
             workDaysCheckbox: workDaysCheckbox,
             chatdata: chatdata,
@@ -179,11 +165,11 @@ export const actions: Actions = {
                 create: tagIds
             }
         }
-        console.log(ad);
+        console.log(typeof ad_Id);
 
         await prisma.ad.update({
             where: {    
-                id: parseInt(params.adId) ,
+                id: parseInt(ad_Id) ,
             },
             data: ad
         });
