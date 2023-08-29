@@ -6,22 +6,3 @@ if (process.env.NODE_ENV === 'development'){
 }
 
 export { prisma }
-
-export async function createTagType(name: string){
-    try{
-        await prisma.tagType.create({
-            data: {
-                name: name
-            }
-        })
-        return true;
-    }catch(err){
-        console.error(err)
-        return false;
-    }
-}
-//import { universities, tagTypes , seedData} from './seed';
-
-//seedData();
-
-
