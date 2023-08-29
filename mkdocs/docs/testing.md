@@ -161,6 +161,3 @@ For our unit testing, we decided to simulate if different database accesses simi
         expect(updated_user).toBeDefined();
     });
 
-
-
-
