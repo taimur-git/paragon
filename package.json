@@ -12,7 +12,7 @@
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"coverage": "vitest run --coverage",
-		"docs": "mkdocs serve"
+		"docs": "mkdocs serve --config mkdocs/mkdocs.yml"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
