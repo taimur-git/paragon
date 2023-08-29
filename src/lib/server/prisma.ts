@@ -7,33 +7,21 @@ if (process.env.NODE_ENV === 'development'){
 
 export { prisma }
 
-
-import { universities, tagTypes } from './seed';
+export async function createTagType(name: string){
+    try{
+        await prisma.tagType.create({
+            data: {
+                name: name
+            }
+        })
+        return true;
+    }catch(err){
+        console.error(err)
+        return false;
+    }
+}
+//import { universities, tagTypes , seedData} from './seed';
 
 //seedData();
 
-async function seedData(){
 
-    try{
-        
-        for (const tag of tagTypes){
-            console.log(`Creating tagType ${tag.name}`);
-            await prisma.tagType.create({
-                data: tag
-            })
-        }
-        
-
-        for (const uni of universities){
-            console.log(`Creating uni ${uni.name}`);
-            await prisma.university.create({
-                data: uni
-            })
-        }
-
-
-    }catch(err){
-        console.error(err)
-    }
-
-}

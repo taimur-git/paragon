@@ -1,4 +1,36 @@
-export { universities, tagTypes }
+export { universities, tagTypes , seedData}
+
+export function testDummy(){
+    console.log("testDummy");
+}
+
+async function seedData(){
+
+    try{
+        
+        for (const tag of tagTypes){
+            console.log(`Creating tagType ${tag.name}`);
+            await prisma.tagType.create({
+                data: tag
+            })
+        }
+        
+
+        for (const uni of universities){
+            console.log(`Creating uni ${uni.name}`);
+            await prisma.university.create({
+                data: uni
+            })
+        }
+
+
+    }catch(err){
+        console.error(err)
+    }
+
+}
+
+
 
 const universities = [
     { name: "University of Dhaka" ,alias: "DU" },
