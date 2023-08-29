@@ -279,7 +279,11 @@
         <article class="m-2">
           <Card>
             <div slot="header">
-              Name: {ad.user}
+				{#if ad.adTitle!=undefined}
+                {ad.adTitle}
+              {:else}
+                Name: {ad.user}
+              {/if}
             </div>
             <div slot="studentLable">
               {#if ad.tags.length > 0}

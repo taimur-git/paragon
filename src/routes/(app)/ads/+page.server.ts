@@ -1,7 +1,6 @@
 import type { Actions, PageServerLoad } from "./$types"
 import { prisma } from "$lib/server/prisma"
 import { fail } from "@sveltejs/kit"
-import { ex } from "@fullcalendar/core/internal-common";
 import { exclude_internal_props } from "svelte/internal";
 
 export const load: PageServerLoad = async ({ locals }) => {

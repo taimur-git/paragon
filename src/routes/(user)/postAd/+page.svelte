@@ -149,7 +149,10 @@
 			<label for="teachingPlan">How would you like to teach?</label>
 			<RadioButtonGroup
 				selected={data.teachingType}
-				on:change={(e) => (teachingPlan = e.detail.value)}
+				on:change={(e) => {
+					teachingPlan = e.detail;
+					console.log(teachingPlan);
+					}}
 				name="teachingPlan"
 			>
 				<RadioButton labelText="Online" value="online" />

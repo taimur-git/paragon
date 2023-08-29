@@ -6,6 +6,7 @@
 	import { goto } from '$app/navigation';
 	import { fade, scale } from 'svelte/transition';
 	import { flip } from 'svelte/animate';
+	
 
 	let modal: AdModal;
 	export let data: PageData;
@@ -92,7 +93,7 @@
 							{#if course.adTitle!=undefined}
 								{course.adTitle}
 							{:else}
-								Name: {course.user.name}
+								Name: {course.user}
 							{/if}
 							
 						</div>
@@ -109,7 +110,7 @@
 							Last Update: {course.updatedAt}
 						</div>
 						<div slot="rate">
-							{#if course.salaryType != 'Negotiable' && course.salaryType != undefined}
+							{#if course.salaryType != 'negotiable' && course.salaryType != undefined}
 								Rate: {course.salary} {course.salaryType}
 							{:else}
 								Rate: Negotiable
@@ -128,7 +129,10 @@
 			</div>
 		{/each}
 		</div>
-		<h5>Other ads</h5>
+		{#if ads!=undefined && ads.length>0}
+			<h5>Other ads</h5>
+		{/if}
+		
 	{/if}
 	<div class="flex flex-wrap allad mt-6">
 		{#each ads as ad (ad.adId)}
@@ -150,7 +154,11 @@
 				>
 					<Card>
 						<div slot="header">
-							Name: {ad.user}
+							{#if ad.adTitle!=undefined}
+								{ad.adTitle}
+							{:else}
+								Name: {ad.user}
+							{/if}
 						</div>
 						<div slot="studentLable">
 							Course:

@@ -21,7 +21,7 @@ import type { PageData } from './$types';
         <h1>{data.user?.name}</h1>
         <p>{data.user?.bio ? data.user.bio:""}</p>
         <p>Total ad: {data.user?.ads ? data.user.ads.length:""}</p>
-        <span class="course_details">Course Details</span>
+        <span class="course_details">Course Posted</span>
         {#each data.user?.ads as adOfUser}
             <p class="titleOfCourse">{adOfUser.title ? adOfUser.title:"Course"}</p>  
         {/each} 

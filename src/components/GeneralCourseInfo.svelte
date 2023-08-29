@@ -198,6 +198,7 @@
 			{#if currentUserId !== adUserId}
 				<div class="flex flex-col gap-2">
 					<h2>{data.adTitle}</h2>
+					<p><b class="text-lg">Instructor:</b> {data.username}<p>
 					<p>{data.adDescription}</p>
 					<div class="flex gap-1">
 						{#each data.tags as tag}

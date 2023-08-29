@@ -1,10 +1,12 @@
 import type { PageServerLoad } from "./$types";
 import { prisma } from "$lib/server/prisma";
+import { fail } from "@sveltejs/kit"
+import { auth } from "$lib/server/lucia";
 
-
-export const load: PageServerLoad = async ({ locals,params }) => {
+export const load: PageServerLoad = async ({ locals, params }) => {
     try {
         const authUser = await locals.auth.validateUser();
+        console.log(authUser.user.userId);
         if (!authUser.user) return redirect(302, "/login");
 
         const tagType = await prisma.tagType.findMany(
@@ -87,7 +89,7 @@ export const load: PageServerLoad = async ({ locals,params }) => {
             name: ads.user.name,
             email: ads.user.email,
         },];
-
+        
         for (let i = 0; i < app_users.length; i++) {
             chatdata.push({
                 id: app_users[i].id,

@@ -95,7 +95,10 @@ export const load: PageServerLoad = async ({ locals,params }) => {
         }];
 
 
-        const chatdata = [ads.id,ads.title,
+        const chatdata = [
+            ads.id,
+            ads.title,
+            authUser.user.userId,
             {
             id: ads.user.id,
             name: ads.user.name,

@@ -7,6 +7,7 @@ import type { RequestHandler } from '@sveltejs/kit';
 export const load: PageServerLoad = async ({ locals,params }) => {
     try {
         const authUser = await locals.auth.validateUser();
+        console.log(authUser.user.userId);
         if (!authUser.user) return redirect(302, "/login");
 
         const tagType = await prisma.tagType.findMany(

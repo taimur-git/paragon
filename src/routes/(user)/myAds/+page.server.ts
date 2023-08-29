@@ -22,7 +22,10 @@ export const load: PageServerLoad = async ({ locals }) => {
                 }
             },
             where: {
-                userid: id // Filter ads based on the authenticated user's ID
+                AND: [
+                    { userid: id },
+                    { isLaunched: false }
+                ] // Filter ads based on the authenticated user's ID
             }
         });
 

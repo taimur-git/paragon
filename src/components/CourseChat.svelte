@@ -8,58 +8,55 @@
 
     onMount(async () => {
 
-        // ad creator
-        let adCreatorObj = {
-			id: chatdata[3].id,
-			name: chatdata[3].name,
-			email: chatdata[3].email,
-			welcomeMessage: 'Welcome students!',
-		}
+        let currentUserId = 0;
 
-        let currentUser = new Talk.User(adCreatorObj);
+        // ad creator
+        // let adCreatorObj = {
+		// 	id: chatdata[3].id,
+		// 	name: chatdata[3].name,
+		// 	email: chatdata[3].email,
+		// 	welcomeMessage: 'Welcome students!',
+		// }
 
         // students
-        const otherUsers = [];
-		for (let i = 4; i < chatdata.length; i++) {
+        const chatUsers = [];
+		for (let i = 3; i < chatdata.length; i++) {
             let userObj = {
                 id: chatdata[i].id,
                 name: chatdata[i].name,
                 email: chatdata[i].email,
-                welcomeMessage: 'Hello sir!',
+                welcomeMessage: 'Hello everyone!',
             }
-            const otherUser = new Talk.User(userObj);
-            otherUsers.push(otherUser);
+            const chatUser = new Talk.User(userObj);
+            if(chatdata[i].id == chatdata[2]) {
+                currentUserId = i-3;
+            }
+            chatUsers.push(chatUser);
         }
 
-        otherUsers.forEach(otherUser => {
-            if(otherUser.id === chatdata[2]) {
-                currentUser = otherUser;
-                console.log('hello');
-            }
-        });
 		const session = new Talk.Session({
 			appId: 'tcaoDSc4',
-			me: currentUser
+			me: chatUsers[currentUserId],
 		});
 
-        console.log(currentUser);
+        console.log(chatUsers[currentUserId]);
 		// Course group conversation
 		const group_conversation = session.getOrCreateConversation(chatdata[0].toString());
-		group_conversation.setParticipant(currentUser);
+		// group_conversation.setParticipant(currentUser);
 
         // One on one conversation with each student and the teacher
-        const oneOnOneConversation = [];
-        for (let i=4; i < chatdata.length; i++) {
-            oneOnOneConversation.push(session.getOrCreateConversation(chatdata[2].id+chatdata[i].id));
-            oneOnOneConversation[i-4].setParticipant(currentUser);
-            oneOnOneConversation[i-4].setParticipant(otherUsers[i-4]);
-        }
+        // const oneOnOneConversation = [];
+        // for (let i=4; i < chatdata.length; i++) {
+        //     oneOnOneConversation.push(session.getOrCreateConversation(chatdata[2].id+chatdata[i].id));
+        //     oneOnOneConversation[i-4].setParticipant(currentUser);
+        //     oneOnOneConversation[i-4].setParticipant(otherUsers[i-4]);
+        // }
         // const dummy_conversation = session.getOrCreateConversation(chatdata[2].id+chatdata[3].id);
         // dummy_conversation.setParticipant(currentUser);
         // dummy_conversation.setParticipant(otherUsers[0]);
         
-		for (let i = 0; i < otherUsers.length; i++) {
-            group_conversation.setParticipant(otherUsers[i]);
+		for (let i = 0; i < chatUsers.length; i++) {
+            group_conversation.setParticipant(chatUsers[i]);
         }
 
         group_conversation.setAttributes({

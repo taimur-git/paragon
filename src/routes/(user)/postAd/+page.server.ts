@@ -72,6 +72,7 @@ export const actions: Actions = {
             }))
             : [];
         const typeOfTutor = form.get("teachingType");
+        console.log(typeOfTutor);
         const title = form.get("title");
         const description = form.get("description");
         const userid = form.get("userid");
@@ -90,7 +91,7 @@ export const actions: Actions = {
                 create: tagIds
             }
         }
-        // console.log(ad);
+        console.log(ad);
         
         await prisma.ad.create({
             data: ad

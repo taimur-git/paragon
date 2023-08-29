@@ -279,7 +279,11 @@ function capitalizeFirstLetter(string) {
         <article class="m-2">
           <Card>
             <div slot="header">
-              Name: {ad.user}
+              {#if ad.adTitle!=undefined}
+                {ad.adTitle}
+              {:else}
+                Name: {ad.user}
+              {/if}
             </div>
             <div slot="studentLable">
               {#if ad.tags.length > 0}
@@ -291,7 +295,7 @@ function capitalizeFirstLetter(string) {
               {/if}
             </div>
             <div slot="rate">
-              {#if ad.salaryType != 'egotiable' && ad.salaryType != undefined}
+              {#if ad.salaryType != 'negotiable' && ad.salaryType != undefined}
 								Rate: {ad.salary} {ad.salaryType}
 							{:else}
 								Rate: Negotiable
