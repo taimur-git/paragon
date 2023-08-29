@@ -1,0 +1,9 @@
+site_name: Paragon Documentation
+nav:
+  - Home: index.md
+  - Features: about.md
+  - User Manual: user-guide.md
+  - Testing : testing.md
+  - Installation: installation.md
+  - Conclusion: conclusion.md
+theme: readthedocs
