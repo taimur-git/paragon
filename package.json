@@ -9,7 +9,9 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"test": "vitest"
+		"test": "vitest",
+		"test:ui": "vitest --ui",
+		"coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",
@@ -19,7 +21,6 @@
 		"@sveltejs/adapter-auto": "^2.0.0",
 		"@sveltejs/kit": "^1.5.0",
 		"@tailwindcss/forms": "^0.5.4",
-		"@testing-library/svelte": "^4.0.3",
 		"@types/cookie": "^0.5.1",
 		"autoprefixer": "^10.4.14",
 		"carbon-components-svelte": "^0.76.1",
@@ -27,7 +28,6 @@
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.26.0",
-		"jsdom": "^22.1.0",
 		"postcss": "^8.4.24",
 		"postcss-load-config": "^4.0.1",
 		"prettier": "^2.8.0",
@@ -39,7 +39,9 @@
 		"tailwindcss": "^3.3.2",
 		"typescript": "^5.1.6",
 		"vite": "^4.3.0",
-		"vitest": "^0.34.3"
+		"@testing-library/svelte": "^4.0.3",
+		"vitest": "latest",
+		"jsdom" : "latest"
 	},
 	"type": "module",
 	"dependencies": {
@@ -49,7 +51,6 @@
 		"@fullcalendar/timegrid": "^6.1.8",
 		"@lucia-auth/adapter-prisma": "^2.0.0",
 		"@prisma/client": "^4.15.0",
-		"@testing-library/jest-dom": "^6.1.2",
 		"fullcalendar": "^6.1.8",
 		"lucia-auth": "^1.8.0",
 		"lucia-sveltekit": "^0.14.3",

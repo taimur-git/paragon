@@ -6,7 +6,7 @@
 
     export let data: PageData;
 
-    console.log(data.has_app);
+    // console.log(data.has_app);
     $: data.has_app = data.has_app === true ? true : false;
     const urls = [
         { pageTitle: '/home', selected: true },
