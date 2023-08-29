@@ -86,80 +86,86 @@
 //-----------------------------------------------------------------------------//
 
 
+import { goto } from "$app/navigation";
 import { auth } from "$lib/server/lucia";
 import type { Actions, PageServerLoad } from "./$types";
 import { redirect, fail } from "@sveltejs/kit";
 
-export const actions: Actions = {
-  default: async ({ request, locals }) => {
-    if (request.method !== "POST") {
-      return fail(405, { message: "Method Not Allowed" });
-    }
+// export const actions: Actions = {
+//   default: async ({ request, locals }) => {
+//     if (request.method !== "POST") {
+//       return fail(405, { message: "Method Not Allowed" });
+//     }
 
-    const form = await request.formData();
-    const name = form.get("name");
-    const email = form.get("email");
-    const bio = form.get("bio");
-    const phone = form.get("phone");
-    const profilePhotoFile = form.get("photo");
-    const userid = form.get("userid");
+//     const form = await request.formData();
+//     const name = form.get("name");
+//     const email = form.get("email");
+//     const bio = form.get("bio");
+//     const phone = form.get("phone");
+//     const profilePhotoFile = form.get("photo");
+//     const userid = form.get("userid");
 
-    if (typeof name !== "string" || typeof email !== "string" || typeof bio !== "string" || typeof phone !== "string") {
-      return fail(400, { message: "Invalid Inputs" });
-    }
+//     console.log(email);
+//     console.log(bio);
+//     console.log(phone);
+//     console.log(profilePhotoFile);
 
-    const authUser = await locals.auth.validateUser();
-    if (!authUser.user) return redirect(302, "/login");
-    const id = authUser.user.userId;
+//     if (typeof name !== "string" || typeof email !== "string" || typeof bio !== "string" || typeof phone !== "string") {
+//       return fail(400, { message: "Invalid Inputs" });
+//     }
 
-    try {
-      // Update user data
-      const updatedUser = await prisma.user.update({
-        where: {
-          id: id,
-        },
-        data: {
-          name: name,
-          email: email,
-          bio: bio,
-          phone: phone,
-        },
-        include: {
-          location: true,
-          institute: true,
-          credentials: true,
-          ads: true,
-        },
-      });
+//     const authUser = await locals.auth.validateUser();
+//     if (!authUser.user) return redirect(302, "/login");
+//     const id = authUser.user.userId;
 
-      // Handle profile photo upload if provided
-      if (profilePhotoFile) {
-        const formData = new FormData();
-        formData.append("profilePhoto", profilePhotoFile);
+//     try {
+//       // Update user data
+//       const updatedUser = await prisma.user.update({
+//         where: {
+//           id: id,
+//         },
+//         data: {
+//           name: name,
+//           email: email,
+//           bio: bio,
+//           phone: phone,
+//         },
+//         include: {
+//           location: true,
+//           institute: true,
+//           credentials: true,
+//           ads: true,
+//         },
+//       });
 
-        // Change this URL to your actual file upload endpoint
-        const response = await fetch("/uploadProfilePhoto", {
-          method: "POST",
-          body: formData,
-        });
+//       // Handle profile photo upload if provided
+//       if (profilePhotoFile) {
+//         const formData = new FormData();
+//         formData.append("profilePhoto", profilePhotoFile);
 
-        const responseData = await response.json();
+//         // Change this URL to your actual file upload endpoint
+//         const response = await fetch("/uploadProfilePhoto", {
+//           method: "POST",
+//           body: formData,
+//         });
 
-        // Assuming responseData contains the updated user's photo URL
-        updatedUser.image = responseData.photoUrl;
-      }
+//         const responseData = await response.json();
 
-      return {
-        body: {
-          message: "Profile Updated Successfully",
-          user: updatedUser,
-        },
-      };
-    } catch (e) {
-      return fail(400, { message: "Invalid Inputs" });
-    }
-  },
-};
+//         // Assuming responseData contains the updated user's photo URL
+//         updatedUser.image = responseData.photoUrl;
+//       }
+
+//       return {
+//         body: {
+//           message: "Profile Updated Successfully",
+//           user: updatedUser,
+//         },
+//       };
+//     } catch (e) {
+//       return fail(400, { message: "Invalid Inputs" });
+//     }
+//   },
+// };
 
 export const load: PageServerLoad = async ({ locals }) => {
   const authUser = await locals.auth.validateUser();
@@ -181,6 +187,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
   return {
     user,
+    id
   };
 };
 

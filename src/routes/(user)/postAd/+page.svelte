@@ -123,7 +123,7 @@
 		</div>
 		
 		<div class="salary_info">
-			<p>Expected salary plan:</p>
+			<label for="salaryPlan">Expected salary plan:</label>
 			<RadioButtonGroup
 				selected={data.salaryType}
 				on:change={handleSalaryInput}
@@ -146,7 +146,7 @@
 			{/if}
 		</div>
 		<div class="classMode_info">
-			<p>How would you like to teach?</p>
+			<label for="teachingPlan">How would you like to teach?</label>
 			<RadioButtonGroup
 				selected={data.teachingType}
 				on:change={(e) => (teachingPlan = e.detail.value)}
@@ -159,8 +159,8 @@
 			<input type="hidden" name="teachingType" value={teachingPlan} />
 		</div>
 		
-		<div class="workDays_info">
-			<p>Select days you want to take the class:</p>
+		<div>
+			<label for="workDays[]">Select days you want to take the class:</label>
 			<div class="flex gap-1">
 				{#each weekDays as day}
 					<input type="checkbox" id={day} name="workDays[]" value={weekDays.indexOf(day)}>
@@ -168,13 +168,13 @@
 				{/each}
 			</div>
 		</div>
-		<div class="classTime_info">
-			<p>Set the class time:</p>
+		<div>
+			<label for="startTime">Set the class time:</label>
 			<div class="flex gap-1 items-center justify-center">
-				<label class="my-auto" for="startTime">start:</label>
+				<label for="startTime">start:</label>
 				<input type="time" name="startTime" id="startTime" value={data.startTime}>
 		
-				<label class="my-auto" for="endTime">end:</label>
+				<label for="endTime">end:</label>
 				<input type="time" name="endTime" id="endTime" value={data.endTime}>
 			</div>
 		</div>
@@ -377,35 +377,9 @@
 		margin-right: auto;
 	}
 
-	.ad_info > label {
-		margin-bottom: .5em;
-		margin-top: .9em;
-	}
-	/* .general_info {
-		display: flex;
-		flex-direction: column;
-		width: 50%;
-		border-right: 1px solid #a18cad;
-		padding: .5em 1em;
-	}
-
-	.class_info {
-		width: 50%;
-		padding: .5em 1em;
-	}
-
-	.class_info > * {
-		margin-bottom: 1em;
-	} */
-
 	.classMode_info {
 		/* border-bottom: 1px solid #a18cad; */
 		padding-bottom: .5em;
-	}
-
-	.image_container {
-		position: relative;
-		display: inline-block;
 	}
 
 	.postBtn {
@@ -418,7 +392,8 @@
 	label {
 		font-weight: semi-bold;
 		font-size: large;
-		margin-bottom: 1em;
+		margin-bottom: .5em;
+		margin-top: .5em;
 	}
 
 	.classTime_info > p {

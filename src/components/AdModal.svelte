@@ -8,8 +8,12 @@
   export let ad; 
   export let currentPage; // Add this prop to determine the current page
 
-  const error_toast: ToastSettings = {
+  const error_toast_req: ToastSettings = {
       message: "You have already requested for this ad!",
+      background: "variant-filled-error"
+  }
+  const error_toast_app: ToastSettings = {
+      message: "You are already appointed in this course!",
       background: "variant-filled-error"
   }
   const req_toast: ToastSettings = {
@@ -45,9 +49,11 @@
       goto('/register');
     }
     else if(data.message == "Already requested"){
-      toastStore.trigger(error_toast);
+      toastStore.trigger(error_toast_req);
     }
-    
+    else if(data.message == "Already appointed"){
+      toastStore.trigger(error_toast_app);
+    }
     else if(data.message == "Requested"){
       toastStore.trigger(req_toast);
     }
@@ -87,7 +93,7 @@
       <div class="button-container">
         <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => hide()}>Cancel</button>
         {#if ad.userid != logInId}
-          <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => sendReq(ad)}>Confirm</button>
+          <button class="modal-button bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md" on:click={() => sendReq(ad)}>Join</button>
         {/if}
 
       </div>

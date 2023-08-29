@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { PageData } from './$types';
-  import Card from '../../../components/Card.svelte';
-  import AdModal from '../../../components/AdModal.svelte';
-  import { Autocomplete, InputChip } from "@skeletonlabs/skeleton";
-	import type { AutocompleteOption } from '@skeletonlabs/skeleton';
-	import { Button, Form } from 'carbon-components-svelte';
+ import type { PageData } from './$types';
+	import Card from '../../../components/Card.svelte';
+	import AdModal from '../../../components/AdModal.svelte';
+	import { onMount, afterUpdate } from 'svelte';
+  import loadingSvg from '$lib/images/Loading.svg';
+
 
   export let data: PageData;
 
@@ -12,16 +12,10 @@
   $: ({ ads } = data);
   $: ({ logInfo } = data);
   
-  
-
-  let selectedCards = [];
-
-  let selectedCardInfo: { cardId: string, filters: number[] } | null = null;
-
   let filter_types = [
 		{ id: 1, text: `Course` },
 		{ id: 2, text: `Tution Type` },
-		{ id: 3, text: `Rate` }
+		{ id: 3, text: `Payment Plans` }
 	];
 
   let selected;
@@ -29,88 +23,27 @@
   let allTagBtn = true; 
   let showAllFilters = false;
   let modal: AdModal;
-  
-  // const tagsSelected={
-  //   tags: [],
-  //   newTags: [],
-  // }
-  // let selectedCardId: string | null = null; // Store the ID of the selected card
-
-//   async function handleTagSelection(tagName: any) {
-//   if (selected === 1) {
-//     if (selectedTags.includes(tagName)) {
-//       selectedTags = selectedTags.filter(tag => tag !== tagName);
-//     } else {
-
-//       selectedTags = [...selectedTags, tagName];
-//     }
-
-//   } else if (selected === 3) {
-//     if (selectedTags.includes(tagName)) {
-//       selectedTags = selectedTags.filter(tag => tag !== tagName);
-//     } else {
-//     //   tagsSelected.tags=[...selectedTags];
-//     //   tagsSelected.newTags=[tagName];
-
-//     //   const res = await fetch('/api/filterAds', {
-//     //   method: 'POST',
-//     //   headers: {
-//     //     'Content-Type': 'application/json',
-//     //   },
-//     //   body: JSON.stringify(tagsSelected)
-//     // });
-
-//     // try{
-//     //   const data = await res.json();
-//     //   console.log(data.message);
-//     //   if(data.message == "No ads found"){
-//     //     // alert("Request Sent Successfully");
-//     //     selectedTags = [];
-//     //   }
-//     //   else{
-//     //     ads = data.message;
-//     //     console.log(ads);
-//     //     // selectedTags = [...selectedTags, tagName];
-//     //   }
-        
-//     //   } catch (err) {
-//     //     console.log(err);
-//     //   }
-
-
-//       selectedTags = [...selectedTags, tagName];
-//     }
-//   } else if (selected === 2) {
-//     if (selectedTags.includes(tagName)) {
-//       selectedTags = selectedTags.filter(tag => tag !== tagName);
-//     } else {
-//       selectedTags = [...selectedTags, tagName];
-//     }
-
-//   }
-//       // selectedCardId = cardId; // Update the selected card ID
-
-// }
-
-
+  let inputChipList = []; 
+  let isLoading = true;
 
 function handleTagSelection(tagName: any) {
-  if (selectedTags.includes(tagName) && inputChipList.includes(tagName)) {
+  // console.log(tagName);
+  tagName = capitalizeFirstLetter(tagName);
+    // console.log(tagName);
+
+  if (selectedTags.includes(tagName) || inputChipList.includes(tagName)) {
     selectedTags = selectedTags.filter(tag => tag !== tagName);
     inputChipList = inputChipList.filter(tag => tag !== tagName);
     if(selectedTags.length === 0){
         allTagBtn=true;
-        hideTags();
       }
   } 
-  else if (tagName === 'all') {
+  else if (tagName === 'All') {
     inputChipList = [];
     selectedTags = [];
-    hideTags();
     allTagBtn=true;
   }
   else {
-    inputChipList = [...inputChipList, tagName];
     selectedTags = [...selectedTags, tagName];
     allTagBtn=false;
   }
@@ -139,96 +72,66 @@ let tagScrollPosition = 0;
     }
   }
 
-  const handleSearch = async (e: Event) => { 
-    e.preventDefault();
+  let inputChip = '';
+  let idList: number[] = [];
 
-    const res = await fetch('/api/searchAd', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(idList)
-    });
-
-	try{
-		const data = await res.json();
-		// console.log(data);
-    // let tagsFromSearch = inputChipList;
-    selectedTags = [ ...inputChipList];
-    // tagsFromSearch=[];
-    // console.log(selectedTags);
-
-	}catch(err){
-		console.log(err);
-	}
+  function display_inputChipList(){
+    if(inputChipList.length!==0){
+      selectedTags=[capitalizeFirstLetter(inputChipList)];
+      console.log(selectedTags);
+        allTagBtn=false;
+    }
+    else{
+      handleTagSelection('all');
+    
+    }
   }
 
-  let inputChip = '';
-  let inputChipList: string[] = []; //grab from backend
-  let idList: number[] = [];
-  function onInputChipSelect(event: any): void {
-		//console.log('onInputChipSelect', event.detail);
-		if (inputChipList.includes(event.detail.value) === false) {
-			inputChipList = [...inputChipList, event.detail.value];
-            idList = [...idList, event.detail.idValue];
-			inputChip = '';
-      handleSearch(event);
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  }
 
-		}
-	}
-
-  let tagOptions: AutocompleteOption[] = data.tagOptions;//data;
-
-  let hide_tags: boolean = true;
-
-function hideTags() {
-  hide_tags = true;
-}
-function showTags() {
-  hide_tags = false;
-  allTagBtn=false;
+  function searchMatchesTag(courseTags, tag) {
+  return courseTags.some(courseTag => {
+    const courseStart = courseTag.toLowerCase().substring(0, tag.length);
+    return courseStart === tag.toLowerCase();
+  });
 }
 
-function removetag(){
-  selectedTags = inputChipList;
-  if(inputChipList.length === 0){
-        allTagBtn=true;
-        hideTags();
-      }
-}
+  function handleSearchKey(event) {
+    if (event.key === "Enter") {
+      display_inputChipList();
+    }
+  }
 
+  let matchingAds = []; // Define the matchingAds array here
 
+  // This function updates the `matchingAds` array whenever `selectedTags` changes
+  function updateMatchingAds() {
+    isLoading = true; // Show loading animation
+
+  matchingAds = ads.filter(ad =>
+    (selectedTags.length === 0 ||
+    selectedTags.some(tag => ad.tags.includes(capitalizeFirstLetter(tag))) ||
+    selectedTags.some(tag => searchMatchesTag(ad.tags, tag)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.typeOfTutor)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.user)) ||
+    selectedTags.includes(capitalizeFirstLetter(ad.salaryType)))
+  );
+  isLoading = false; // Show loading animation
+
+  }
+  onMount(updateMatchingAds);
+  afterUpdate(updateMatchingAds);
 
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div class="fullPage" >
-  <div class="searchBar">
-    <InputChip bind:input={inputChip} bind:value={inputChipList} name="chips" placeholder="Search your desired subject, course..." 
-  on:focus={hideTags} 
-  on:input={showTags} class="courseSearch" 
-  on:click={removetag}
- 
-  />
-
-
-  <input type="hidden" name="tags" value={inputChipList} />
-  <input type="hidden" name="tagIds" value={idList} />
-
-  <div class="card w-full max-w-sm max-h-48 p-4 overflow-y-auto" tabindex="-1" class:hidden={hide_tags}>
-    <Autocomplete 
-      bind:input={inputChip}
-      options={tagOptions}
-      denylist={inputChipList}
-      on:selection={onInputChipSelect}
-
-    />
-
+  <div class="input-group input-group-divider grid-cols-[auto_1fr_auto] searchBar">
+    <input class="searchInput"  bind:value={inputChipList} type="search" placeholder="Search..." on:keydown={handleSearchKey}/> 
+    <button class="variant-filled-secondary searchBtn"  on:click={display_inputChipList}>Search</button>
   </div>
-
-</div>
-
-<!-- <Button class="search" kind="secondary" type="submit" on:click={handleSearch}>Search...</Button> -->
   
   <div class="tag flex flex-wrap {showAllFilters ? 'tag-expanded' : ''}">
     <select bind:value={selected} class="select_filter">
@@ -236,8 +139,6 @@ function removetag(){
         <option value={filter_type.id}>{filter_type.text}</option>
       {/each}
     </select>
-
-  
    
     {#if selected === 1}
       {#if tags.length > tagsPerPage}
@@ -267,7 +168,7 @@ function removetag(){
   <!-- ... your existing code for showing tags ... -->
         <article class="m-2">
           <button
-            class="filter-button tag-button whitespace-nowrap {selectedTags.includes(tag.name) ? 'filter-button-active' : ''} "
+            class="filter-button tag-button whitespace-nowrap {selectedTags.includes(capitalizeFirstLetter(tag.name)) ? 'filter-button-active' : ''} "
             on:click={() => handleTagSelection(tag.name)}
           >
             {tag.name}
@@ -281,50 +182,6 @@ function removetag(){
         </button>
       {/if}
   {/if}
-
-  {#if selected === 3 }
-    {@const tagScrollPosition=0}
-    <article class="m-2"  >
-      {#if ads.map(ad => ad.salary).length > tagsPerPage}
-        {#if tagScrollPosition>0}
-          <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
-            &lt;
-          </button>
-        {/if}
-      {/if}
-    </article>
-
-    <article class="m-2">
-      <button
-        class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
-        on:click={() => handleTagSelection('all')}
-      >
-        All
-      </button>
-    </article>
-    {#each [...new Set(ads.map(ad => ad.salary))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as salary, index}
-      <article class="m-2">
-        <button
-          class="filter-button whitespace-nowrap {selectedTags.includes(salary) ? 'filter-button-active' : ''}"
-          on:click={() => handleTagSelection(salary)}
-        >
-        {#if salary === 0}
-          {"Negotiable"}
-        {:else}
-          {salary}
-        {/if} 
-        </button>
-      </article>
-    {/each}
-    <article class="m-2">
-      {#if [...new Set(ads.map(ad => ad.salary))].length > tagsPerPage && tagScrollPosition + tagsPerPage < ads.map(ad => ad.salary).length}
-        <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollRight}>
-          &gt;
-        </button>
-      {/if}
-    </article>
-  {/if}
-
 
   {#if selected === 2}
     {@const tagScrollPosition=0}
@@ -347,14 +204,16 @@ function removetag(){
       </button>
     </article>
     {#each [...new Set(ads.map(ad => ad.typeOfTutor))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as typeOfTutor, index}
-      <article class="m-2">
-        <button
-          class="filter-button whitespace-nowrap {selectedTags.includes(typeOfTutor) ? 'filter-button-active' : ''}"
-          on:click={() => handleTagSelection(typeOfTutor)}
-        >
-          {typeOfTutor}
-        </button>
-      </article>
+      {#if typeOfTutor !== "undefined"}        
+        <article class="m-2">
+          <button
+            class="filter-button whitespace-nowrap {selectedTags.includes(capitalizeFirstLetter(typeOfTutor)) ? 'filter-button-active' : ''}"
+            on:click={() => handleTagSelection(typeOfTutor)}
+          >
+            {typeOfTutor}
+          </button>
+        </article>
+      {/if}
     {/each}
 
     <article class="m-2">
@@ -365,35 +224,78 @@ function removetag(){
       {/if}
     </article>
   {/if}
+
+  {#if selected === 3 }
+  {@const tagScrollPosition=0}
+  <article class="m-2"  >
+    {#if ads.map(ad => ad.salaryType).length > tagsPerPage}
+      {#if tagScrollPosition>0}
+        <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollLeft}>
+          &lt;
+        </button>
+      {/if}
+    {/if}
+  </article>
+
+  <article class="m-2">
+    <button
+      class="filter-button whitespace-nowrap {allTagBtn===true ? 'filter-button-active' : ''} "
+      on:click={() => handleTagSelection('all')}
+    >
+      All
+    </button>
+  </article>
+  {#each [...new Set(ads.map(ad => ad.salaryType))].slice(tagScrollPosition, tagScrollPosition + tagsPerPage) as salaryType, index}
+    <article class="m-2">
+      <button
+        class="filter-button whitespace-nowrap {selectedTags.includes(capitalizeFirstLetter(salaryType)) ? 'filter-button-active' : ''}"
+        on:click={() => handleTagSelection(salaryType)}
+      >
+      {salaryType}
+      </button>
+    </article>
+  {/each}
+  <article class="m-2">
+    {#if [...new Set(ads.map(ad => ad.salaryType))].length > tagsPerPage && tagScrollPosition + tagsPerPage < ads.map(ad => ad.salaryType).length}
+      <button class="scroll-button filter-button whitespace-nowrap" on:click={scrollRight}>
+        &gt;
+      </button>
+    {/if}
+  </article>
+{/if}
 </div>
 
   
   <div class="flex flex-wrap allad">
-    {#each ads as ad}
-      {#if selectedTags.length === 0 || selectedTags.some(tag => ad.tags.includes(tag)) || selectedTags.includes(ad.salary) || selectedTags.includes(ad.typeOfTutor) }
+    {#if isLoading}
+    <!-- Loading animation HTML or component here -->
+    <!-- <p class="loder">Loading...</p> -->
+    <div class="loder">
+      <img src={loadingSvg} alt="Loading" />
+      <!-- <p class="loadingText">Loading...</p> -->
+    </div>
+    {:else if matchingAds.length > 0}
+	  	{#each matchingAds as ad, adIndex}
         <article class="m-2">
           <Card>
             <div slot="header">
-              <!-- Title: {ad.title} -->
               Name: {ad.user}
             </div>
             <div slot="studentLable">
-              <!-- <span class="courses">Course: </span> -->
-              Course:
               {#if ad.tags.length > 0}
                 <span class="tagsOfCard">
                   {#each ad.tags as tag, index}
-                    <span class="mr-2">{tag}{index !== ad.tags.length - 1 ? ',' : ''}</span>
+                    <span class="badge variant-filled m-1">{tag}</span>
                   {/each}
                 </span>
               {/if}
             </div>
             <div slot="rate">
-              {#if ad.salary === 0}
-                Rate: {"Negotiable"}
-              {:else}
-                Rate: {ad.salary}
-              {/if}
+              {#if ad.salaryType != 'egotiable' && ad.salaryType != undefined}
+								Rate: {ad.salary} {ad.salaryType}
+							{:else}
+								Rate: Negotiable
+							{/if}
             </div>
 
             <div slot="active">
@@ -410,13 +312,15 @@ function removetag(){
             </div>
           </Card>
         </article>
-      {/if}
-    {/each}
-  </div>
+      {/each}
+    {:else}
+	  	<h3 class="NoResult">No results found.</h3> 
+	  {/if} 
+   </div>
 </div>
 
 <AdModal bind:this={modal} currentPage={"home"} on:click={() => sendReq(selectedCardId)}>
-<button on:click={() => modal.hide()}>Close</button>
+  <button on:click={() => modal.hide()}>Close</button>
 </AdModal>
 
 <style>
@@ -469,15 +373,15 @@ function removetag(){
     /* flex-wrap: wrap; */
     gap: 25px;
   }
-  .courses{
-    font-weight: bold;
-  }
+  
   .searchBar{
     /* margin-bottom: 5px; */
     margin-top: 10px;
     width: 70%;
     margin-left: auto;
     margin-right: auto;
+    display: flex;
+    justify-content: space-between;
   }
   .tag-button {
     /* width: auto; */
@@ -489,4 +393,30 @@ function removetag(){
     white-space: normal;
     display: inline-block;
   }
+  .searchInput{
+    width: 100%;
+    /* margin-left: 10px; */
+    /* margin-right: 10px; */
+  }
+	.NoResult{
+		margin-left: auto;
+		margin-right: auto;
+	}
+  .loder{
+   position: fixed;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   left: 0;
+   display: grid;
+   place-items: center;
+   background-color: white;
+   z-index: 9999;
+  }
+  /* .loadingText {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  } */
+  
 </style>

@@ -50,7 +50,7 @@
 			@{data.user?.username}'s Page
 		</h1>
 		<div class="profile-avatar-container">
-			<Avatar src="invalid-image.jpg" initials="AB" class="profile-avatar" />
+			<Avatar src="https://www.w3schools.com/howto/img_avatar.png" initials="AB" class="profile-avatar" />
 		</div>
 	</div>
 

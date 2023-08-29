@@ -1,13 +1,15 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import Card from '../../../components/Card.svelte';
-	import AdModal from '../../../components/AdModal.svelte';
+	import Card from '../../../../components/Card.svelte';
+	import AdModal from '../../../../components/AdModal.svelte';
+	import {page} from '$app/stores';
 	import { onMount, afterUpdate } from 'svelte';
 	import loadingSvg from '$lib/images/Loading.svg';
 
 
 
 	export let data: PageData;
+	let searchRes;
   
 	$: ({ tags } = data);
 	$: ({ ads } = data);
@@ -19,6 +21,7 @@
 		  { id: 3, text: `Payment Plans` }
 	  ];
   
+	searchRes = capitalizeFirstLetter($page.params.searchRes);
 
 	let selected;
 	let selectedTags: any[] = []; 
@@ -27,6 +30,10 @@
 	let modal: AdModal;
 	let inputChipList = []; 
 	let isLoading = true;
+
+	selectedTags = [searchRes];
+	inputChipList = [searchRes];
+	allTagBtn=false;
 
 
   	function handleTagSelection(tagName: any) {
@@ -276,48 +283,50 @@
     </div>
     {:else if matchingAds.length > 0}
 	  	{#each matchingAds as ad, adIndex}
-        <article class="m-2">
-          <Card>
-            <div slot="header">
-              Name: {ad.user}
-            </div>
-            <div slot="studentLable">
-              {#if ad.tags.length > 0}
-                <span class="tagsOfCard">
-                  {#each ad.tags as tag, index}
-                    <span class="badge variant-filled m-1">{tag}</span>
-                  {/each}
-                </span>
-              {/if}
-            </div>
-			<div slot="rate">
-				{#if ad.salaryType != 'negotiable' && ad.salaryType != undefined}
-					Rate: {ad.salary} {ad.salaryType}
-				{:else}
-					Rate: Negotiable
-				{/if}
-			</div>
+			<article class="m-2">
+				<Card>
+				<div slot="header">
+					Name: {ad.user}
+				</div>
+				<div slot="studentLable">
+					{#if ad.tags.length > 0}
+					<span class="tagsOfCard">
+						{#each ad.tags as tag, index}
+						<span class="badge variant-filled m-1">{tag}</span>
+						{/each}
+					</span>
+					{/if}
+				</div>
+				<div slot="rate">
+					{#if ad.salaryType != 'negotiable' && ad.salaryType != undefined}
+						Rate: {ad.salary} {ad.salaryType}
+					{:else}
+						Rate: Negotiable
+					{/if}
+				  </div>
 
-            <div slot="active">
-              Login: {ad.lastLogin}
-            </div>
-            <div slot="tutionType">
-              Tution Type: {ad.tutorType ? ad.tutorType : " "}
-            </div>
-            <div slot="buttons">
-              <button
-              on:click={() => modal.show(ad,selectedCardId,logInfo)} class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md w-full see-button">
-                See...
-              </button>
-            </div>
-          </Card>
-        </article>
-      {/each}
-    {:else}
+				<div slot="active">
+					Login: {ad.lastLogin}
+				</div>
+				<div slot="tutionType">
+					Tution Type: {ad.tutorType ? ad.tutorType : " "}
+				</div>
+				<div slot="buttons">
+					<button
+					on:click={() => modal.show(ad,selectedCardId,logInfo)} class="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md w-full see-button">
+					See...
+					</button>
+				</div>
+				</Card>
+			</article>
+	  	{/each}
+
+	  {:else}
 	  	<h3 class="NoResult">No results found.</h3> 
-	  {/if} 
-   </div>
-</div>
+	  {/if}
+	</div>
+  </div>
+  
   <AdModal bind:this={modal} currentPage={"home"} on:click={() => sendReq(selectedCardId)}>
   	<button on:click={() => modal.hide()}>Close</button>
   </AdModal>
@@ -411,5 +420,4 @@
    background-color: white;
    z-index: 9999;
   }
-	
   </style>

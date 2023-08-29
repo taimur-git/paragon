@@ -10,7 +10,7 @@
 	  height: 100%; /* Make the container take up the full height of its parent */
 	  position: relative; /* Make the container a positioning context for its children */
 	  /* justify-content: space-around; */
-	  height: 230px;
+	  max-height: 280px;
 	  width: 19rem;
 	}
   
