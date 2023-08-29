@@ -1,8 +1,11 @@
 <script lang="ts">
 	import { Form } from 'carbon-components-svelte';
-import type { PageData } from './$types';
+  import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
+  import mapboxgl from 'mapbox-gl';
 	export let data: PageData;
+
+  
   
 	let editedData = {
 	  name: data.user?.name || '',
@@ -63,28 +66,33 @@ import type { PageData } from './$types';
 			<img src={data.user?.image} alt="Profile Photo" class="profile-photo" />
 			<h1>{data.user?.username}</h1>
 		  </div>
-
-		<label for="photo">Change Photo:</label>
+    <div class = "info">
+		<label style="padding: 2%" for="photo">Change Photo:</label>
 		<input type="file" id="photo" bind:value={editedData.photo} />
 
-		<label for="name">Name:</label>
+		<label style="padding: 2%" for="name">Name:</label>
 		<input type="text" id="name" bind:value={editedData.name} name="username"/>
 
-		<label for="email">Email:</label>
+		<label style="padding: 2%" for="email">Email:</label>
 		<input type="email" id="email" bind:value={editedData.email} name="email" />
 
-		<label for="bio">Bio:</label>
+		<label style="padding: 2%" for="bio">Bio:</label>
 		<textarea id="bio" bind:value={editedData.bio} name="bio"></textarea>
 
-		<label for="phone">Phone Number:</label>
+		<label style="padding: 2%" for="phone">Phone Number:</label>
 		<input type="tel" id="phone" bind:value={editedData.phone} name="phone"/>
 		
     <input type="hidden" name="userid" value={data.id} />
-
+    </div>
+    <div class="location-info">
+          <label style="padding: 2%" for="location">Location:</label>
+          <input type="text" id="location" placeholder="Search your location" bind:value={editedData.location} on:input={() => getGeocode(editedData.location)}/>
+    </div>
+    <div class="button-container">
 		<button type="submit" class="action-button">Save Changes</button>
 		
 		<button type="button" class="action-button" on:click={() => (window.location.href = '/profile')}>Cancel</button>
-
+    </div>
 	</Form>
 </div>
 
@@ -98,7 +106,7 @@ import type { PageData } from './$types';
 
 .edit-container {
   max-width: 600px;
-  margin: 2rem auto;
+  margin: 4rem auto;
   padding: 2rem;
   background: linear-gradient(to bottom right, #af67e5, #7b3fe5);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -111,10 +119,6 @@ import type { PageData } from './$types';
   color: #fff;
 }
 
-.edit-container form {
-  display: grid;
-  gap: 1.5rem;
-}
 
 .edit-container label {
   font-size: 1.1rem;
@@ -150,6 +154,7 @@ import type { PageData } from './$types';
   padding: 0.8rem 1.2rem;
   color: #fff;
   border: none;
+  margin-top: 3%;
   border-radius: 6px;
   font-size: 1rem;
   cursor: pointer;
@@ -190,8 +195,6 @@ import type { PageData } from './$types';
   .action-button{
     width: 100%;
   }
-
-
 
 
 @media screen and (max-width: 768px) {
