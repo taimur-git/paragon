@@ -57,4 +57,4 @@ You can create an ERD of the database with `npm run erd`.
 
 ## Testing
 
-To run some test cases: `npm run test` or `npm run test:ui`
+To run some test cases: `npm run test` or `npm run test:ui`, runs in port:51204

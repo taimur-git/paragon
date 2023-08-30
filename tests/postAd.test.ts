@@ -17,20 +17,20 @@ const tags = [
       },
     },
   },
-]
-const ads[] = [
+];
+const ads = [
     {
       userid: "7c4Q1RfvQCMOmzm",
-    salaryType: "negotiable",
-    typeOfTutor: "offline",
-    description: "lorem ipsum",
-    title: "Geometry Tutor",
-    workDays: "[5,6]",
-    startTime: now.toString(),
-    endTime: now.toString(),
-    tags: {
-        create: tags
-    }
+      salaryType: "negotiable",
+      typeOfTutor: "offline",
+      description: "lorem ipsum",
+      title: "Geometry Tutor",
+      workDays: "[5,6]",
+      startTime: now.toString(),
+      endTime: now.toString(),
+      tags: {
+          create: tags
+      }
     } ,
     {
       userid: "7c4Q1RfvQCMOmzm",
@@ -51,18 +51,11 @@ const ads[] = [
     description: "sit amet",
     title: "Piano Tutor"
     },
-]
-/*
-    test(`post an Ad`, async () => {
+     {
+      userid: "doesn't exist"
+    },
+];
 
-        const postReq = await prisma.ad.create({
-            data: ad
-        })
-
-        expect(postReq).toBeDefined();
-    });
-
-*/
     ads.forEach(ad => {
       test(`post an Ad, ${ad.title}`, async () => {
 

@@ -12,8 +12,7 @@ test('Update users profile', async () => {
             phone: "0190000000",
         },
         where: {
-            id: "vgZ2ncMmT4FvLJU",
-    
+            id: "vgZ2ncMmT4FvLJU"
         }
     })
     

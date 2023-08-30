@@ -13,25 +13,25 @@ For our unit testing, we decided to simulate if different database accesses simi
     import { now } from 'svelte/internal';
 
     const tags = [
-        {
+    {
         tag: {
-            connect: {
+        connect: {
             id: 9,
-            },
         },
         },
-        {
+    },
+    {
         tag: {
-            connect: {
+        connect: {
             id: 22,
-            },
         },
         },
-    ]
-    const ad = {
+    },
+    ];
+    const ads = [
+        {
         userid: "7c4Q1RfvQCMOmzm",
         salaryType: "negotiable",
-        expectedSalary: 100,
         typeOfTutor: "offline",
         description: "lorem ipsum",
         title: "Geometry Tutor",
@@ -41,15 +41,46 @@ For our unit testing, we decided to simulate if different database accesses simi
         tags: {
             create: tags
         }
-    }
+        } ,
+        {
+        userid: "7c4Q1RfvQCMOmzm",
+        salaryType: "weekly",
+        expectedSalary: 100,
+        typeOfTutor: "online",
+        description: "dolor imet",
+        title: "Guitar Tutor",
+        workDays: "[2]",
+        startTime: now.toString(),
+        endTime: now.toString(),
+        },
+        {
+        userid: "7c4Q1RfvQCMOmzm",
+        salaryType: "monthly",
+        expectedSalary: 1000,
+        typeOfTutor: "both",
+        description: "sit amet",
+        title: "Piano Tutor"
+        },
+        {
+        userid: "doesn't exist"
+        },
+    ];
 
-        test(`post an Ad`, async () => {
+        ads.forEach(ad => {
+        test(`post an Ad, ${ad.title}`, async () => {
+
             const postReq = await prisma.ad.create({
                 data: ad
             })
 
             expect(postReq).toBeDefined();
         });
+    });
+  
+
+Test result of Post Ad
+
+![img](img/postAdTesting.png)
 
 ## Delete Ad
 
@@ -168,3 +199,6 @@ Test result of Join Request Process
         expect(updated_user).toBeDefined();
     });
 
+Test result of Edit Profile
+
+![img](img/editProfileTest.png)
