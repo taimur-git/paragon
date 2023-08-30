@@ -8,7 +8,7 @@ Install the latest version of [git](https://git-scm.com/)
 
 Install the latest version of [nodeJS](https://nodejs.org/en) 
 
-
+## Cloning a local version of Paragone
 
 First, clone the repository on your local machine.
 
@@ -33,7 +33,7 @@ npm run env
 npm run update
 ```
 
-If at any point you decide to change the database, run `npm run update`.
+If at any point you decide to change the database under prisma/schema.prisma, run `npm run update`.
 
 ## Development
 
