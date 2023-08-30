@@ -56,7 +56,7 @@ For our unit testing, we decided to simulate if different database accesses simi
     import { test, expect } from 'vitest';
     import { prisma } from '$lib/server/prisma';
     
-    const adIdsToDelete = [38, 39, 40, 41]; 
+    const adIdsToDelete = [27, 28, 29, 30]; 
     
     for (const adId of adIdsToDelete) {
         test(`delete ad with id ${adId}`, async () => {
@@ -90,6 +90,10 @@ For our unit testing, we decided to simulate if different database accesses simi
         expect(ad).toBeDefined();
         });
     }
+
+Test result of Delete Ad
+
+![img](img/deleteAd_Test.png)
 
 ## Process Join Request
 

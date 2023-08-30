@@ -1,7 +1,7 @@
 import { test, expect } from 'vitest';
 import { prisma } from '$lib/server/prisma';
 
-const adIdsToDelete = [38, 39, 40, 41]; 
+const adIdsToDelete = [27, 28, 29, 30]; 
 
 for (const adId of adIdsToDelete) {
     test(`delete ad with id ${adId}`, async () => {
