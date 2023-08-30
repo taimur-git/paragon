@@ -12,7 +12,11 @@
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"coverage": "vitest run --coverage",
-		"docs": "mkdocs serve --config mkdocs/mkdocs.yml"
+		"docs": "mkdocs serve --config-file mkdocs/mkdocs.yml",
+		"db": "npx prisma studio",
+		"update": "npx prisma db push",
+		"erd": "npx prisma generate",
+		"env": "node scripts/makeEnv.js"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",

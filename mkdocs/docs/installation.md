@@ -1,5 +1,15 @@
 # Installation
 
+## Prerequisites
+
+Feel free to skip this step if you already have git and node+npm installed on your device.
+
+Install the latest version of [git](https://git-scm.com/) 
+
+Install the latest version of [nodeJS](https://nodejs.org/en) 
+
+
+
 First, clone the repository on your local machine.
 
 ```bash
@@ -18,24 +28,12 @@ npm install
 
 ## Initialise Database
 
-Create a `.env` file in the root directory, and with the following:
-
 ```bash
-DATABASE_URL="file:./dev.db"
-```
-After that run the following:
-
-```bash
-npx prisma generate
+npm run env
+npm run update
 ```
 
-Then this:
-
-```bash
-npx prisma db push
-```
-
-If at any point you decide to change the database, run the above command.
+If at any point you decide to change the database, run `npm run update`.
 
 ## Development
 
@@ -51,8 +49,12 @@ To create a production version of your app: `npm run build`
 
 You can preview the production build with `npm run preview`.
 
-You can preview the database at port:5555 with `npx prisma studio`.
+You can preview the database at port:5555 with `npm run db`.
 
-You can create an ERD of the database with `npx prisma generate`.
+You can create an ERD of the database with `npm run erd`.
 
 > To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+
+## Testing
+
+To run some test cases: `npm run test` or `npm run test:ui`

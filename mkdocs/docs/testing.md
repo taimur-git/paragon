@@ -2,6 +2,8 @@
 
 For testing, we used the Vite plug in Vitest. SvelteKit is relatively new, so testing libraries have changed from Jest to Vitest.
 
+![img](img/Test.png)
+
 For our unit testing, we decided to simulate if different database accesses similar to our API. We decided to test four things:
 
 ## Post Ad
