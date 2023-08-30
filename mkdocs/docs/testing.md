@@ -6,7 +6,7 @@ For testing, we used the Vite plug in Vitest. SvelteKit is relatively new, so te
 
 For our unit testing, we decided to simulate if different database accesses similar to our API. We decided to test four things:
 
-## Post Ad
+## Post Ad (Taimur)
 
     import { test, expect } from 'vitest';
     import { prisma } from '$lib/server/prisma';
@@ -82,7 +82,7 @@ Test result of Post Ad
 
 ![img](img/postAdTesting.png)
 
-## Delete Ad
+## Delete Ad (Reyad)
 
     import { test, expect } from 'vitest';
     import { prisma } from '$lib/server/prisma';
@@ -126,7 +126,7 @@ Test result of Delete Ad
 
 ![img](img/deleteAd_Test.png)
 
-## Process Join Request
+## Process Join Request (Anas)
 
     import { test, expect } from 'vitest';
     import { prisma } from '$lib/server/prisma';
@@ -175,7 +175,7 @@ Test result of Join Request Process
 
 ![img](img/processReqTesting.png)
 
-## Edit Profile
+## Edit Profile (Asif)
 
     import { describe } from 'vitest';
     import { test, expect } from 'vitest';

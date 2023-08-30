@@ -54,13 +54,13 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="./">Testing</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#post-ad">Post Ad</a>
+    <li class="toctree-l2"><a class="reference internal" href="#post-ad-taimur">Post Ad (Taimur)</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#delete-ad">Delete Ad</a>
+    <li class="toctree-l2"><a class="reference internal" href="#delete-ad-reyad">Delete Ad (Reyad)</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#process-join-request">Process Join Request</a>
+    <li class="toctree-l2"><a class="reference internal" href="#process-join-request-anas">Process Join Request (Anas)</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#edit-profile">Edit Profile</a>
+    <li class="toctree-l2"><a class="reference internal" href="#edit-profile-asif">Edit Profile (Asif)</a>
     </li>
     </ul>
                 </li>
@@ -100,7 +100,7 @@
 <p>For testing, we used the Vite plug in Vitest. SvelteKit is relatively new, so testing libraries have changed from Jest to Vitest.</p>
 <p><img alt="img" src="../img/Test.png" /></p>
 <p>For our unit testing, we decided to simulate if different database accesses similar to our API. We decided to test four things:</p>
-<h2 id="post-ad">Post Ad</h2>
+<h2 id="post-ad-taimur">Post Ad (Taimur)</h2>
 <pre><code>import { test, expect } from 'vitest';
 import { prisma } from '$lib/server/prisma';
 import { now } from 'svelte/internal';
@@ -172,7 +172,7 @@ const ads = [
 </code></pre>
 <p>Test result of Post Ad</p>
 <p><img alt="img" src="../img/postAdTesting.png" /></p>
-<h2 id="delete-ad">Delete Ad</h2>
+<h2 id="delete-ad-reyad">Delete Ad (Reyad)</h2>
 <pre><code>import { test, expect } from 'vitest';
 import { prisma } from '$lib/server/prisma';
 
@@ -213,7 +213,7 @@ for (const adId of adIdsToDelete) {
 </code></pre>
 <p>Test result of Delete Ad</p>
 <p><img alt="img" src="../img/deleteAd_Test.png" /></p>
-<h2 id="process-join-request">Process Join Request</h2>
+<h2 id="process-join-request-anas">Process Join Request (Anas)</h2>
 <pre><code>import { test, expect } from 'vitest';
 import { prisma } from '$lib/server/prisma';
 
@@ -259,7 +259,7 @@ test_cases.forEach(ad_id =&gt; {
 </code></pre>
 <p>Test result of Join Request Process</p>
 <p><img alt="img" src="../img/processReqTesting.png" /></p>
-<h2 id="edit-profile">Edit Profile</h2>
+<h2 id="edit-profile-asif">Edit Profile (Asif)</h2>
 <pre><code>import { describe } from 'vitest';
 import { test, expect } from 'vitest';
 import { prisma } from '$lib/server/prisma';
