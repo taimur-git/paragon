@@ -8,10 +8,11 @@
 
 	async function submit() {
 		let name = document.getElementById("name").value;
-		let bio = document.getElementById("bio").value;
-		let phone = document.getElementById("phone").value;
-		let university = document.getElementById("university").value;
+        let bio = document.getElementById("bio").value;
+        let phone = document.getElementById("phone").value;
+        let university = document.getElementById("university").value;
 
+        
 		const res = await fetch("/edit", {
 			method: "POST",
 			body: JSON.stringify({
