@@ -1,9 +1,8 @@
-// import { describe } from 'vitest';
 import { test, expect } from 'vitest';
 import { prisma } from '$lib/server/prisma';
 
 let userId = "7c4Q1RfvQCMOmzm";
-const test_cases = [28, 29, 32, 37];
+const test_cases = [32, 34, 37, 52];
 
 test_cases.forEach(ad_id => {
     test(`process a join request for ad ${ad_id}`, async () => {
@@ -36,10 +35,9 @@ test_cases.forEach(ad_id => {
                     
                 })
                 console.log(req);
-                expect(req).toBeDefined(); 
+                
             }
-            else{
-                expect(req).not.toBeDefined();
-            }
+            
+            expect(req).toBeDefined(); 
     });
 });
