@@ -16,7 +16,8 @@
 		"db": "npx prisma studio",
 		"update": "npx prisma db push",
 		"erd": "npx prisma generate",
-		"env": "node scripts/makeEnv.js"
+		"env": "node scripts/makeEnv.js",
+		"docs:build": "mkdocs build --config-file mkdocs/mkdocs.yml"
 	},
 	"devDependencies": {
 		"@fontsource/fira-mono": "^4.5.10",

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Testing - Paragon Documentation</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Testing";
+        var mkdocs_page_input_path = "testing.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Paragon Documentation
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../about/">Features</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../user-guide/">User Manual</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="./">Testing</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#post-ad">Post Ad</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#delete-ad">Delete Ad</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#process-join-request">Process Join Request</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#edit-profile">Edit Profile</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../conclusion/">Conclusion</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Paragon Documentation</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a> &raquo;</li>
+      <li class="breadcrumb-item active">Testing</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="testing">Testing</h1>
+<p>For testing, we used the Vite plug in Vitest. SvelteKit is relatively new, so testing libraries have changed from Jest to Vitest.</p>
+<p><img alt="img" src="../img/Test.png" /></p>
+<p>For our unit testing, we decided to simulate if different database accesses similar to our API. We decided to test four things:</p>
+<h2 id="post-ad">Post Ad</h2>
+<pre><code>import { test, expect } from 'vitest';
+import { prisma } from '$lib/server/prisma';
+import { now } from 'svelte/internal';
+
+const tags = [
+{
+    tag: {
+    connect: {
+        id: 9,
+    },
+    },
+},
+{
+    tag: {
+    connect: {
+        id: 22,
+    },
+    },
+},
+];
+const ads = [
+    {
+    userid: "7c4Q1RfvQCMOmzm",
+    salaryType: "negotiable",
+    typeOfTutor: "offline",
+    description: "lorem ipsum",
+    title: "Geometry Tutor",
+    workDays: "[5,6]",
+    startTime: now.toString(),
+    endTime: now.toString(),
+    tags: {
+        create: tags
+    }
+    } ,
+    {
+    userid: "7c4Q1RfvQCMOmzm",
+    salaryType: "weekly",
+    expectedSalary: 100,
+    typeOfTutor: "online",
+    description: "dolor imet",
+    title: "Guitar Tutor",
+    workDays: "[2]",
+    startTime: now.toString(),
+    endTime: now.toString(),
+    },
+    {
+    userid: "7c4Q1RfvQCMOmzm",
+    salaryType: "monthly",
+    expectedSalary: 1000,
+    typeOfTutor: "both",
+    description: "sit amet",
+    title: "Piano Tutor"
+    },
+    {
+    userid: "doesn't exist"
+    },
+];
+
+    ads.forEach(ad =&gt; {
+    test(`post an Ad, ${ad.title}`, async () =&gt; {
+
+        const postReq = await prisma.ad.create({
+            data: ad
+        })
+
+        expect(postReq).toBeDefined();
+    });
+});
+</code></pre>
+<p>Test result of Post Ad</p>
+<p><img alt="img" src="../img/postAdTesting.png" /></p>
+<h2 id="delete-ad">Delete Ad</h2>
+<pre><code>import { test, expect } from 'vitest';
+import { prisma } from '$lib/server/prisma';
+
+const adIdsToDelete = [27, 28, 29, 30];
+
+for (const adId of adIdsToDelete) {
+    test(`delete ad with id ${adId}`, async () =&gt; {
+        const deleteReq = await prisma.request.deleteMany({
+            where: {
+                adId: adId,
+            },
+        });
+
+    const appointment = await prisma.appointment.deleteMany({
+        where: {
+            adId: adId,
+        },
+    });
+
+    const adTag = await prisma.adTag.deleteMany({
+        where: {
+            adId: adId,
+        },
+    });
+
+    const ad = await prisma.ad.delete({
+        where: {
+            id: adId,
+        },
+    });
+
+    expect(deleteReq).toBeDefined();
+    expect(appointment).toBeDefined();
+    expect(adTag).toBeDefined();
+    expect(ad).toBeDefined();
+    });
+}
+</code></pre>
+<p>Test result of Delete Ad</p>
+<p><img alt="img" src="../img/deleteAd_Test.png" /></p>
+<h2 id="process-join-request">Process Join Request</h2>
+<pre><code>import { test, expect } from 'vitest';
+import { prisma } from '$lib/server/prisma';
+
+let userId = "7c4Q1RfvQCMOmzm";
+const test_cases = [32, 34, 37, 52];
+
+test_cases.forEach(ad_id =&gt; {
+    test(`process a join request for ad ${ad_id}`, async () =&gt; {
+            const adId = ad_id;
+            let req;
+            const checkif_req = await prisma.request.findMany({
+                where: { 
+                    AND: [
+                        {adId: adId},
+                        {userId: userId}
+                    ]
+                },
+            })
+
+            const checkif_app = await prisma.appointment.findMany({
+                where: { 
+                    AND: [
+                        {adId: adId},
+                        {studentId: userId}
+                    ]
+                },
+            })
+
+            if(checkif_req.length===0 &amp;&amp; checkif_app.length===0){
+                req = await prisma.request.create({
+                    data: {
+                        adId: adId,
+                        userId: userId,
+                    }
+
+                })
+                console.log(req); 
+            }
+
+            expect(req).toBeDefined();
+    });
+});
+</code></pre>
+<p>Test result of Join Request Process</p>
+<p><img alt="img" src="../img/processReqTesting.png" /></p>
+<h2 id="edit-profile">Edit Profile</h2>
+<pre><code>import { describe } from 'vitest';
+import { test, expect } from 'vitest';
+import { prisma } from '$lib/server/prisma';
+
+test('Update users profile', async () =&gt; {
+    const updated_user = await prisma.user.update({
+        data: {
+            // username: username,
+            name: "Test",
+            // email: email,
+            bio: "Test bio",
+            phone: "0190000000",
+        },
+        where: {
+            id: "vgZ2ncMmT4FvLJU",
+
+        }
+    })
+
+    expect(updated_user).toBeDefined();
+});
+</code></pre>
+<p>Test result of Edit Profile</p>
+<p><img alt="img" src="../img/editProfileTest.png" /></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../user-guide/" class="btn btn-neutral float-left" title="User Manual"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../installation/" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../user-guide/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
